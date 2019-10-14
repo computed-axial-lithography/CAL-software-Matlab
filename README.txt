@@ -1,5 +1,5 @@
 This README describes how the CAL projection-generation and projector-control code should be used. 
-This code has been developed in Matlab 2018b and is compatible with newer versions. 
+This code has been developed in Matlab 2018b and is compatible, to our knowledge, with 2017a and newer versions. 
 
 The optimization code consists of the main script (main_optimize.m) and supporting functions:
 -voxelize_target.m

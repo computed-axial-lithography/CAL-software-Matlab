@@ -37,7 +37,7 @@ Define parameters - all system and projection parameters are defined with the pa
 2. project is called to project the projection_set images at the refresh rate determined by the defined rotational velocity
 
 NOTES:
--VOXELISE.m inside the STL_read_bin, was obtained from the Matlab file exchange and was written by Adam H. Aitkenhead (adam.aitkenhead@christie.nhs.uk) at The Christie NHS Foundation Trust.
+-VOXELISE.m, COMPUTE_mesh_normal.m, and CONVERT_mesh_format.m inside the STL_read_bin, were obtained from the Matlab file exchange and were written by Adam H. Aitkenhead (adam.aitkenhead@christie.nhs.uk) at The Christie NHS Foundation Trust.
 
 -The parfor (parallel for loop) function used in initialize_projections.m and optimize_projections is part of the Matlab Parallel Computing Toolbox (https://www.mathworks.com/help/parallel-computing/index.html). 
 If parallel computation is desired to speed up optimization for large targets and the “params.parallel” is set to 1 to activate parallel computation this toolbox must be installed.

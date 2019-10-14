@@ -1,2 +1,6 @@
 # Ignore Matlab autosave .asv files
 *.asv
+
+# Ignore STL files
+*.stl
+

@@ -1,19 +1,21 @@
-#CAL-software
+# CAL-software
 This README describes how the CAL projection-generation and projector-control code should be used. 
 This code has been developed in Matlab 2018b and is compatible, to our knowledge, with 2017a and newer versions. 
 
 
-The optimization code consists of the main script (main_optimize.m) and supporting functions:
--voxelize_target.m
--initialize_projections.m
--optimize_projections.m
--find_threshold.m
--find_scale.m
--get_voxel_count.m
--show_projections.m
 
-#Projection Optimization
-Steps of main_optimize.m:
+
+# Projection Optimization
+The optimization code consists of the main script (main_optimize.m) and supporting functions:
+- voxelize_target.m
+- initialize_projections.m
+- optimize_projections.m
+- find_threshold.m
+- find_scale.m
+- get_voxel_count.m
+- show_projections.m
+
+## Steps of main_optimize.m:
 Define parameters - all system and optimization parameters are defined with params struct
 -The target should be defined by naming an STL file with params.stl_filename or directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
 -The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. 
@@ -28,18 +30,18 @@ sets the maximum number of iterations and if defined params.tol sets the error t
 for the optimization
 4. show_projections displays the optimized projections in sequence
 
-#Projector Control
+# Projector Control
 The projector control code consists of the main script (main_projector_control.m) and
 supporting functions:
--create_projection_set.m
--project.m
+- create_projection_set.m
+- project.m
 
-Steps of main_projector_control.m:
+## Steps of main_projector_control.m:
 Define parameters - all system and projection parameters are defined with the params struct
 1. create_projection_set is called to convert the optimized projections into a set of modified images based on the input parameters that can be projected.
 2. project is called to project the projection_set images at the refresh rate determined by the defined rotational velocity
 
-#NOTES:
+# NOTES:
 -VOXELISE.m, COMPUTE_mesh_normal.m, and CONVERT_mesh_format.m inside the STL_read_bin, were obtained from the Matlab file exchange and were written by Adam H. Aitkenhead (adam.aitkenhead@christie.nhs.uk) at The Christie NHS Foundation Trust.
 
 -The parfor (parallel for loop) function used in initialize_projections.m and optimize_projections is part of the Matlab Parallel Computing Toolbox (https://www.mathworks.com/help/parallel-computing/index.html). 

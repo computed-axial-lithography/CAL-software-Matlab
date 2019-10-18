@@ -35,7 +35,7 @@ params.intensity_scale_factor = 1; % intensity scaling factor
 params.max_angle = 360; % max angle of the projection set
 params.rot_velocity = 12; % stage rotational velocity degrees/s
 params.n_rotations = 100000; % maximum number of rotations to complete in projection; set arbitrarily large for infinite or otherwise unknown maximum rotations
-params.time_project = 100000; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
+params.time_project = 5; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
 params.verbose = 1;
 
 %% Projection operation

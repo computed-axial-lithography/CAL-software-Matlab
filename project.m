@@ -56,7 +56,7 @@ Screen(SLM.window,'Flip');
 window_ptrs = zeros(1,total_frames); % vector for storing the pointers to each image
 for i=1:total_frames
     if mod(i,50) == 0
-        display(['Mounting image:', num2str(i)]);
+        display(['\nMounting image:', num2str(i)]);
     end
     window_ptrs(i)=Screen('OpenOffscreenWindow', SLM.window, 0); % mount sll images to an offscreen window
     Screen('PutImage',window_ptrs(i), image_stack{i});
@@ -65,11 +65,15 @@ end
 % Begin sequential projection of image stack
 frame_stop_time = hold_time;
 t_start_all = tic;
-for k = 1:n_rotations
-    if t_end >= params.time_project
-        Screen('CopyWindow',blank_image_ptr, SLM.window); % project blank window when projection time is complete
-        break
-    end
+t_end = 0;
+break_flag = 0;
+for k = 1:params.n_rotations
+%     if t_end >= params.time_project
+%         Screen('CopyWindow',blank_image_ptr, SLM.window); % project blank window when projection time is complete
+%         Screen(SLM.window,'Flip');  % display the current image on the projector screen
+% 
+%         break
+%     end
     
     for i = 1:n_angles %n_angles+1
         Screen(SLM.window,'Flip');  % display the current image on the projector screen
@@ -86,9 +90,16 @@ for k = 1:n_rotations
         
         if t_end >= params.time_project
             Screen('CopyWindow',blank_image_ptr, SLM.window);
+            Screen(SLM.window,'Flip');  % display the current image on the projector screen
+            break_flag = 1;
             t_end = toc(t_start_all);
             break
         end
+    end
+    
+    if break_flag
+        fprintf('\nTotal projection time: %3.2f seconds\n\n', t_end); 
+        break
     end
 
 end

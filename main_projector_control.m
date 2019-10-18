@@ -23,7 +23,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %% Options
 params.wd_screen = 2716; % width in pixels of the projector's DMD
 params.ht_screen = 1528; % height in pixels of the projector's DMD
-params.scale_factor = 1; % projection image XY scaling factor 
+params.scale_factor = 1.5; % projection image XY scaling factor 
 params.invert_vertical = 0; % invert vertical orientation of projection
 params.invert_horizontal = 0; % invert horizontal orientation of projection
 params.ht_offset = 0; % height offset of projection within the bounds of the projected image
@@ -33,7 +33,7 @@ params.intensity_scale_factor = 1; % intensity scaling factor
 params.max_angle = 360; % max angle of the projection set
 params.rot_velocity = 12; % stage rotational velocity degrees/s
 params.n_rotations = 100000; % maximum number of rotations to complete in projection; set arbitrarily large for infinite or otherwise unknown maximum rotations
-params.time_project = 100000; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
+params.time_project = 5; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
 params.verbose = 1;
 
 %% Projection operation

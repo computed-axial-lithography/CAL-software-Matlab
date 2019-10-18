@@ -91,7 +91,7 @@ if params.scale_factor ~= 1
     % pre-processing
     gi = griddedInterpolant;
     gi.GridVectors = {nR_in, nZ_in, 1:N_projections};
-    gi.Values = projections;
+    gi.Values = double(projections);
     gi.Method = 'cubic';
     
     projections_scaled = gi({nR_out,nZ_out,1:N_projections});

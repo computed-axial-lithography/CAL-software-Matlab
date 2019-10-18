@@ -20,6 +20,8 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %% Main projector-control code
 % Created by: Joseph Toombs 09/2019
 
+clearvars -except optimized_projections
+
 %% Options
 params.wd_screen = 2716; % width in pixels of the projector's DMD
 params.ht_screen = 1528; % height in pixels of the projector's DMD
@@ -33,10 +35,44 @@ params.intensity_scale_factor = 1; % intensity scaling factor
 params.max_angle = 360; % max angle of the projection set
 params.rot_velocity = 12; % stage rotational velocity degrees/s
 params.n_rotations = 100000; % maximum number of rotations to complete in projection; set arbitrarily large for infinite or otherwise unknown maximum rotations
-params.time_project = 5; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
+params.time_project = 100000; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
 params.verbose = 1;
 
 %% Projection operation
-projection_set = create_projection_set(params,optimized_projections);
 
-project(params,projection_set)
+% If the optimized projection matrix is not in the workspace or the
+% projection set is already created user selects the file
+if ~exist('optimized_projections','var')
+    select_data = input('Choose to select projection set (1) or optimized projection matrix (0), default projection set (1): ');
+    if isempty(select_data)
+        select_data = 1;
+    end
+    
+    if select_data 
+        disp('Select projection set file:')
+        [proj_file, path] = uigetfile('*.mat');
+        addpath(path);
+        import_struct = load(proj_file);
+        field_names = fieldnames(import_struct);
+        
+        projection_set = import_struct.(field_names{1});
+        [final_projection_time] = project(params,projection_set);
+    else
+        disp('Select optimized projection matrix file:')
+        [opt_file, path] = uigetfile('*.mat');
+        addpath(path);
+        import_struct = load(opt_file);
+        field_names = fieldnames(import_struct);
+        optimized_projections = import_struct.(field_names{1});
+        
+        projection_set = create_projection_set(params,optimized_projections);
+        [final_projection_time] = project(params,projection_set);
+
+    end
+else
+    % If the optimized projection matrix is still in the workspace from
+    % optimization proceed without file selection
+    projection_set = create_projection_set(params,optimized_projections);
+    [final_projection_time] = project(params,projection_set);
+end
+

@@ -25,9 +25,10 @@ clearvars -except optimized_projections
 %% Options
 params.wd_screen = 2716; % width in pixels of the projector's DMD
 params.ht_screen = 1528; % height in pixels of the projector's DMD
-params.scale_factor = 1.5; % projection image XY scaling factor 
-params.invert_vertical = 0; % invert vertical orientation of projection
+params.scale_factor = 1; % projection image XY scaling factor 
+params.invert_vertical = 1; % invert vertical orientation of projection
 params.invert_horizontal = 0; % invert horizontal orientation of projection
+params.rotate_projections = 0; % degrees, rotate images in plane 
 params.ht_offset = 0; % height offset of projection within the bounds of the projected image
 params.wd_offset = 0; % width offset of projection within the bounds of the projected image
 params.intensity_scale_factor = 1; % intensity scaling factor
@@ -35,15 +36,15 @@ params.intensity_scale_factor = 1; % intensity scaling factor
 params.max_angle = 360; % max angle of the projection set
 params.rot_velocity = 12; % stage rotational velocity degrees/s
 params.n_rotations = 100000; % maximum number of rotations to complete in projection; set arbitrarily large for infinite or otherwise unknown maximum rotations
-params.time_project = 5; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
+params.time_project = 100000; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
 params.verbose = 1;
 
-%% Projection operation
+%% Create projection set
 
 % If the optimized projection matrix is not in the workspace or the
-% projection set is already created user selects the file
-if ~exist('optimized_projections','var')
-    select_data = input('Choose to select projection set (1) or optimized projection matrix (0), default projection set (1): ');
+% projection set is already created, the user selects the file
+if ~exist('optimized_projections','var') || ~exist('projection_set','var')
+    select_data = input('Choose to select: \nprojection set (cell array) (1) \nOR \noptimized projection matrix (3D matrix) (0); \ndefault (1): ');
     if isempty(select_data)
         select_data = 1;
     end
@@ -56,23 +57,32 @@ if ~exist('optimized_projections','var')
         field_names = fieldnames(import_struct);
         
         projection_set = import_struct.(field_names{1});
-        [final_projection_time] = project(params,projection_set);
+        projection_set = create_projection_set(params,projection_set);
+
     else
         disp('Select optimized projection matrix file:')
         [opt_file, path] = uigetfile('*.mat');
         addpath(path);
         import_struct = load(opt_file);
         field_names = fieldnames(import_struct);
-        optimized_projections = import_struct.(field_names{1});
         
+        optimized_projections = import_struct.(field_names{1});
         projection_set = create_projection_set(params,optimized_projections);
-        [final_projection_time] = project(params,projection_set);
 
     end
-else
+elseif exist('optimized_projections','var')
     % If the optimized projection matrix is still in the workspace from
     % optimization proceed without file selection
     projection_set = create_projection_set(params,optimized_projections);
-    [final_projection_time] = project(params,projection_set);
+
+elseif exist('projection_set','var')
+    % If projection set is still in workspace proceed without file
+    % selection
+    projection_set = create_projection_set(params,projection_set);
+    
 end
 
+%% Continue to projection of images
+if input('Continue to projection?    ')
+    [final_projection_time] = project(params,projection_set);
+end

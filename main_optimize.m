@@ -31,9 +31,9 @@ close all
 params = struct;
 params.verbose = 1; % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'pcshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'LA1251-A_16mm_dia.stl';
+params.stl_filename = '15mmcube.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
-params.resolution = 50; % number of voxels in the dimension of minimum length
+params.resolution = 100; % number of voxels in the dimension of minimum length
 params.angles = 0:1:179; % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0; % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 

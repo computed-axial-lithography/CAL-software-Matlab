@@ -125,7 +125,8 @@ if isa(projections,'double') || isa(projections,'single') || isa(projections,'ui
     for i = N_projections+1:2*N_projections  % reverse and concatenate projections of 180 degress
 
         curr_image = zeros(params.ht_screen,params.wd_screen);
-        curr_image(img_rows,img_cols) = squeeze(projections_processed(:,:,i - N_projections))';
+        curr_image(img_rows,img_cols) = flipud(squeeze(projections_processed(:,:,i-N_projections)))';
+        
 
         % Rotate image before appending to image_stack
         if params.rotate_projections ~= 0

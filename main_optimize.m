@@ -29,7 +29,7 @@ close all
 
 % General parameters
 params = struct;
-params.verbose = 1; % 1 to activate informational display; 0 to deactivate
+params.verbose = 0; % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'pcshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
 params.stl_filename = '15mmcube.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
@@ -44,7 +44,7 @@ params.Theta = 0.2; % Hybrid input-output parameter; Theta = 0 corresponds to pe
 params.Beta = 0.85; % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
 params.sigma_init = 1.0;
 params.sigma_end = 1.0;
-params.max_iterations = 30;
+params.max_iterations = 5;
 % params.tol; % use this to set the error tolerance of optimization
 
 %% Optimization procedure

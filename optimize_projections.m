@@ -54,12 +54,7 @@ end
 if params.verbose
     fprintf('Beginning optimization of projections\n');
     tic;
-    
-    error_plot_axes = figure;
-    set(error_plot_axes,'position',[1149 583 400 400]);
-    
-    opt_vol_axes = figure;
-    set(gcf,'position',[578   562   570   420]);
+
 
 end
 
@@ -182,7 +177,7 @@ for curr_iter = 1:params.max_iterations
     
     if params.verbose
         % Plot evolving error
-        set(0,'CurrentFigure',error_plot_axes)
+        subplot(2,4,3)
         semilogy(1:params.max_iterations,error,'LineWidth',2); 
         xlim([1 params.max_iterations]); 
         ylim([1e-4 1]);
@@ -191,17 +186,20 @@ for curr_iter = 1:params.max_iterations
         title_string = sprintf('Iteration = %2.0f',curr_iter);
         title(title_string)
         
+        subplot(2,4,2)
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
-            set(0,'CurrentFigure',opt_vol_axes)
+            
             volshow(curr_reconstruction,'Colormap',colormap,'Alphamap',alphamap);
+            axis vis3d
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
             title(title_string)
         elseif strcmp(params.vol_viewer,'pcshow')
             % Alternative method of plotting reconstruction (requires Computer
             % Vision Toolbox)
-            set(0,'CurrentFigure',opt_vol_axes)
+            
             pcshow(coord_above_threshold(1:curr_voxel_count,:));
+            axis vis3d
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
             title(title_string)            
         end

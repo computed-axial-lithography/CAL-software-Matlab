@@ -33,18 +33,21 @@ function show_projections(params,projections)
 
 % add path containing files for inferno colormap
 addpath('inferno_bin');
-
+pause(0.5)
 if numel(size(projections)) == 2
-    figure;
+    subplot(2,4,4)
     imagesc(projections)
     colormap inferno
     title('Optimized Sinogram')
     pause(0.02);
 else
-    figure;
+    optimized_projections_axes = figure;
     [~, nTheta, ~] = size(projections);
     for ii_theta = 1:nTheta
+%         axes(optimized_projections_axes);
+        
         imagesc(squeeze(projections(:,ii_theta,:))')
+       
         colormap inferno
         title_string = sprintf('Optimized Projections\n\\theta = %2.0f°', params.angles(ii_theta));
         title(title_string)

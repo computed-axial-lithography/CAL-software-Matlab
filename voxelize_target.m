@@ -83,7 +83,8 @@ elseif isfield(params,'stl_filename')
     end
 
     addpath('STL_read_bin'); % add functions specific to the STL read to the path
-
+    addpath('inferno_bin'); % add inferno colormap
+    
     fv = stlread(params.stl_filename); % read STL
     fvV = fv.vertices;
     N = params.resolution; % # of voxels along the minimum dimension of the part
@@ -173,16 +174,26 @@ elseif isfield(params,'stl_filename')
 
 
     if params.verbose
+        set(0,'Units','pixels')
+        PC_screen_size = get(0,'ScreenSize');
+        figure;
+        set(gcf,'OuterPosition',[1, 1, PC_screen_size(3), PC_screen_size(4)]);
+        set(gcf,'Color','w');
+        subplot(2,4,1)
+        axis vis3d
         if strcmp(params.vol_viewer,'volshow')
-            figure;
-            set(gcf,'Position',[17 563 560 420]);
+            
+            
             volshow(target);
+            axis vis3d
             title('Voxelized Target')
         elseif strcmp(params.vol_viewer,'pcshow')
             [curr_voxel_count,coord_above_threshold] = get_voxel_count(target);
-            figure;
-            set(gcf,'Position',[17 563 560 420]);
+            
+            
             pcshow(coord_above_threshold(1:curr_voxel_count,:));
+            axis vis3d
+            colormap inferno
             title('Voxelized Target')
         end
         pause(0.1)

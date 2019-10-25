@@ -59,6 +59,7 @@ end
 if params.verbose
     fprintf('Beginning initialization of projections\n');
     tic;
+    
 end
 
 
@@ -121,40 +122,44 @@ end
 
 
 if params.verbose
-    figure;
+    
     if numel(size(target)) == 2
         imagesc(projections)
         colormap inferno
     else
-        set(gcf,'position',[17  77  1200  400]);
         
-        subplot(1,4,1)
+        
+        subplot(2,4,5)
         imagesc(squeeze(projections(:,1,:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(1));
         title(str)
         axis off
+        axis equal
         
-        subplot(1,4,2)
+        subplot(2,4,6)
         imagesc(squeeze(projections(:,round(nTheta*1/3),:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*1/3)));
         title(str)
         axis off
+        axis equal
         
-        subplot(1,4,3)
+        subplot(2,4,7)
         imagesc(squeeze(projections(:,round(nTheta*2/3),:))')    
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*2/3)));
         title(str)
         axis off
+        axis equal
         
-        subplot(1,4,4)
+        subplot(2,4,8)
         imagesc(squeeze(projections(:,nTheta,:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(nTheta));
         title(str)
         axis off
+        axis equal
     end
     pause(0.5);
     runtime = toc;

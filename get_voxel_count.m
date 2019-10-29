@@ -39,6 +39,7 @@ end
 
 % 2D target and reconstruction
 if numel(size(input)) == 2
+    ii = 1;
     nX = size(input,2);
     nY = size(input,1);
     nZ = 1;
@@ -50,14 +51,16 @@ if numel(size(input)) == 2
         for y = 1:nY
             if (input(x,y) >= threshold)
                 voxel_count = voxel_count+1;
-                coordinates(voxel_count,:) = [x y 0];
+                coordinates(ii,:) = [x y 0];
             end
+            ii = ii + 1;
         end
     end
 end
 
 % 3D target and reconstruction
 if numel(size(input)) == 3
+    ii = 1;
     nR = size(input,1);
     nZ = size(input,3);
 
@@ -69,8 +72,9 @@ if numel(size(input)) == 3
             for x=1:nR
                 if (input(x,y,z) >= threshold)
                     voxel_count = voxel_count+1;
-                    coordinates(voxel_count,:) = [x y z];
+                    coordinates(ii,:) = [x y z];
                 end
+                ii = ii + 1;
             end
         end
     end

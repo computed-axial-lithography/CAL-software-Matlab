@@ -146,47 +146,62 @@ if isa(projections,'double') || isa(projections,'single') || isa(projections,'ui
     
     
 %%%%%%%%%%% If input projections are already in cell image stack form %%%%%%%%%%%
-elseif isa(projections,'cell') 
+elseif isa(projections,'cell')
     image_stack = projections;
     if params.verbose
         figure
+        pause(0.05)
     end
     
-    if params.rotate_projections ~= 0 || params.invert_vertical || params.invert_horizontal || params.intensity_scale_factor ~= 1
         
-        for i = 1:size(projections,2)
-            
-            if params.invert_vertical 
-                image_stack{i} = flip(image_stack{i},1);
-            end
-            
-            if params.invert_horizontal
-                image_stack{i} = flip(image_stack{i},2);
-            end
-            
-            if params.rotate_projections ~= 0
-                image_stack{i} = imrotate(image_stack{i},params.rotate_projections,'bilinear','crop');
-            end
-                      
-            if params.intensity_scale_factor ~= 1
-                temp_image = image_stack{i}.*intensity_scale_factor;
-                temp_image(temp_image > 255) = 255;
-                image_stack{i} = temp_image;
-            end
-            
-            if params.verbose && mod(i,20) == 0
-                imagesc(image_stack{i}); 
-                title(['Frame ' num2str(i) ' of ' num2str(size(projections,2))])
-                axis equal
-                axis off
-                pause(0.01)
-            end
+    for i = 1:size(projections,2)
+        
+        if params.invert_vertical 
+            image_stack{i} = flip(image_stack{i},1);
+        end
+
+        if params.invert_horizontal
+            image_stack{i} = flip(image_stack{i},2);
+        end
+
+        if params.rotate_projections ~= 0
+            image_stack{i} = imrotate(image_stack{i},params.rotate_projections,'bilinear','crop');
         end
         
-  
-    end
-    
+        if params.ht_offset ~= 0
+            image_stack{i} = circshift(image_stack{i},-params.ht_offset,1);
+        end
 
+        if params.array_num ~= 0
+            temp_image = uint8(zeros(size(image_stack{i})));
+            for h = 1:params.array_num
+                temp = circshift(image_stack{i},params.array_shift*h,1);
+                temp_image = temp + temp_image;
+            end
+            image_stack{i} = temp_image;
+        end
+
+
+        if params.intensity_scale_factor ~= 1
+            temp_image = image_stack{i}.*intensity_scale_factor;
+            temp_image(temp_image > 255) = 255;
+            image_stack{i} = temp_image;
+        end
+
+
+        
+        
+  
+    
+    
+        if params.verbose && mod(i,20) == 0
+            imagesc(image_stack{i}); 
+            title(['Frame ' num2str(i) ' of ' num2str(size(projections,2))])
+            axis equal
+            axis off
+            pause(0.02)
+        end
+    end
 end
 
 

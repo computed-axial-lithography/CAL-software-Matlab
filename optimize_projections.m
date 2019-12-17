@@ -40,7 +40,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function [opt_projections,error] = optimize_projections(params,initial_projections,target,target_care_area)
+function [opt_projections,error,thresholds] = optimize_projections(params,initial_projections,target,target_care_area)
 
 if ~isfield(params,'verbose')
     params.verbose = 0;
@@ -112,8 +112,8 @@ for curr_iter = 1:params.max_iterations
    
     
     % Apply Gauss filter to the padded_target to soften boundary
-    sigma_AA = params.sigma_init - (curr_iter-1)/(params.max_iterations-1)*(params.sigma_init - params.sigma_end); %Anti-aliasing parameter
-    target = imgaussfilt3(target_orig,sigma_AA); %anti-aliased version of the padded_target
+%     sigma_AA = params.sigma_init - (curr_iter-1)/(params.max_iterations-1)*(params.sigma_init - params.sigma_end); %Anti-aliasing parameter
+%     target = imgaussfilt3(target_orig,sigma_AA); %anti-aliased version of the padded_target
     
     
     %Rho = Rho+0.006*k/nLoop1; %Forcing more robustness at every iteration
@@ -129,11 +129,17 @@ for curr_iter = 1:params.max_iterations
     % thresholded_reconstruction consists of sigmoid thresholded values of
     % curr_reconstruction
 %     thresholded_reconstruction = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu)/sigma)),sigma_AA); 
-    thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu)/sigma), sigma_AA);
+%     thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu)/sigma), sigma_AA);
+        thresholded_reconstruction = sigmoid((curr_reconstruction-mu)/sigma);
+
 %     thresholded_reconstruction_eroded = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu_eroded)/sigma)),sigma_AA); 
-    thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded)/sigma), sigma_AA);
+%     thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded)/sigma), sigma_AA);
+        thresholded_reconstruction_eroded = sigmoid((curr_reconstruction-mu_eroded)/sigma);
+
 %     thresholded_reconstruction_dilated = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu_dilated)/sigma)),sigma_AA); 
-    thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated)/sigma), sigma_AA);
+%     thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated)/sigma), sigma_AA);
+        thresholded_reconstruction_dilated = sigmoid((curr_reconstruction-mu_dilated)/sigma);
+
     
     
     % Calculate error between target [padded version of target] and thresholded negative truncated
@@ -156,7 +162,6 @@ for curr_iter = 1:params.max_iterations
     delta_target_feedback = (delta_target + delta_target_eroded + delta_target_dilated)/3;
       
     % update optimized projections over z-positions
-    
     if params.parallel
         parfor z = 1:nZ 
             delta_projections(:,:,z) = imresize(radon(delta_target_feedback(:,:,z), params.angles),[nR nTheta]); % transform error in target space to error in projection space
@@ -177,7 +182,8 @@ for curr_iter = 1:params.max_iterations
     
     if params.verbose
         % Plot evolving error
-        subplot(2,4,3)
+        figure(4)
+        %subplot(2,4,3)
         semilogy(1:params.max_iterations,error,'LineWidth',2); 
         xlim([1 params.max_iterations]); 
         ylim([1e-4 1]);
@@ -186,13 +192,18 @@ for curr_iter = 1:params.max_iterations
         title_string = sprintf('Iteration = %2.0f',curr_iter);
         title(title_string)
         
-        subplot(2,4,2)
+        figure(5)
+%         subplot(2,4,2)
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
             
-            volshow(curr_reconstruction,'Colormap',colormap,'Alphamap',alphamap);
+            volshow(curr_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','w');
+            camlight
+            lighting gouraud
             axis vis3d
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
+            annotation('textbox',[0.2 0.5 0.3 0.3],'String',title_string,'FitBoxToText','on');
+
             title(title_string)
         elseif strcmp(params.vol_viewer,'pcshow')
             % Alternative method of plotting reconstruction (requires Computer

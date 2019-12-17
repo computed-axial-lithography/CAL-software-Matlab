@@ -177,23 +177,26 @@ elseif isfield(params,'stl_filename')
         set(0,'Units','pixels')
         PC_screen_size = get(0,'ScreenSize');
         figure;
-        set(gcf,'OuterPosition',[1, 1, PC_screen_size(3), PC_screen_size(4)]);
-        set(gcf,'Color','w');
-        subplot(2,4,1)
+%         set(gcf,'OuterPosition',[1, 1, PC_screen_size(3), PC_screen_size(4)]);
+        
+        set(gca,'Color','w');
+        figure
+%         subplot(2,4,1)
         axis vis3d
         if strcmp(params.vol_viewer,'volshow')
-            
-            
-            volshow(target);
+                       
+            volshow(target,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w');
             axis vis3d
             title('Voxelized Target')
         elseif strcmp(params.vol_viewer,'pcshow')
             [curr_voxel_count,coord_above_threshold] = get_voxel_count(target);
             
-            
             pcshow(coord_above_threshold(1:curr_voxel_count,:));
             axis vis3d
             colormap inferno
+            set(gcf,'Color','w');
+            set(gca,'color','w');
+
             title('Voxelized Target')
         end
         pause(0.1)

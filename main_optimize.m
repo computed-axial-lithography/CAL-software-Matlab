@@ -29,22 +29,22 @@ close all
 
 % General parameters
 params = struct;
-params.verbose = 0; % 1 to activate informational display; 0 to deactivate
-params.vol_viewer = 'pcshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = '15mmcube.stl';
+params.verbose = 1; % 1 to activate informational display; 0 to deactivate
+params.vol_viewer = 'volshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
+params.stl_filename = 'Cube_with_hole.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
-params.resolution = 100; % number of voxels in the dimension of minimum length
+params.resolution = 50;% number of voxels in the dimension of minimum length
 params.angles = 0:1:179; % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0; % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 
 % Optimization parameters
-params.learningRate = 0.03; % Relaxation parameter: how far along do we move in the Newton iteration
+params.learningRate = 0.008; % Relaxation parameter: how far along do we move in the Newton iteration
 params.Rho = 0.01; % Robustness parameter
-params.Theta = 0.2; % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
-params.Beta = 0.85; % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
+params.Theta = 0.1; % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
+params.Beta = 0.95; % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
 params.sigma_init = 1.0;
 params.sigma_end = 1.0;
-params.max_iterations = 5;
+params.max_iterations = 35;
 % params.tol; % use this to set the error tolerance of optimization
 
 %% Optimization procedure
@@ -52,7 +52,7 @@ params.max_iterations = 5;
 
 projections = initialize_projections(params,target); % create initial guess of projections
 
-[optimized_projections,error] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
+[optimized_projections,error,thresholds] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
 
 show_projections(params,optimized_projections) % display projections
 

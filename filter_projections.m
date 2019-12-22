@@ -71,6 +71,9 @@ switch filter
         filt(2:end) = filt(2:end) .* (.54 + .46 * cos(w(2:end)/d));
     case 'hann'
         filt(2:end) = filt(2:end) .*(1+cos(w(2:end)./d)) / 2;
+    case 'superlinear'
+        filt(2:end) = filt(2:end).^3;
+
     otherwise
         error(message('images:iradon:invalidFilter'))
 end

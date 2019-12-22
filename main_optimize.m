@@ -31,7 +31,7 @@ close all
 params = struct;
 params.verbose = 1; % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'volshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'Cube_with_hole.stl';
+params.stl_filename = 'JET.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
 params.resolution = 50;% number of voxels in the dimension of minimum length
 params.angles = 0:1:179; % vector of real angles of projection; should be [0-180 deg]

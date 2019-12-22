@@ -111,7 +111,9 @@ else
 %             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
             
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
-            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
+            projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+            
+%             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
             projections(:,:,z) = projection_z_filt;
         end
     else
@@ -121,7 +123,10 @@ else
 %             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
             
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
-            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
+            projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+            
+            
+%             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
             projections(:,:,z) = projection_z_filt;
         end 
     end

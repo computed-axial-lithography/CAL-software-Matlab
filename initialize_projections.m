@@ -111,6 +111,10 @@ else
 %             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
             
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
+            
+%             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+%             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
+            
             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
             projections(:,:,z) = projection_z_filt;
         end
@@ -121,7 +125,11 @@ else
 %             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
             
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
-            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
+            
+            projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+            projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
+            
+%             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
             projections(:,:,z) = projection_z_filt;
         end 
     end
@@ -129,14 +137,15 @@ end
 
 
 if params.verbose
-    
+    figure
+    title('Initialized projections')
     if numel(size(target)) == 2
         imagesc(projections)
         colormap inferno
     else
         
         
-        subplot(2,4,5)
+        subplot(4,1,1)
         imagesc(squeeze(projections(:,1,:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(1));
@@ -144,7 +153,7 @@ if params.verbose
         axis off
         axis equal
         
-        subplot(2,4,6)
+        subplot(4,1,2)
         imagesc(squeeze(projections(:,round(nTheta*1/3),:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*1/3)));
@@ -152,7 +161,7 @@ if params.verbose
         axis off
         axis equal
         
-        subplot(2,4,7)
+        subplot(4,1,3)
         imagesc(squeeze(projections(:,round(nTheta*2/3),:))')    
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*2/3)));
@@ -160,7 +169,7 @@ if params.verbose
         axis off
         axis equal
         
-        subplot(2,4,8)
+        subplot(4,1,4)
         imagesc(squeeze(projections(:,nTheta,:))')
         colormap inferno
         str = sprintf('\\theta = %2.0f°',params.angles(nTheta));

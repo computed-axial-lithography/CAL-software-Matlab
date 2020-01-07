@@ -105,11 +105,7 @@ if numel(size(target)) == 2
 
 else
     if params.parallel
-        parfor z = 1:nZ
-%             projection_z = imresize(radon(target(:,:,z), params.angles),[nR nTheta]);
-%             FT_projection_z = fftshift(fft(projection_z,[],1)); % Fourier transform projections
-%             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
-            
+        parfor z = 1:nZ            
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
             
 %             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
@@ -120,16 +116,12 @@ else
         end
     else
         for z = 1:nZ
-%             projection_z = imresize(radon(target(:,:,z), params.angles),[nR nTheta]);
-%             FT_projection_z = fftshift(fft(projection_z,[],1)); % Fourier transform projections
-%             projection_z = real(ifft(ifftshift(FT_projection_z.*rampK_matrix))); % apply ramp filter in Fourier space
-            
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
             
-            projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
-            projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
+%             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+%             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
             
-%             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
+            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
             projections(:,:,z) = projection_z_filt;
         end 
     end

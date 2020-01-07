@@ -99,7 +99,7 @@ for curr_iter = 1:params.max_iterations
     % calculating the error the comparison is between the target and a
     % tangible reconstruction
     for z = 1:nZ
-        curr_reconstruction(:,:,z) = imresize(iradon(projections_power(:,:,z), params.angles, 'none'),[nX nY]);
+        curr_reconstruction(:,:,z) = iradon(projections_power(:,:,z), params.angles, 'none',nX);
     end
     curr_reconstruction = curr_reconstruction/sum(curr_reconstruction(:))*sum(target(:));
 

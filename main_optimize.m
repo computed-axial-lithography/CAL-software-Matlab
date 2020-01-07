@@ -30,7 +30,7 @@ close all
 % General parameters
 params = struct;
 params.verbose = 1; % 1 to activate informational display; 0 to deactivate
-params.vol_viewer = 'volshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
+params.vol_viewer = 'pcshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
 params.stl_filename = 'JET.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
 params.resolution = 50;% number of voxels in the dimension of minimum length

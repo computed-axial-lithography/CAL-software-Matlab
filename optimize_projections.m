@@ -7,12 +7,18 @@ INPUTS:
                   are calculated; without accounting for absorption within the resin the
                   range of angles only needs to be 0 to 180 degrees
   params.max_iterations = scalar, maximum # of iterations in the optimization
+  params.learningRate = scalar, size of step in gradient descent
+  params.Rho = scalar, robustness parameter; size of erosion/dilation
+  params.Theta = scalar, positivity constraint strictness
+  params.Beta = scalar, memory effect
+  params.parallel = 1 or 0, activates or deactivates parallel processing of
+                    layers in 3D optimization
   initial_projections = matrix, matrix of initial guess projections; can be
                         2D (nR x nTheta) or 3D (nR x nTheta x nZ)
   target = matrix, voxelized design STL padded with zeros
   target_care_area = matrix, defines the dilated version of the target 
   params.verbose = 1 or 0, activates or deactivates visualization and display of
-            extra information about the optimization
+                   extra information about the optimization
 
 OUTPUTS:
   opt_projections = matrix, 2D or 3D matrix of the 8-bit projections
@@ -52,6 +58,7 @@ if ~isfield(params,'parallel')
 end
 
 if params.verbose
+    addpath('autoArrangeFigures_bin'); % add path to function for automatically arranging figures on monitor
     fprintf('Beginning optimization of projections\n');
     tic;
 
@@ -80,14 +87,6 @@ delta_projections_prev = opt_projections;
 curr_reconstruction = zeros(size(target));
 target_orig = target; % store a copy of the original padded_target
 
-
-% 3D volshow() parameters
-intensity = [-3000, -10, 600, 3000];
-alpha = [0, 0, 0.7, 1];
-color = ([255 255 255; 231 231 231; 186 186 186; 0 0 0]) ./ 255;
-queryPoints = linspace(min(intensity),max(intensity),256);
-alphamap = interp1(intensity,alpha,queryPoints)';
-colormap = interp1(intensity,color,queryPoints);
 
 
 target_voxel_count = get_voxel_count(target);
@@ -163,7 +162,7 @@ for curr_iter = 1:params.max_iterations
       
     % update optimized projections over z-positions
     if params.parallel
-        parfor z = 1:nZ 
+        parfor z = 1:nZ
             delta_projections(:,:,z) = imresize(radon(delta_target_feedback(:,:,z), params.angles),[nR nTheta]); % transform error in target space to error in projection space
             gradientApprox = ((1-params.Beta)*delta_projections(:,:,z) + params.Beta*delta_projections_prev(:,:,z))/(1-params.Beta^curr_iter);
             opt_projections(:,:,z) = opt_projections(:,:,z) - params.learningRate*gradientApprox; %Update involving a controlled step size and memory effect
@@ -183,7 +182,6 @@ for curr_iter = 1:params.max_iterations
     if params.verbose
         % Plot evolving error
         figure(4)
-        %subplot(2,4,3)
         semilogy(1:params.max_iterations,error,'LineWidth',2); 
         xlim([1 params.max_iterations]); 
         ylim([1e-4 1]);
@@ -193,13 +191,11 @@ for curr_iter = 1:params.max_iterations
         title(title_string)
         
         figure(5)
-%         subplot(2,4,2)
+        autoArrangeFigures()  % automatically arrange figures on screen
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
             
             volshow(curr_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','w');
-            camlight
-            lighting gouraud
             axis vis3d
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
             annotation('textbox',[0.2 0.5 0.3 0.3],'String',title_string,'FitBoxToText','on');
@@ -209,12 +205,14 @@ for curr_iter = 1:params.max_iterations
             % Alternative method of plotting reconstruction (requires Computer
             % Vision Toolbox)
             
-            pcshow(coord_above_threshold(1:curr_voxel_count,:));
+            pcshow(coord_above_threshold);
             axis vis3d
+            colormap jet
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
-            title(title_string)            
+            title(title_string)
         end
         pause(0.05);
+        
         
         
     end

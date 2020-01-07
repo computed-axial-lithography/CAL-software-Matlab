@@ -38,7 +38,7 @@ params.angles = 0:1:179; % vector of real angles of projection; should be [0-180
 params.parallel = 0; % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 
 % Optimization parameters
-params.learningRate = 0.008; % Relaxation parameter: how far along do we move in the Newton iteration
+params.learningRate = 0.08; % Relaxation parameter: how far along do we move in the Newton iteration
 params.Rho = 0.01; % Robustness parameter
 params.Theta = 0.1; % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
 params.Beta = 0.95; % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory

@@ -93,13 +93,13 @@ target_voxel_count = get_voxel_count(target);
 
 for curr_iter = 1:params.max_iterations
     
-    [projections_power,~] = find_scale(opt_projections); % maps the current optimized projections to 8-bit numbers with the calibration curve of the projector
+%     [projections_power,~] = find_scale(opt_projections); % maps the current optimized projections to 8-bit numbers with the calibration curve of the projector
     
     % Backproject with the current realistic 8-bit projections so that when
     % calculating the error the comparison is between the target and a
     % tangible reconstruction
     for z = 1:nZ
-        curr_reconstruction(:,:,z) = iradon(projections_power(:,:,z), params.angles, 'none',nX);
+        curr_reconstruction(:,:,z) = iradon(opt_projections(:,:,z), params.angles, 'none',nX);
     end
     curr_reconstruction = curr_reconstruction/sum(curr_reconstruction(:))*sum(target(:));
 
@@ -111,8 +111,8 @@ for curr_iter = 1:params.max_iterations
    
     
     % Apply Gauss filter to the padded_target to soften boundary
-%     sigma_AA = params.sigma_init - (curr_iter-1)/(params.max_iterations-1)*(params.sigma_init - params.sigma_end); %Anti-aliasing parameter
-%     target = imgaussfilt3(target_orig,sigma_AA); %anti-aliased version of the padded_target
+    sigma_AA = params.sigma_init - (curr_iter-1)/(params.max_iterations-1)*(params.sigma_init - params.sigma_end); %Anti-aliasing parameter
+    target = imgaussfilt3(target_orig,sigma_AA); %anti-aliased version of the padded_target
     
     
     %Rho = Rho+0.006*k/nLoop1; %Forcing more robustness at every iteration
@@ -128,16 +128,16 @@ for curr_iter = 1:params.max_iterations
     % thresholded_reconstruction consists of sigmoid thresholded values of
     % curr_reconstruction
 %     thresholded_reconstruction = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu)/sigma)),sigma_AA); 
-%     thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu)/sigma), sigma_AA);
-        thresholded_reconstruction = sigmoid((curr_reconstruction-mu)/sigma);
+    thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu)/sigma, params.sigmoid), sigma_AA);
+%         thresholded_reconstruction = sigmoid((curr_reconstruction-mu)/sigma);
 
 %     thresholded_reconstruction_eroded = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu_eroded)/sigma)),sigma_AA); 
-%     thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded)/sigma), sigma_AA);
-        thresholded_reconstruction_eroded = sigmoid((curr_reconstruction-mu_eroded)/sigma);
+    thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded)/sigma, params.sigmoid), sigma_AA);
+%         thresholded_reconstruction_eroded = sigmoid((curr_reconstruction-mu_eroded)/sigma);
 
 %     thresholded_reconstruction_dilated = imgaussfilt3(1./(1+exp(-(curr_reconstruction-mu_dilated)/sigma)),sigma_AA); 
-%     thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated)/sigma), sigma_AA);
-        thresholded_reconstruction_dilated = sigmoid((curr_reconstruction-mu_dilated)/sigma);
+    thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated)/sigma, params.sigmoid), sigma_AA);
+%         thresholded_reconstruction_dilated = sigmoid((curr_reconstruction-mu_dilated)/sigma);
 
     
     
@@ -227,9 +227,9 @@ if params.verbose
 end
 end
 
-function y = sigmoid(x)
+function y = sigmoid(x,g)
 
-    y = 1./(1+exp(-x));
+    y = 1./(1+exp(-x*g));
 
 end
 

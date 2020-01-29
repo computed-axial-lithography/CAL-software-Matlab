@@ -56,7 +56,7 @@ costheta = cosd(params.theta);
 sintheta = sind(params.theta);
 
 % Allocate memory for the image
-recon = zeros(N,'like',p);        
+recon = zeros(N,'like',p);
 
 for i=1:length(params.theta)
     proj = p(:,i);
@@ -70,7 +70,7 @@ for i=1:length(params.theta)
 %     imagesc(recon)
 %     colormap jet
 %     daspect([1 1 1])
-%     pause(0.1)
+%     pause(0.01)
 
 
 end

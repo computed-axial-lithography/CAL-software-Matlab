@@ -46,6 +46,8 @@ if length(size(projections)) == 3
         cumulative_dose(:,:,z) = imresize(iradon(projections(:,:,z), linspace(0,180,nTheta), 'none'),[nX nX]);
 
     end
+    volumeViewer(cumulative_dose)
+    
 elseif length(size(projections)) == 2
     cumulative_dose = imresize(iradon(projections, linspace(0,180,nTheta),'none'),[nX nX]);
 end

@@ -33,6 +33,8 @@ function show_projections(params,projections)
 
 % add path containing files for inferno colormap
 addpath('inferno_bin');
+addpath('imshow_3D_bin');
+
 pause(0.5)
 if numel(size(projections)) == 2
     subplot(2,4,4)
@@ -43,6 +45,9 @@ if numel(size(projections)) == 2
 else
     optimized_projections_axes = figure;
     [~, nTheta, ~] = size(projections);
+    
+    
+    
     for ii_theta = 1:nTheta
 %         axes(optimized_projections_axes);
         
@@ -55,4 +60,9 @@ else
         axis off
         pause(0.02);
     end
+    
+    
+    figure
+    colormap inferno
+    imshow3D(permute(projections,[3,1,2]),[],1);
 end

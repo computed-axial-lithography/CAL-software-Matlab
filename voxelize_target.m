@@ -176,7 +176,8 @@ elseif isfield(params,'stl_filename')
     if params.verbose
         set(0,'Units','pixels')
         
-        figure
+        figure('Name','Voxelized target','NumberTitle','off');
+
         axis vis3d
         if strcmp(params.vol_viewer,'volshow')
                        

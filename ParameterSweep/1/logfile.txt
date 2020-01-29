@@ -1,5 +1,0 @@
-                 theta: [1x360 double]
-         interp_method: 'linear'
-                radius: 150
-                   D_p: Inf
-Runtime =   40 seconds

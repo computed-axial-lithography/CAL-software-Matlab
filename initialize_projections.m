@@ -128,50 +128,50 @@ else
 end
 
 
-if params.verbose
-    figure
-    title('Initialized projections')
-    if numel(size(target)) == 2
-        imagesc(projections)
-        colormap inferno
-    else
-        
-        
-        subplot(4,1,1)
-        imagesc(squeeze(projections(:,1,:))')
-        colormap inferno
-        str = sprintf('\\theta = %2.0f°',params.angles(1));
-        title(str)
-        axis off
-        axis equal
-        
-        subplot(4,1,2)
-        imagesc(squeeze(projections(:,round(nTheta*1/3),:))')
-        colormap inferno
-        str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*1/3)));
-        title(str)
-        axis off
-        axis equal
-        
-        subplot(4,1,3)
-        imagesc(squeeze(projections(:,round(nTheta*2/3),:))')    
-        colormap inferno
-        str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*2/3)));
-        title(str)
-        axis off
-        axis equal
-        
-        subplot(4,1,4)
-        imagesc(squeeze(projections(:,nTheta,:))')
-        colormap inferno
-        str = sprintf('\\theta = %2.0f°',params.angles(nTheta));
-        title(str)
-        axis off
-        axis equal
-    end
-    pause(0.5);
-    runtime = toc;
-    fprintf('Finished initialization of projections in %.2f seconds\n\n',runtime);
-end
+% if params.verbose
+%     figure('Name','Initialized projections','NumberTitle','off');
+%     title('Initialized projections')
+%     if numel(size(target)) == 2
+%         imagesc(projections)
+%         colormap inferno
+%     else
+%         
+%         
+%         subplot(4,1,1)
+%         imagesc(squeeze(projections(:,1,:))')
+%         colormap inferno
+%         str = sprintf('\\theta = %2.0f°',params.angles(1));
+%         title(str)
+%         axis off
+%         axis equal
+%         
+%         subplot(4,1,2)
+%         imagesc(squeeze(projections(:,round(nTheta*1/3),:))')
+%         colormap inferno
+%         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*1/3)));
+%         title(str)
+%         axis off
+%         axis equal
+%         
+%         subplot(4,1,3)
+%         imagesc(squeeze(projections(:,round(nTheta*2/3),:))')    
+%         colormap inferno
+%         str = sprintf('\\theta = %2.0f°',params.angles(round(nTheta*2/3)));
+%         title(str)
+%         axis off
+%         axis equal
+%         
+%         subplot(4,1,4)
+%         imagesc(squeeze(projections(:,nTheta,:))')
+%         colormap inferno
+%         str = sprintf('\\theta = %2.0f°',params.angles(nTheta));
+%         title(str)
+%         axis off
+%         axis equal
+%     end
+%     pause(0.5);
+%     runtime = toc;
+%     fprintf('Finished initialization of projections in %.2f seconds\n\n',runtime);
+% end
 end
 

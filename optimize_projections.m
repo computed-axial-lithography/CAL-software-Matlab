@@ -181,8 +181,11 @@ for curr_iter = 1:params.max_iterations
     
     if params.verbose
         % Plot evolving error
-        figure(4)
-        semilogy(1:params.max_iterations,error,'LineWidth',2); 
+        if curr_iter == 1
+            error_fig = figure('Name','Error','NumberTitle','off');
+        end
+        set(0,'currentFigure',error_fig);
+        semilogy(1:params.max_iterations,error,'bo-','LineWidth',2); 
         xlim([1 params.max_iterations]); 
         ylim([1e-4 1]);
         xlabel('Iteration #')
@@ -190,21 +193,21 @@ for curr_iter = 1:params.max_iterations
         title_string = sprintf('Iteration = %2.0f',curr_iter);
         title(title_string)
         
-        figure(5)
+        if curr_iter == 1
+            recon_fig = figure('Name','Optimized reconstruction','NumberTitle','off');
+        end
+        
         autoArrangeFigures()  % automatically arrange figures on screen
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
-            
+            set(0,'currentFigure',recon_fig)
             volshow(curr_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','w');
             axis vis3d
-            title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
-            annotation('textbox',[0.2 0.5 0.3 0.3],'String',title_string,'FitBoxToText','on');
 
-            title(title_string)
         elseif strcmp(params.vol_viewer,'pcshow')
             % Alternative method of plotting reconstruction (requires Computer
             % Vision Toolbox)
-            
+            set(0,'currentFigure',recon_fig)
             pcshow(coord_above_threshold);
             axis vis3d
             colormap jet

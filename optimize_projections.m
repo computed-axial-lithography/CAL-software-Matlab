@@ -108,7 +108,7 @@ for curr_iter = 1:params.max_iterations
 
     
     [curr_voxel_count,coord_above_threshold] = get_voxel_count(curr_reconstruction,curr_threshold);
-   
+    
     
     % Apply Gauss filter to the padded_target to soften boundary
     sigma_AA = params.sigma_init - (curr_iter-1)/(params.max_iterations-1)*(params.sigma_init - params.sigma_end); %Anti-aliasing parameter

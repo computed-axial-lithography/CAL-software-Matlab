@@ -60,7 +60,7 @@ for kk = 1:length(params_sweep.Beta)
             [optimized_projections,error,thresholds] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
             rutime = toc;
             
-                                   
+
             % Setup directory for saving variables and figure images
             dir_name = sprintf('%2.0d',counter);
             filename = fullfile(save_path,dir_name);

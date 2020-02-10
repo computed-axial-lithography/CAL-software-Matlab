@@ -59,6 +59,7 @@ end
 
 if params.verbose
     addpath('autoArrangeFigures_bin'); % add path to function for automatically arranging figures on monitor
+    addpath('gif_bin')
     fprintf('Beginning optimization of projections\n');
     tic;
 
@@ -195,25 +196,28 @@ for curr_iter = 1:params.max_iterations
         
         if curr_iter == 1
             recon_fig = figure('Name','Optimized reconstruction','NumberTitle','off');
+            gif('recon.gif')
         end
         
         autoArrangeFigures()  % automatically arrange figures on screen
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
             set(0,'currentFigure',recon_fig)
-            volshow(curr_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','w');
+            recon_vol_h = volshow(curr_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','w');
             axis vis3d
 
         elseif strcmp(params.vol_viewer,'pcshow')
             % Alternative method of plotting reconstruction (requires Computer
             % Vision Toolbox)
             set(0,'currentFigure',recon_fig)
-            pcshow(coord_above_threshold);
+            recon_vol_h = pcshow(coord_above_threshold);
             axis vis3d
             colormap jet
             title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
             title(title_string)
         end
+        
+        gif('frame',recon_vol_h)
         pause(0.05);
         
         

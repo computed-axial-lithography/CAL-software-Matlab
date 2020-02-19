@@ -33,8 +33,8 @@ y = repmat(y, 1, N);
 
 % Convert physical parameters to dimensions of pixels if physical parameters are setup
 if params.resin_abs_coeff ~= 0
-    resin_penetration_depth_pix = round(1/params.resin_abs_coeff/params.voxel_size);
-    vial_radius_pix = round(params.vial_radius/params.voxel_size);
+    resin_abs_coeff_pix = x.*params.voxel_size;
+    vial_radius_pix = y.*params.voxel_size;
 end
 
 % Circle that bounds the 
@@ -48,9 +48,9 @@ for i = 1:length(params.angles)
     t = x.*costheta(i) + y.*sintheta(i);
     t_perp = -x.*sintheta(i) + y.*costheta(i); 
     
-    w = real(-sqrt(vial_radius_pix^2 - x.^2)) - y;
-    w(:,[1:size(x,1)/2-vial_radius_pix,size(x,1)/2+vial_radius_pix:end]) =  0;
-    exp_decay = exp(w./resin_penetration_depth_pix);   % also could be exp(w./(resin_abs_coeff_pix)^-1)) which is exp(w./(resin_penetration_depth_pix))
+    w = real(-sqrt(params.vial_radius^2 - x.^2)) - y;
+    w(:,[1:size(x,1)/2-params.resin_abs_coeff_pix,size(x,1)/2+params.vial_radius:end]) =  0;
+    exp_decay = exp(w.*params.resin_abs_coeff);   % also could be exp(w./(params.resin_abs_coeff)^-1)) which is exp(w./(params.resin_penetration_depth))
     
     expProjContrib = interp2(x,y,exp_decay,t,t_perp,'linear');
     
@@ -74,8 +74,9 @@ for i = 1:length(params.angles)
     att_table(:,:,i) = expProjContribNN;
     
 
-%     figure(1)
-%     imagesc(att_table(:,:,i))
-%     axis square   
+    figure(1)
+    imagesc(att_table(:,:,i))
+    axis square
+    
     
 end

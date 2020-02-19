@@ -46,7 +46,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function [opt_projections,error,thresholds] = optimize_projections(params,initial_projections,target,target_care_area)
+function [opt_projections,opt_reconstruction,error,thresholds] = optimize_projections(params,initial_projections,target,target_care_area)
 
 if ~isfield(params,'verbose')
     params.verbose = 0;
@@ -95,12 +95,30 @@ for curr_iter = 1:params.max_iterations
     
 %     [projections_power,~] = find_scale(opt_projections); % maps the current optimized projections to 8-bit numbers with the calibration curve of the projector
     
-    % Backproject with the current realistic 8-bit projections so that when
-    % calculating the error the comparison is between the target and a
-    % tangible reconstruction
-    for z = 1:nZ
-        curr_reconstruction(:,:,z) = iradon(opt_projections(:,:,z), params.angles, 'none',nX);
-    end
+    % Backproject the intensity maps and reconstruct
+    if params.resin_abs_coeff ~= 0
+        if params.parallel
+            parfor z = 1:nZ
+                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z), size(target));
+            end             
+        else
+            for z = 1:nZ
+                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z), size(target));
+            end     
+        end % end if parallel
+    else 
+        if params.parallel
+            parfor z = 1:nZ
+                curr_reconstruction(:,:,z) = iradon(opt_projections(:,:,z), params.angles, 'none',nX);
+            end        
+        else
+            for z = 1:nZ
+                curr_reconstruction(:,:,z) = iradon(opt_projections(:,:,z), params.angles, 'none',nX);
+            end
+        end % end if parallel
+     end % end params.resin_abs_coeff
+    
+    
     curr_reconstruction = curr_reconstruction/sum(curr_reconstruction(:))*sum(target(:));
 
     curr_threshold = find_threshold(curr_reconstruction,target_voxel_count);
@@ -218,6 +236,9 @@ for curr_iter = 1:params.max_iterations
     end
     
 end
+
+% Output of the final optimized reconstruction dose profile
+opt_reconstruction = curr_reconstruction;
 
 [opt_projections,~] = find_scale(opt_projections);
 

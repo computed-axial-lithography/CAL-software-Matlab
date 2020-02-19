@@ -48,21 +48,27 @@ else
     
     
     
-    for ii_theta = 1:nTheta
-%         axes(optimized_projections_axes);
-        
-        imagesc(squeeze(projections(:,ii_theta,:))')
-       
-        colormap inferno
-        title_string = sprintf('Optimized Projections\n\\theta = %2.0f°', params.angles(ii_theta));
-        title(title_string)
-        axis equal
-        axis off
-        pause(0.02);
-    end
-    
+    projections = flip(projections,3);
     
     figure
     colormap inferno
     imshow3D(permute(projections,[3,1,2]),[],1);
+    
+    
+    
+    
+% Deprecated routine for showing projections  
+%     for ii_theta = 1:nTheta
+% %         axes(optimized_projections_axes);
+%         
+%         imagesc(squeeze(projections(:,ii_theta,:))')
+%        
+%         colormap inferno
+%         title_string = sprintf('Optimized Projections\n\\theta = %2.0f°', params.angles(ii_theta));
+%         title(title_string)
+%         axis equal
+%         axis off
+%         pause(0.02);
+%     end
+    
 end

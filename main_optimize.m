@@ -23,6 +23,7 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %% Clean workspace
 clc
 clearvars
+clear exp_iradon
 close all
 
 %% Input parameters
@@ -31,14 +32,21 @@ close all
 params = struct;
 params.verbose = 1; % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'pcshow'; % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'Radial_circum_vert.stl';
+params.stl_filename = 'JET.stl';
 % params.target_3D ; % use this to directly define the 3D target matrix
-params.resolution = 150; % number of voxels in the dimension of minimum length
-params.angles = 0:1:179; % vector of real angles of projection; should be [0-180 deg]
+params.resolution = 80; % number of voxels in the dimension of minimum length
+params.angles = 0:2:358; % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0; % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 
+
+% Physical setup parameters (NOTE: if resin_abs_coeff is set angles should
+% go from [0-360 deg]
+params.voxel_size = 0.05; % side length of cubic voxel in mm
+params.vial_radius = 10; % radius of resin container in mm
+params.resin_abs_coeff = 0; % absorption coefficient of resin at projector's center wavelength in 1/mm
+
 % Optimization parameters
-params.learningRate = 0.005; % Relaxation parameter: how far along do we move in the Newton iteration
+params.learningRate = 0.009; % Relaxation parameter: how far along do we move in the Newton iteration
 params.Rho = 0.01; % Robustness parameter
 params.Theta = 0.2; % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
 params.Beta = 0.85; % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
@@ -53,7 +61,7 @@ params.max_iterations = 15;
 
 projections = initialize_projections(params,target); % create initial guess of projections
 
-[optimized_projections,error,thresholds] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
+[optimized_projections,optimized_reconstruction,error,thresholds] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
 
 show_projections(params,optimized_projections) % display projections
 

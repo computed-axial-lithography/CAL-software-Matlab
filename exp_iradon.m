@@ -1,10 +1,8 @@
-function [recon] = exp_iradon(params,projections,expContrib,domain_size)
+function [recon] = exp_iradon(params,projections,domain_size)
 % INPUTS:   params       =  struct, contains all parameters specific to the
 %                           process including vial radius, pentration depth,
 %                           interpolation method
 %           projections  =  matrix, projections from radon transform
-%           expContrib   =  matrix, lookup table with contribution of
-%                           attenuation to backprojection
 %           domain_size  =  vector, size of the reconstruction/target space
 %
 % OUTPUTS:  recon        =  matrix, reconstruction with size of domain_size
@@ -17,6 +15,10 @@ function [recon] = exp_iradon(params,projections,expContrib,domain_size)
 %      Imaging", IEEE Press 1988.
 
 
+persistent exp_contrib_LU
+if isempty(exp_contrib_LU)
+    exp_contrib_LU = gen_att_table(params,domain_size);
+end
 
 
 p = projections;
@@ -45,28 +47,28 @@ if size(p,1) < imgDiag
     ctrIdx = ctrIdx+ceil(rz/2);
 end
 
-% Backprojection - vectorized in (x,y), looping over theta
+% Backprojection - vectorized in (x,y), looping over angles
        
 
 % interp_method = sprintf('*%s',params.interp_method); % Add asterisk to assert
                                        % even-spacing of taxis
 
 % Generate trignometric tables
-costheta = cosd(params.theta);
-sintheta = sind(params.theta);
+costheta = cosd(params.angles);
+sintheta = sind(params.angles);
 
 % Allocate memory for the image
 recon = zeros(N,'like',p);
 
-for i=1:length(params.theta)
+for i=1:length(params.angles)
     proj = p(:,i);
     taxis = (1:size(p,1)) - ctrIdx;
     t = x.*costheta(i) + y.*sintheta(i);
 
-    projContrib = interp1(taxis,proj,t(:),params.interp_method);
-    recon = recon + expContrib(:,:,i).*reshape(projContrib,N,N);
+    projContrib = interp1(taxis,proj,t(:),'linear');
+    recon = recon + exp_contrib_LU(:,:,i).*reshape(projContrib,N,N);
 
-%     figure(9)
+
 %     imagesc(recon)
 %     colormap jet
 %     daspect([1 1 1])
@@ -75,5 +77,14 @@ for i=1:length(params.theta)
 
 end
 
+recon(isnan(recon)) = 0;
 
-recon = recon*pi/(2*length(params.theta));
+
+% figure(9)
+% imagesc(recon)
+% colormap jet
+% daspect([1 1 1])
+% pause(0.01)
+
+
+recon = recon*pi/(2*length(params.angles));

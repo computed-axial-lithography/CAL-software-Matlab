@@ -1,10 +1,12 @@
 %{
-Function that displays projections
+Function that displays cumulative dose in slices
 
 INPUTS:
-  projections = matrix, if 3D (nR x nTheta x nZ) the display will be
-  sequential; if 2D (nR x nTheta) the display will be in sinogram form
-  params.angles = vector, real projection angles in degrees
+    params.angles   =   vector, real projection angles in degrees  
+    cumulative_dose =   matrix, if 3D (nR x nTheta x nZ) the display will be
+                        sequential; if 2D (nR x nTheta) the display will be in sinogram form
+    intensity_range =   vector, [LOW HIGH] brightness values of projected
+                        images
 
 OUTPUTS:
   none
@@ -29,46 +31,37 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function show_projections(params,projections)
+function show_dose_slices(cumulative_dose,intensity_range)
+
+if nargin < 2
+    intensity_range = NaN;
+end
 
 % add path containing files for inferno colormap
 addpath('inferno_bin');
 addpath('imshow_3D_bin');
 
 pause(0.5)
-if numel(size(projections)) == 2
-    subplot(2,4,4)
-    imagesc(projections)
+
+
+if numel(size(cumulative_dose)) == 2
+    figure
+    imagesc(cumulative_dose)
     colormap inferno
-    title('Optimized Sinogram')
+    title('Cumulative Dose')
     pause(0.02);
 else
-    optimized_projections_axes = figure;
-    [~, nTheta, ~] = size(projections);
     
-    
-    
+    if isnan(intensity_range)
+      
+        figure
+        colormap inferno
+        imshow3D(cumulative_dose,[],1);
+    else
+        
+        figure
+        colormap inferno
+        imshow3D(cumulative_dose,intensity_range,1);    
+    end
 
-    
-    figure
-    colormap inferno
-    imshow3D(permute(projections,[3,1,2]),[],1);
-    
-    
-    
-    
-% Deprecated routine for showing projections  
-%     for ii_theta = 1:nTheta
-% %         axes(optimized_projections_axes);
-%         
-%         imagesc(squeeze(projections(:,ii_theta,:))')
-%        
-%         colormap inferno
-%         title_string = sprintf('Optimized Projections\n\\theta = %2.0f°', params.angles(ii_theta));
-%         title(title_string)
-%         axis equal
-%         axis off
-%         pause(0.02);
-%     end
-    
 end

@@ -78,7 +78,7 @@ elseif isfield(params,'target_3D')
     
 elseif isfield(params,'stl_filename')
     if params.verbose
-        fprintf('Beginning voxelization of target\n');
+        fprintf('Beginning preparation of target\n');
         tic;
     end
 
@@ -184,7 +184,7 @@ elseif isfield(params,'stl_filename')
             axis vis3d
             title('Voxelized Target')
         elseif strcmp(params.vol_viewer,'pcshow')
-            [curr_voxel_count,coord_above_threshold] = get_voxel_count(target);
+            [~,coord_above_threshold] = get_voxel_count(target);
             
             pcshow(coord_above_threshold);
             axis vis3d

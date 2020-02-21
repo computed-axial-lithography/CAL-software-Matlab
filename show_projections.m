@@ -2,9 +2,10 @@
 Function that displays projections
 
 INPUTS:
-  projections = matrix, if 3D (nR x nTheta x nZ) the display will be
-  sequential; if 2D (nR x nTheta) the display will be in sinogram form
-  params.angles = vector, real projection angles in degrees
+    projections     =   matrix, if 3D (nR x nTheta x nZ) the display will be
+                        sequential; if 2D (nR x nTheta) the display will be in sinogram form
+    intensity_range =   vector, [LOW HIGH] brightness values of projected
+                        images
 
 OUTPUTS:
   none
@@ -29,7 +30,11 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function show_projections(params,projections)
+function show_projections(projections,intensity_range)
+
+if nargin < 3
+    intensity_range = NaN;
+end
 
 % add path containing files for inferno colormap
 addpath('inferno_bin');
@@ -43,19 +48,20 @@ if numel(size(projections)) == 2
     title('Optimized Sinogram')
     pause(0.02);
 else
-    optimized_projections_axes = figure;
-    [~, nTheta, ~] = size(projections);
     
-    
-    
-    projections = flip(projections,3);
-    
-    figure
-    colormap inferno
-    imshow3D(permute(projections,[3,1,2]),[],1);
-    
-    
-    
+    if isnan(intensity_range)
+      
+        projections = flip(projections,3);
+        figure
+        colormap inferno
+        imshow3D(permute(projections,[3,1,2]),[],1);
+    else
+        
+        projections = flip(projections,3);
+        figure
+        colormap inferno
+        imshow3D(permute(projections,[3,1,2]),intensity_range,1);    
+    end
     
 % Deprecated routine for showing projections  
 %     for ii_theta = 1:nTheta

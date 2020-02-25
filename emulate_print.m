@@ -31,71 +31,75 @@ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRU
 IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
-function emulate_print(projections,num_thresholds)
+function emulate_print(params,projections)
 
 if length(size(projections)) == 3
-    [nX,nTheta,nZ] = size(projections);
-    cumulative_dose = zeros(nX, nX, nZ);
+    cumulative_dose = zeros(params.domain_size);
 elseif length(size(projections)) == 2
-    [nX,nTheta] = size(projections);
-    cumulative_dose = zeros(nX,nX);
+    [nR,nTheta] = size(projections);
+    cumulative_dose = zeros(nR,nR);
 end
-    
-if length(size(projections)) == 3
-    for z=1:nZ
-        cumulative_dose(:,:,z) = imresize(iradon(projections(:,:,z), linspace(0,180,nTheta), 'none'),[nX nX]);
 
+
+
+
+if length(size(projections)) == 3
+    for z=1:size(cumulative_dose,3)
+        cumulative_dose(:,:,z) = exp_iradon(params,projections(:,:,z));
     end
+    
+    
+    
+    
     volumeViewer(cumulative_dose)
     
 elseif length(size(projections)) == 2
-    cumulative_dose = imresize(iradon(projections, linspace(0,180,nTheta),'none'),[nX nX]);
+    cumulative_dose = exp_iradon(params,projections);
 end
 
 
-
-if length(size(projections)) == 3
-    thresholds = linspace(max(max(max(cumulative_dose))),min(min(min(cumulative_dose))),num_thresholds);
-    
-    dummy_space = ones(nX,nX,nZ);
-    dummy_space(1:round(nX/2),1:round(nX/2),:) = 0;
-    cross_section_mask = repmat(dummy_space(:),[1,3]);
-    
-    colors = jet;
-    colors_threshold = interp1(linspace(0,1,length(colors)),colors,linspace(0,1,num_thresholds));
-    colors_matrix = zeros([nX*nX*nZ,3],'single');
-    figure
-    for threshold_i = 1:num_thresholds
-        [num_voxels,coordinates] = get_voxel_count(cumulative_dose,thresholds(threshold_i));
-        curr_coordinates = any(coordinates,2);
-
-        if threshold_i == 1
-
-            colors_matrix(curr_coordinates,:) = repmat(colors_threshold(threshold_i,:),[num_voxels,1]);
-            pcshow(coordinates.*cross_section_mask,colors_matrix);
-            prev_coordinates = curr_coordinates;
-            prev_num_voxels = num_voxels;
-
-        else     
-            curr_num_voxels = num_voxels - prev_num_voxels;
-            curr_coordinates(curr_coordinates&prev_coordinates) = 0;
-            colors_matrix(curr_coordinates,:) = repmat(colors_threshold(threshold_i,:),[curr_num_voxels,1]);
-            pcshow(coordinates.*cross_section_mask,colors_matrix);
-            prev_coordinates = coordinates;       
-            prev_num_voxels = num_voxels;
-        end
-
-        title(sprintf('Dose (a.u.) = %d',threshold_i));
-        axis equal tight;
-        xlim([0 nX])
-        ylim([0 nX])
-        zlim([0 nZ])
-        colormap jet;
-        pause(0.02);
-    end
-end
-
-end
-% elseif length(size(projections)) == 2
+% 
+% if length(size(projections)) == 3
+%     thresholds = linspace(max(max(max(cumulative_dose))),min(min(min(cumulative_dose))),num_thresholds);
 %     
+%     dummy_space = ones(nR,nR,nZ);
+%     dummy_space(1:round(nR/2),1:round(nR/2),:) = 0;
+%     cross_section_mask = repmat(dummy_space(:),[1,3]);
+%     
+%     colors = jet;
+%     colors_threshold = interp1(linspace(0,1,length(colors)),colors,linspace(0,1,num_thresholds));
+%     colors_matrix = zeros([nR*nR*nZ,3],'single');
+%     figure
+%     for threshold_i = 1:num_thresholds
+%         [num_voxels,coordinates] = get_voxel_count(cumulative_dose,thresholds(threshold_i));
+%         curr_coordinates = any(coordinates,2);
+% 
+%         if threshold_i == 1
+% 
+%             colors_matrix(curr_coordinates,:) = repmat(colors_threshold(threshold_i,:),[num_voxels,1]);
+%             pcshow(coordinates.*cross_section_mask,colors_matrix);
+%             prev_coordinates = curr_coordinates;
+%             prev_num_voxels = num_voxels;
+% 
+%         else     
+%             curr_num_voxels = num_voxels - prev_num_voxels;
+%             curr_coordinates(curr_coordinates&prev_coordinates) = 0;
+%             colors_matrix(curr_coordinates,:) = repmat(colors_threshold(threshold_i,:),[curr_num_voxels,1]);
+%             pcshow(coordinates.*cross_section_mask,colors_matrix);
+%             prev_coordinates = coordinates;       
+%             prev_num_voxels = num_voxels;
+%         end
+% 
+%         title(sprintf('Dose (a.u.) = %d',threshold_i));
+%         axis equal tight;
+%         xlim([0 nR])
+%         ylim([0 nR])
+%         zlim([0 nZ])
+%         colormap jet;
+%         pause(0.02);
+%     end
+% end
+
+end
+
     

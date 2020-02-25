@@ -7,23 +7,23 @@ a 2D or 3D matrix, the target is prepared using the same post-processing of
 applied to a voxelized STL target.
 
 INPUTS:
-  params.stl_filename = string, file name of the STL in the working directory
-  params.target_2D = matrix, 2D matrix containing the input target slice
-  params.target_3D = matrix, 3D matrix of the target 
-  params.resolution = scalar, # of voxels for the output target matrix to have
-  in the minimum x,y,or z dimension of the design STL file
-  params.verbose = 1 or 0, activates or deactivates visualization of the
-  voxelized STL and additional information display
+    params.stl_filename     =   string, file name of the STL in the working directory
+    params.target_2D        =   matrix, 2D matrix containing the input target slice
+    params.target_3D        =   matrix, 3D matrix of the target 
+    params.resolution       =   scalar, # of voxels for the output target matrix to have
+                                in the minimum x,y,or z dimension of the design STL file
+    params.verbose          =   1 or 0, activates or deactivates visualization of the
+                                voxelized STL and additional information display
 
 OUTPUTS:
-  target = matrix, 2D matrix of input target or 3D matrix of voxelized STL
-  target_care_area = matrix, defines the dilated version of the target 
+    target                  =   matrix, 2D matrix of input target or 3D matrix of voxelized STL
+    target_care_area        =   matrix, defines the dilated version of the target 
 
 Created by: Indrasen Bhattacharya 2017-05-07
 Modified by: Joseph Toombs 08/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -40,7 +40,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function [target,target_care_area] = voxelize_target(params)
+function [target,target_care_area,domain_size] = voxelize_target(params)
 
 if ~isfield(params,'verbose')
     params.verbose = 0;
@@ -161,8 +161,10 @@ elseif isfield(params,'stl_filename')
         nR = nR+1;
     end
     target = padarray(target, [0.5*(nR-nX) 0.5*(nR-nY)], 0, 'both'); % Pad target with zeros
-
-    % Care area dilation with a shperical structuring element
+    
+    domain_size = size(target);
+    
+    % Care area dilation with a spherical structuring element
     se = strel('sphere',2);
     target_care_area = imdilate(target,se);
 
@@ -194,7 +196,9 @@ elseif isfield(params,'stl_filename')
         end
         pause(0.1)
         runtime = toc;
-        fprintf('Finished preparation of target %.2f seconds\n\n',runtime);
+        fprintf('Finished preparation of target %.2f seconds\n',runtime);
+        fprintf('Target is [X,Y,Z]: %3.2f x %3.2f x %3.2f mm\n\n',nX*params.voxel_size,nY*params.voxel_size,nZ*params.voxel_size);
+        
     end
 
 else

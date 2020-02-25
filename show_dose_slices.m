@@ -2,11 +2,9 @@
 Function that displays cumulative dose in slices
 
 INPUTS:
-    params.angles   =   vector, real projection angles in degrees  
     cumulative_dose =   matrix, if 3D (nR x nTheta x nZ) the display will be
                         sequential; if 2D (nR x nTheta) the display will be in sinogram form
-    intensity_range =   vector, [LOW HIGH] brightness values of projected
-                        images
+    intensity_range =   vector, [LOW HIGH] brightness values of dose profile images
 
 OUTPUTS:
   none
@@ -14,7 +12,7 @@ OUTPUTS:
 Created by: Joseph Toombs 09/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

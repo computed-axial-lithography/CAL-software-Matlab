@@ -56,7 +56,7 @@ Screen(SLM.window,'Flip');
 window_ptrs = zeros(1,total_frames); % vector for storing the pointers to each image
 for i=1:total_frames
     if mod(i,50) == 0
-        display(['\nMounting image:', num2str(i)]);
+        display(['Mounting image:', num2str(i)]);
     end
     window_ptrs(i)=Screen('OpenOffscreenWindow', SLM.window, 0); % mount sll images to an offscreen window
     Screen('PutImage',window_ptrs(i), image_stack{i});

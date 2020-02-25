@@ -126,7 +126,7 @@ if isa(projections,'double') || isa(projections,'single') || isa(projections,'ui
 
         curr_image = zeros(params.ht_screen,params.wd_screen);
         curr_image(img_rows,img_cols) = flipud(squeeze(projections_processed(:,:,i-N_projections)))';
-        
+
 
         % Rotate image before appending to image_stack
         if params.rotate_projections ~= 0
@@ -143,7 +143,6 @@ if isa(projections,'double') || isa(projections,'single') || isa(projections,'ui
             pause(0.01)
         end
     end
-    
     
 %%%%%%%%%%% If input projections are already in cell image stack form %%%%%%%%%%%
 elseif isa(projections,'cell')
@@ -202,6 +201,8 @@ elseif isa(projections,'cell')
             pause(0.02)
         end
     end
+end
+
 end
 
 

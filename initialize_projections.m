@@ -4,21 +4,21 @@ target. First, performs Radon transform at each layer in the target, ramp filter
 truncate negatives, and combine projections into matrix of dimensions: nR x nTheta x nZ
 
 INPUTS:
-  target = matrix, 2D or 3D matrix of the design target
-  params.angles = vector, angles in degrees at which the Radon transform should
-  be calculated
-  params.verbose = 1 or 0, activates or deactivates visualization of the
-  projections and additional information display
+    target          =   matrix, 2D or 3D matrix of the design target
+    params.angles   =   vector, angles in degrees at which the Radon transform should
+                        be calculated
+    params.verbose  =   1 or 0, activates or deactivates visualization of the
+                        projections and additional information display
 
 OUTPUTS:
-  projections = matrix, 2D matrix if target is 2D, dimensions: nR x
-  nTheta; 3D matrix if target is 3D, dimensions: nR x nTheta x nZ
+    projections     =   matrix, 2D matrix if target is 2D, dimensions: nR x nTheta;
+                        3D matrix if target is 3D, dimensions: nR x nTheta x nZ
 
 Created by: Indrasen Bhattacharya 2017-05-07
 Modified by: Joseph Toombs 08/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -118,10 +118,12 @@ else
         for z = 1:nZ
             [projection_z_filt,H] = filter_projections(radon(target(:,:,z),params.angles),'ram-lak',1);
             
-%             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % truncate negatives
+%             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % offset negatives
 %             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
-            
-            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negatives
+%             projection_z_filt = 0.5*((projection_z_filt)+abs(min(projection_z_filt))) + 0.5*(double(projection_z_filt > 0).*(projection_z_filt));
+%             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0); % apply mask
+
+            projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negativeS
             projections(:,:,z) = projection_z_filt;
         end 
     end
@@ -129,17 +131,17 @@ end
 
 
 if params.verbose
-
-    if numel(size(target)) == 2
-        figure
-        imagesc(projections)
-        title('Initialized projections')
-        colormap inferno
-    else
-
-        show_projections(projections)
-        title('Initialized projections')
-        pause(0.01)
+% 
+%     if numel(size(target)) == 2
+%         figure
+%         imagesc(projections)
+%         title('Initialized projections')
+%         colormap inferno
+%     else
+% 
+%         show_projections(projections)
+%         title('Initialized projections')
+%         pause(0.01)
 %         Deprecated 
 %         subplot(4,1,1)
 %         imagesc(squeeze(projections(:,1,:))')
@@ -172,10 +174,12 @@ if params.verbose
 %         title(str)
 %         axis off
 %         axis equal
-    end
-    pause(0.5);
-    runtime = toc;
-    fprintf('Finished initialization of projections in %.2f seconds\n\n',runtime);
-end
-end
+%     end
+pause(0.5);
+runtime = toc;
+fprintf('Finished initialization of projections in %.2f seconds\n\n',runtime);
 
+
+end % if params.verbose
+
+end % function

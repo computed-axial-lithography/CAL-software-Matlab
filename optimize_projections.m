@@ -99,11 +99,11 @@ for curr_iter = 1:params.max_iterations
     if params.resin_abs_coeff ~= 0
         if params.parallel
             parfor z = 1:nZ
-                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z), size(target));
+                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z));
             end             
         else
             for z = 1:nZ
-                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z), size(target));
+                curr_reconstruction(:,:,z) = exp_iradon(params, opt_projections(:,:,z));
             end     
         end % end if parallel
     else 

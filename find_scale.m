@@ -4,19 +4,19 @@ distribution that maximizes the total output power, so that print time can
 be reduced
 
 INPUT:
-  projections = matrix, for 2D target projections size is nR x nTheta; 
-  for 3D target projections size is nR x nTheta x nZ
+    projections     =   matrix, for 2D target projections size is nR x nTheta; 
+                        for 3D target projections size is nR x nTheta x nZ
 
 OUTPUT:
-  projPower = matrix, projections mapped to the calibration curve of real
-  intensities of the projector
-  scale = scalar, value of the scaling factor used
+    projPower       =   matrix, projections mapped to the calibration curve of real
+                        intensities of the projector
+    scale           =   scalar, value of the scaling factor used
 
 Created by: Indrasen 2017-06-13
 Modified by: Joseph Toombs 08/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -53,6 +53,6 @@ projections_power = projectorMap(proj_actual); % maps projActual to the calibrat
 function y = projectorMap(x)
     load('intensity_sorted.mat','intensity_sorted');  
     maxInt = max(intensity_sorted);
-    y = 256*(intensity_sorted(x)-min(intensity_sorted))/maxInt;
+    y = 255*(intensity_sorted(x)-min(intensity_sorted))/maxInt;
 end
 end

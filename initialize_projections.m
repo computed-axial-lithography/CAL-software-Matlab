@@ -75,9 +75,7 @@ end
 nTheta = length(params.angles);
 nR = size(radon(zeros(nX,nX),params.angles),1);
 % nR = 2*ceil(nX/sqrt(2))+1;
-% if (mod(nR,2)~=0)
-%     nR = nR+1;
-% end
+
 
 
 % Preallocate projection matrix
@@ -88,12 +86,8 @@ else
 end
 
 
-% [~,projections_filtered,filter_vector] = iradon_filter(projections(:,:,1),params.angles,'Ram-Lak');
-% filter_matrix = repmat(filter_vector,[1,nTheta]);
-
 rampK = abs(linspace(-1,1,nR)).'; % Create ramp filter vector in Fourier space
 rampK_matrix = repmat(rampK,[1,nTheta]); % Repeat vector for each angle in projections
-
 
 % 2D target and reconstructions
 if numel(size(target)) == 2

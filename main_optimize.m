@@ -32,10 +32,10 @@ close all
 params = struct;
 params.verbose = 1;                     % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'pcshow';           % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'Radial_circum_vert.stl';        % 
+params.stl_filename = 'Cylinder.stl';        % 
 % params.target_3D ;                    % use this to directly define the 3D target matrix
-params.resolution = 100;                 % number of voxels in the dimension of minimum length
-params.angles = 0:2:178;                % vector of real angles of projection; should be [0-180 deg]
+params.resolution = 30;                 % number of voxels in the dimension of minimum length
+params.angles = 0:2:358;                % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0;                    % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 
 
@@ -43,7 +43,7 @@ params.parallel = 0;                    % 1 to activate parallel computing; 0 to
 % go from [0-360 deg]
 params.voxel_size = 0.05;               % side length of cubic voxel in mm
 params.vial_radius = 10;                % radius of resin container in mm
-params.resin_abs_coeff = 0;             % absorption coefficient of resin at projector's center wavelength in 1/mm
+params.resin_abs_coeff = 0.2;             % absorption coefficient of resin at projector's center wavelength in 1/mm
 params.light_intensity = 10;             % intensity of light source at the location of the vial's center axis in mW/cm^2
 
 % Optimization parameters
@@ -54,7 +54,7 @@ params.Beta = 0.85;                     % Memory Effect - how much of the previo
 params.sigmoid = 10;                    % Sharpness of target dose boundary; typical values range from [0.1 - ~30-50]
 params.sigma_init = 1;
 params.sigma_end = 1.0;
-params.max_iterations = 50;
+params.max_iterations = 5;
 % params.tol;                           % use this to set the error tolerance of optimization
 
 %% Optimization procedure

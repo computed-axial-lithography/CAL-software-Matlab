@@ -78,9 +78,8 @@ if size(p,1) < imgDiag
     ctrIdx = ctrIdx+ceil(rz/2);
 end
 
-% Backprojection - vectorized in (x,y), looping over angles
 
-% interp_method = sprintf('*%s',params.interp_method); 
+% Backprojection - vectorized in (x,y), looping over angles
 
 % Generate trignometric tables
 costheta = cosd(params.angles);
@@ -109,12 +108,15 @@ for i=1:length(params.angles)
     t = x.*costheta(i) + y.*sintheta(i);
 
     proj_contrib = reshape(interp1(taxis,proj,t(:),'linear'),N,N);
-        
-    recon = recon + (exp_contrib_LU(:,:,i).*proj_contrib);
+    curr_dose = exp_contrib_LU(:,:,i).*proj_contrib;
+    recon = recon + curr_dose;
     
 
 %%%%%%%%%%%%%%%%%%%%
-    I(:,i) = exp_contrib_LU(N/2,round(N.*radius./2)+N/2,i);
+    I(:,i) = curr_dose(N/2,round(N.*radius./2)+N/2);
+%     figure(100)
+%     imagesc(curr_dose)
+%     pause(0.01)
 %%%%%%%%%%%%%%%%%%%%%%
 
 end
@@ -123,9 +125,9 @@ end
 recon(isnan(recon)) = 0;
 
 
-% figure(90)
-% plot(repmat(params.angles,[4,1])',I')
-% pause(0.1)
+figure(90)
+plot(repmat(params.angles,[4,1])',I')
+pause(0.1)
 
 
 

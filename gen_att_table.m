@@ -39,6 +39,11 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function att_table = gen_att_table(params,occlusion)
 
+if nargin < 3
+    occlusion = NaN;
+end
+
+
 % Preallocate 3D matrix for lookup table
 att_table = single(zeros([params.domain_size(1),params.domain_size(2),length(params.angles)]));
 N = params.domain_size(1);
@@ -99,7 +104,7 @@ for i = 1:length(params.angles)
 %     figure
 %     imagesc(expProjContribNN)    
     
-%     if exist('occlusion','var')
+%     if ~isnan(occlusion)
 %         occlusion_line = ones(N,N).*((x == 0) & (y >= 0));
 %         occlusion_line = imrotate(occlusion_line,params.angles(i),'nearest','crop');
 %         shadow = conv2(occlusion_line,occlusion,'same');

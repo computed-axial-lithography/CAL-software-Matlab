@@ -55,17 +55,11 @@ radial_monomer_conc = zeros(params.domain_size,'single');
 monomer_conc = ones(params.domain_size,'single');
 polymer_conc = zeros(params.domain_size,'single');
 
-
-k_I = 
-k_T = 1e7;
-k_T_oxy = 5e8;
-k_P = 1e3;
-
 dt = 12/length(params.angles);
 
-for i = 1:length(params.angles)
+for i = 1:size(projections,2)
     for z = 1:size(intensity,3)
-        intensity(:,:,z) = exp_iradon(params,projections(:,:,z),i);
+        intensity(:,:,z) = exp_iradon(params,projections(:,i,z));
     end
     
     radical_conc = radical_conc - dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
@@ -78,42 +72,19 @@ end
 
 
 
-
-
-
-
-
-
-
-
-% if length(size(projections)) == 3
-%     for z=1:size(cumulative_dose,3)
-%         cumulative_dose(:,:,z) = exp_iradon(params,projections(:,:,z));
-%     end
-% 
-%     volumeViewer(cumulative_dose)
-%     
-% elseif length(size(projections)) == 2
-%     cumulative_dose = exp_iradon(params,projections);
-% end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if length(size(projections)) == 3
+    for z=1:size(cumulative_dose,3)
+        cumulative_dose(:,:,z) = exp_iradon(params,projections(:,:,z));
+    end
+    
+    
+    
+    
+    volumeViewer(cumulative_dose)
+    
+elseif length(size(projections)) == 2
+    cumulative_dose = exp_iradon(params,projections);
+end
 
 
 % 

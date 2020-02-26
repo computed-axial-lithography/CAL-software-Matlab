@@ -7,8 +7,6 @@ INPUTS:   params       =  struct, contains all parameters specific to the
                           process including vial radius, pentration depth,
                           interpolation method
           projections  =  matrix, projections from radon transform
-          curr_angle   =  (optional) scalar, index of the current angle
-                          within the params.angles vector
 
 OUTPUTS:  recon        =  matrix, reconstruction with size of
                           params.domain_size
@@ -104,15 +102,19 @@ I = zeros(length(radius),length(params.angles));
 %%%%%%%%%%%%
 
 if ~isnan(curr_angle)
-    
     proj = p(:,curr_angle);
 
+    %%%%%% For physical units %%%%%%%
+%     proj = p(:,i)./max(p,[],'all')*params.light_intensity;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
     taxis = (1:size(p,1)) - ctrIdx;
-    t = x.*costheta(curr_angle) + y.*sintheta(curr_angle);
+    t = x.*costheta(i) + y.*sintheta(i);
 
     proj_contrib = reshape(interp1(taxis,proj,t(:),'linear'),N,N);
-    curr_dose = exp_contrib_LU(:,:,curr_angle).*proj_contrib;
-    recon = curr_dose;
+    curr_dose = exp_contrib_LU(:,:,i).*proj_contrib;
+    recon = recon + curr_dose;
     
 else 
     for i=1:length(params.angles)
@@ -145,9 +147,9 @@ end
 recon(isnan(recon)) = 0;
 
 
-% figure(90)
-% plot(repmat(params.angles,[4,1])',I')
-% pause(0.1)
+figure(90)
+plot(repmat(params.angles,[4,1])',I')
+pause(0.1)
 
 
 

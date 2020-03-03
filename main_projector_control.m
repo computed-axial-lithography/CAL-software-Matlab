@@ -20,15 +20,16 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %% Main projector-control code
 % Created by: Joseph Toombs 09/2019
 
-clearvars -except optimized_projections
+clearvars -except optimized_projections projection_set
+addpath('motor_control_bin')
 
 %% Options
-params.wd_screen = 1920; % width in pixels of the projector's DMD
-params.ht_screen = 1080; % height in pixels of the projector's DMD
-params.scale_factor = 1; % projection image XY scaling factor 
-params.invert_vertical = 0; % invert vertical orientation of projection
+params.wd_screen = 2716; % width in pixels of the projector's DMD
+params.ht_screen = 1528; % height in pixels of the projector's DMD
+params.scale_factor = 2; % projection image XY scaling factor 
+params.invert_vertical = 1; % invert vertical orientation of projection
 params.invert_horizontal = 0; % invert horizontal orientation of projection
-params.rotate_projections = -45; % degrees, rotate images in plane 
+params.rotate_projections = 0; % degrees, rotate images in plane 
 params.ht_offset = 0; % height offset of projection within the bounds of the projected image
 params.wd_offset = 0; % width offset of projection within the bounds of the projected image
 params.array_num = 0;
@@ -36,7 +37,8 @@ params.array_shift = 0;
 params.intensity_scale_factor = 1; % intensity scaling factor
 
 params.max_angle = 360; % max angle of the projection set
-params.rot_velocity = 12; % stage rotational velocity degrees/s
+params.rot_velocity = 24; % stage rotational velocity degrees/s
+params.rot_acceleration = 24; % stage rotational velocity degrees/s
 params.n_rotations = 100000; % maximum number of rotations to complete in projection; set arbitrarily large for infinite or otherwise unknown maximum rotations
 params.time_project = 100000; % maximum time of projection; set arbitrarily high for infinite or otherwise unknown projection duration
 params.verbose = 1;
@@ -53,7 +55,7 @@ if ~exist('optimized_projections','var') && ~exist('projection_set','var')
     
     if select_data 
         disp('Select projection set file:')
-        [proj_file, path] = uigetfile('*.mat');
+        [proj_file, path] = uigetfile({'*.mat','Projection set (*.mat)',});
         addpath(path);
         import_struct = load(proj_file);
         field_names = fieldnames(import_struct);
@@ -63,7 +65,7 @@ if ~exist('optimized_projections','var') && ~exist('projection_set','var')
 
     else
         disp('Select optimized projection matrix file:')
-        [opt_file, path] = uigetfile('*.mat');
+        [opt_file, path] = uigetfile({'*.mat','Optimized matrix (*.mat)',});
         addpath(path);
         import_struct = load(opt_file);
         field_names = fieldnames(import_struct);
@@ -86,5 +88,7 @@ end
 
 %% Continue to projection of images
 if input('Continue to projection?    ')
+    
     [final_projection_time] = project(params,projection_set);
+     
 end

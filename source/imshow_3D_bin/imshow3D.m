@@ -70,7 +70,7 @@ sno = size(Img,3);  % number of slices
 S = round(sno/2);
 
 PlayFlag = false;   % Play flag, playing when it is 'True'
-Tinterv = 100;
+Tinterv = 50;
 
 global InitialCoord;
 

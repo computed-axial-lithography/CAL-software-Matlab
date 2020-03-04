@@ -55,10 +55,10 @@ params.learningRate = 0.01;            % Relaxation parameter: how far along do 
 params.Rho = 0.1;                      % Robustness parameter
 params.Theta = 0.2;                    % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
 params.Beta = 0.0;                     % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
-params.sigmoid = 150;                    % Sharpness of target dose boundary; typical values range from [0.1 - ~30-50]
+params.sigmoid = 150;                    % Sharpness of target dose boundary; typical values range from [50-200]
 params.sigma_init = 0.2;
 params.sigma_end = 0.2;
-params.max_iterations = 25;
+params.max_iterations = 25;             % number of iterations in the optimization
 % params.tol;                           % use this to set the error tolerance of optimization
 
 %% Optimization procedure

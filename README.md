@@ -28,11 +28,11 @@ show_dose_slices.m
 
 ### Steps of main_optimize.m:
 1. **Parameter definition:** All system and optimization parameters are defined within the params struct.
-   - The target should be defined by assigning the name of an STL file in the directory to params.stl_filename or by directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
+   - The target should be defined by assigning the name of an STL file in the directory to params.stl_filename or by directly assigning a 2D or 3D matrix to the fields, "params.target_2D" or "params.target_3D".
    - The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. We have had good results with 30-90 iterations and learning rate of ~0.001-0.01.
 
 2. **Prepare target:** voxelize_target.m is called which handles voxelization of an STL file, if defined,
-and creation of the target_care_area which is a slightly dilated version of the target matrix. Below are examples of a prepared target using pcshow and volshow.
+and creation of the target_care_area which is a slightly dilated version of the target matrix. Below are examples of a prepared target using pcshow or volshow options of the "params.vol_viewer" parameter.
 
 <table>
   <tr>
@@ -79,10 +79,10 @@ project.m
 ### Steps of main_projector_control.m:
 1. **Parameter definition:** All system and projection parameters are defined within the params struct.
 2. **Generate projection images:** create_projection_set.m is called to convert the optimized projections matrix into a set of modified images based on the input parameters so that they can be projected.
-2. **Projection:** project.m is called to project the projection_set images at the refresh rate determined by the defined rotational velocity set in params.rot_velocity.
+2. **Projection:** project.m is called to project the projection_set images at the refresh rate determined by the defined rotational velocity set in "params.rot_velocity."
 
 ## Requirements:
-- The parfor (parallel for loop) function used in initialize_projections.m and optimize_projections is part of the Matlab Parallel Computing Toolbox (https://www.mathworks.com/help/parallel-computing/index.html). 
+- The parfor (parallel for loop) function used in initialize_projections.m and optimize_projections.m is part of the Matlab Parallel Computing Toolbox (https://www.mathworks.com/help/parallel-computing/index.html). 
 If parallel computation is desired to speed up optimization for large targets and the “params.parallel” is set to 1 to activate parallel computation this toolbox must be installed.
 
 - The pcshow function used in voxelize_target.m and optimize_projections.m is part of the Matlab Computer Vision Toolbox (https://www.mathworks.com/help/vision/index.html). 

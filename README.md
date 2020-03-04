@@ -32,8 +32,8 @@ sets the maximum number of iterations and if defined params.tol sets the error t
 for the optimization
 4. show_projections displays the optimized projections in sequence
 
-[1](docs/images/thinker_pc_show_1.png)
-[2](docs/images/thinker_vol_show_1.png)
+![1](docs/images/thinker_pc_show_1.png)
+![2](docs/images/thinker_vol_show_1.png)
 
 
 ## Projector Control

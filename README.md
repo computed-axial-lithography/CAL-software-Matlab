@@ -1,10 +1,11 @@
 # CAL-software
-This README describes how the CAL projection-generation and projector-control code should be used. 
+This README describes how the CAL projection-generation/optimization and projector-control code should be used. 
 This code has been developed in Matlab 2018b and 2019a and is compatible, to our knowledge, with 2017a and newer versions. 
 
 More details on the algorithms used in this software can be found here:  
 [Science article](https://science.sciencemag.org/content/363/6431/1075) (Paywall)  
 [Arxiv article](https://arxiv.org/pdf/1705.05893.pdf)
+
 
 
 
@@ -66,6 +67,11 @@ for the optimization.
   </tr>
  </table>
 
+### Block Diagram
+
+<p align="center">
+  <img src="docs/images/block_diagram_1.png" width="600">
+</p>
 
 ## Projector Control
 The projector control code consists of the main script and

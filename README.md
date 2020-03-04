@@ -23,10 +23,9 @@ show_dose_slices.m
 ```
 
 ### Steps of main_optimize.m:
-Define parameters - all system and optimization parameters are defined with params struct
--The target should be defined by naming an STL file with params.stl_filename or directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
--The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. 
-We have had good results with 50-90 iterations, memory of ~80-90%, and learning rate of ~0.001-0.01.
+1. **Parameter definition:** All system and optimization parameters are defined within the params struct.
+- The target should be defined by assigning the name of an STL file in the directory to params.stl_filename or by directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
+- The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. We have had good results with 30-90 iterations and learning rate of ~0.001-0.01.
 
 2. **Prepare target:** voxelize_target.m is called which handles voxelization of an STL file, if defined,
 and creation of the target_care_area which is a slightly dilated version of the target matrix. Below are examples of a prepared target using pcshow and volshow.
@@ -46,11 +45,11 @@ and creation of the target_care_area which is a slightly dilated version of the 
 3. **Initialize projections:** intialize_projections.m is called to create an initial guess of the projections to be 
 optimized. The initial guess is created with a ramp-filtered negative-truncated projection.
 
-4. **Optimize:** optimize_projections.m is called to optimize the initial projections. params.max_iterations
+4. **Optimize:** optimize_projections.m is called to optimize the initial projections and minimize the error between the target and the backprojected reconstruction of the projections. params.max_iterations
 sets the maximum number of iterations and, if defined, params.tol sets the error tolerance
 for the optimization.
 
-5. **Display:** show_projections.m and show_dose_slices.m are called to display the optimized projections in sequence and the reconstructed dose profile, respectively. Below are examples of the output sliced dose profile and optimized projections. The figures are scrollable which allows easy viewing.
+5. **Display:** show_projections.m and show_dose_slices.m are called to display the optimized projections in sequence and the reconstructed dose profile in slices, respectively. Below are examples of the output sliced dose profile and optimized projections. The figures are scrollable which allows easy slice viewing.
 
 <table>
   <tr>

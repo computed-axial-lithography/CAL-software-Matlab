@@ -2,6 +2,10 @@
 This README describes how the CAL projection-generation and projector-control code should be used. 
 This code has been developed in Matlab 2018b, and 2019a and is compatible, to our knowledge, with 2017a and newer versions. 
 
+More details on the algorithms used in this software can be found here:  
+[Science article](https://science.sciencemag.org/content/363/6431/1075) (Paywall)  
+[Arxiv article](https://arxiv.org/pdf/1705.05893.pdf)
+
 
 
 
@@ -24,8 +28,8 @@ show_dose_slices.m
 
 ### Steps of main_optimize.m:
 1. **Parameter definition:** All system and optimization parameters are defined within the params struct.
-- The target should be defined by assigning the name of an STL file in the directory to params.stl_filename or by directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
-- The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. We have had good results with 30-90 iterations and learning rate of ~0.001-0.01.
+   - The target should be defined by assigning the name of an STL file in the directory to params.stl_filename or by directly assigning a 2D or 3D matrix to the fields, params.target_2D or params.target_3D.
+   - The optimization parameters are then assigned. These will need to be tweaked to change the step size and convergence depending on the trial and error results of optimization. We have had good results with 30-90 iterations and learning rate of ~0.001-0.01.
 
 2. **Prepare target:** voxelize_target.m is called which handles voxelization of an STL file, if defined,
 and creation of the target_care_area which is a slightly dilated version of the target matrix. Below are examples of a prepared target using pcshow and volshow.
@@ -73,9 +77,9 @@ project.m
 ```
 
 ### Steps of main_projector_control.m:
-Define parameters - all system and projection parameters are defined with the params struct
-1. create_projection_set is called to convert the optimized projections into a set of modified images based on the input parameters that can be projected.
-2. project is called to project the projection_set images at the refresh rate determined by the defined rotational velocity
+1. **Parameter definition:** All system and projection parameters are defined within the params struct.
+2. **Generate projection images:** create_projection_set.m is called to convert the optimized projections matrix into a set of modified images based on the input parameters so that they can be projected.
+2. **Projection:** project.m is called to project the projection_set images at the refresh rate determined by the defined rotational velocity set in params.rot_velocity.
 
 ## Requirements:
 - The parfor (parallel for loop) function used in initialize_projections.m and optimize_projections is part of the Matlab Parallel Computing Toolbox (https://www.mathworks.com/help/parallel-computing/index.html). 

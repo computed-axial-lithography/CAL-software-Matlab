@@ -6,6 +6,8 @@ INPUTS:
                         sequential; if 2D (nR x nTheta) the display will be in sinogram form
     intensity_range =   vector, [LOW HIGH] brightness values of projected
                         images
+    figure_number   =   [Optional] scalar, number of the figure to be created
+    title_string    =   [Optional] string, title of the plot
 
 OUTPUTS:
   none
@@ -30,10 +32,18 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function show_projections(projections,intensity_range)
+function show_projections(projections,intensity_range,figure_number,title_string)
 
-if nargin < 3
-    intensity_range = NaN;
+if ~exist('intensity_range','var') || isempty(intensity_range)
+  	intensity_range = NaN;
+end
+
+if ~exist('figure_number','var') || isempty(figure_number)
+  	figure_number = NaN;
+end
+
+if ~exist('title_string','var') || isempty(title_string)
+  	title_string = NaN;
 end
 
 % add path containing files for inferno colormap
@@ -42,7 +52,11 @@ addpath('imshow_3D_bin');
 
 pause(0.5)
 if numel(size(projections)) == 2
-    subplot(2,4,4)
+    if ~isnan(figure_number)
+        figure(figure_number)
+    else
+        figure
+    end    
     imagesc(projections)
     colormap inferno
     title('Optimized Sinogram')
@@ -50,17 +64,35 @@ if numel(size(projections)) == 2
 else
     
     if isnan(intensity_range)
-      
+        
         projections = flip(projections,3);
-        figure
+        if ~isnan(figure_number)
+            figure(figure_number)
+        else
+            figure
+        end
         colormap inferno
-        imshow3D(permute(projections,[3,1,2]),[],1);
+        if isnan(title_string)
+            imshow3D(permute(projections,[3,1,2]),[],1);
+        else
+            imshow3D(permute(projections,[3,1,2]),[],1,title_string);
+        end
+            
     else
         
         projections = flip(projections,3);
-        figure
+        if ~isnan(figure_number)
+            figure(figure_number)
+        else
+            figure
+        end
         colormap inferno
-        imshow3D(permute(projections,[3,1,2]),intensity_range,1);    
+        
+        if isnan(title_string)
+            imshow3D(permute(projections,[3,1,2]),intensity_range,1);
+        else
+            imshow3D(permute(projections,[3,1,2]),intensity_range,1,title_string);
+        end
     end
     
 % Deprecated routine for showing projections  
@@ -77,4 +109,6 @@ else
 %         pause(0.02);
 %     end
     
+end
+
 end

@@ -27,10 +27,13 @@ function autoArrangeFigures(NH, NW, monitor_id)
 if nargin < 2
     NH = 0;
     NW = 0;
+end
+
+if nargin < 3
     monitor_id = 1;
 end
 
-task_bar_offset = [30 50];
+task_bar_offset = [10 30];
 
 %%
 N_FIG = NH * NW;

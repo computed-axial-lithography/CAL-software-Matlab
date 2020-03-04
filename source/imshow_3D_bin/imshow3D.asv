@@ -1,4 +1,4 @@
-function  imshow3D( Img, disprange, initS, title_string )
+function  imshow3D( Img, disprange, initS )
 %IMSHOW3D displays 3D grayscale or RGB images in a slice by slice fashion
 %with mouse-based slice browsing and window and level adjustment control,
 %and auto slice browsing control.
@@ -143,10 +143,6 @@ LVFntSz = 7;
 WVFntSz = 7;
 BtnSz = 7;
 
-if nargin < 4
-    title_string = NaN;
-end
-
 if (nargin < 3)
     S = round(sno/2);
 else
@@ -174,29 +170,23 @@ end
 clf
 % axes('position',[0,0.2,1,0.8]), imshow(squeeze(Img(:,:,S,:)), [Rmin Rmax])
 axes('position',[0,0.2,1,0.8]), imagesc(squeeze(Img(:,:,S,:)), [Rmin Rmax])
-set(gca,'XTick',[], 'YTick', [])
-
-if ~isnan(title_string)
-    title_location = [0.01 0.1 0.4 0.2];
-    annotation('textbox',title_location,'String',title_string,'FitBoxToText','on','Color','w','Edgecolor','none');
-end
 
 FigPos = get(gcf,'Position');
-S_Pos = [30 25 uint16(FigPos(3)-140)+1 20];
-Stxt_Pos = [30 45 uint16(FigPos(3)-140)+1 15];
-% Wtxt_Pos = [20 0 60 20];
-% Wval_Pos = [75 0 50 20];
-% Ltxt_Pos = [130 0 45 20];
-% Lval_Pos = [170 0 50 20];
-% Btn_Pos = [240 0 70 20];
-% ChBx_Pos = [320 0 80 20];
+S_Pos = [30 25 uint16(FigPos(3)-100)+1 20];
+Stxt_Pos = [30 45 uint16(FigPos(3)-100)+1 15];
+Wtxt_Pos = [20 0 60 20];
+Wval_Pos = [75 0 50 20];
+Ltxt_Pos = [130 0 45 20];
+Lval_Pos = [170 0 50 20];
+Btn_Pos = [240 0 70 20];
+ChBx_Pos = [320 0 80 20];
 Play_Pos = [uint16(FigPos(3)-100)+40 25 30 20];
 Time_Pos = [uint16(FigPos(3)-100)+35 0 40 20];
 Ttxt_Pos = [uint16(FigPos(3)-100)-50 0 90 20];
 
 % W/L Button styles:
-% WL_BG = ones(Btn_Pos(4),Btn_Pos(3),3)*0.85;
-% WL_BG(1,:,:) = 1; WL_BG(:,1,:) = 1; WL_BG(:,end-1,:) = 0.6; WL_BG(:,end,:) = 0.4; WL_BG(end,:,:) = 0.4;
+WL_BG = ones(Btn_Pos(4),Btn_Pos(3),3)*0.85;
+WL_BG(1,:,:) = 1; WL_BG(:,1,:) = 1; WL_BG(:,end-1,:) = 0.6; WL_BG(:,end,:) = 0.4; WL_BG(end,:,:) = 0.4;
 
 % Play Button styles:
 Play_BG = ones(Play_Pos(4),Play_Pos(3),3)*0.85;
@@ -229,9 +219,9 @@ end
 % wtxthand = uicontrol('Style', 'text','Position', Wtxt_Pos,'String','Window: ',  'FontSize', txtFntSz);
 % lvalhand = uicontrol('Style', 'edit','Position', Lval_Pos,'String',sprintf('%6.0f',LevV), 'BackgroundColor', [1 1 1], 'FontSize', LVFntSz,'Callback', @WinLevChanged);
 % wvalhand = uicontrol('Style', 'edit','Position', Wval_Pos,'String',sprintf('%6.0f',Win), 'BackgroundColor', [1 1 1], 'FontSize', WVFntSz,'Callback', @WinLevChanged);
-% Btnhand = uicontrol('Style', 'pushbutton','Position', Btn_Pos,'String','Auto W/L', 'FontSize', BtnSz, 'Callback' , @AutoAdjust);
-% set(Btnhand, 'cdata', WL_BG)
-% ChBxhand = uicontrol('Style', 'checkbox','Position', ChBx_Pos,'String','Fine-tune', 'FontSize', txtFntSz);
+Btnhand = uicontrol('Style', 'pushbutton','Position', Btn_Pos,'String','Auto W/L', 'FontSize', BtnSz, 'Callback' , @AutoAdjust);
+set(Btnhand, 'cdata', WL_BG)
+ChBxhand = uicontrol('Style', 'checkbox','Position', ChBx_Pos,'String','Fine-tune', 'FontSize', txtFntSz);
 
 set (gcf, 'WindowScrollWheelFcn', @mouseScroll);
 set (gcf, 'ButtonDownFcn', @mouseClick);
@@ -244,7 +234,7 @@ set(gcf,'ResizeFcn', @figureResized)
     function figureResized(object, eventdata)
         FigPos = get(gcf,'Position');
         S_Pos = [30 25 uint16(FigPos(3)-140)+1 20];
-        Stxt_Pos = [30 45 uint16(FigPos(3)-140)+1 15];
+        Stxt_Pos = [30 45 uint16(FigPos(3)-100)+1 15];
         Play_Pos = [uint16(FigPos(3)-100)+40 25 30 20];
         Time_Pos = [uint16(FigPos(3)-100)+35 0 40 20];
         Ttxt_Pos = [uint16(FigPos(3)-100)-50 0 90 20];
@@ -259,8 +249,8 @@ set(gcf,'ResizeFcn', @figureResized)
 %         set(wtxthand,'Position', Wtxt_Pos);
 %         set(lvalhand,'Position', Lval_Pos);
 %         set(wvalhand,'Position', Wval_Pos);
-%         set(Btnhand,'Position', Btn_Pos);
-%         set(ChBxhand,'Position', ChBx_Pos);
+        set(Btnhand,'Position', Btn_Pos);
+        set(ChBxhand,'Position', ChBx_Pos);
     end
 
 % -=< Slice slider callback function >=-

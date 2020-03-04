@@ -178,21 +178,26 @@ elseif isfield(params,'stl_filename')
     if params.verbose
         set(0,'Units','pixels')
         
-        figure
+        initial_target_plot = 1;
+        figure(initial_target_plot)
+        
         axis vis3d
         if strcmp(params.vol_viewer,'volshow')
                        
-            volshow(imgaussfilt3(target,params.sigma_init),'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w','Isosurfacecolor','w');
+            p = uipanel;
+            volshow(imgaussfilt3(target,params.sigma_init),'Parent',p,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w','Isosurfacecolor','w');
             axis vis3d
-            title('Voxelized Target')
+            
+            annotation(p,'textbox',[0.01 0 0.05 0.1],'String','Voxelized target','FitBoxToText','on','Color','k','Edgecolor','none');
+            
         elseif strcmp(params.vol_viewer,'pcshow')
             [~,coord_above_threshold] = get_voxel_count(target);
             
             pcshow(coord_above_threshold);
             axis vis3d
             colormap jet
+            annotation('textbox',[0.01 0 0.05 0.1],'String','Voxelized target','FitBoxToText','on','Color','w','Edgecolor','none');
 
-            title('Voxelized Target')
         end
         pause(0.1)
         runtime = toc;

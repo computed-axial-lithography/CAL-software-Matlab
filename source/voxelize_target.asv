@@ -165,7 +165,7 @@ elseif isfield(params,'stl_filename')
     domain_size = size(target);
     
     % Care area dilation with a spherical structuring element
-    se = strel('sphere',2);
+    se = strel('sphere',10);
     target_care_area = imdilate(target,se);
 
     % To change orientations:
@@ -178,21 +178,27 @@ elseif isfield(params,'stl_filename')
     if params.verbose
         set(0,'Units','pixels')
         
-        figure
+        initial_target_plot = 1;
+        figure(initial_target_plot)
+        
         axis vis3d
         if strcmp(params.vol_viewer,'volshow')
                        
-            volshow(target,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w',);
+            p = uipanel;
+            volshow(imgaussfilt3(target,params.sigma_init),'Parent','Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w','Isosurfacecolor','w');
             axis vis3d
-            title('Voxelized Target')
+            
+            annotation('textbox',[0.1 0.1 0.3 0.4],'String','Voxelized target','FitBoxToText','on','Color','k','Edgecolor','none');
+            uistack(g,'bottom')
+            
         elseif strcmp(params.vol_viewer,'pcshow')
             [~,coord_above_threshold] = get_voxel_count(target);
             
             pcshow(coord_above_threshold);
             axis vis3d
             colormap jet
+            annotation('textbox',[0.1 0.1 0.3 0.4],'String','Voxelized target','FitBoxToText','on','Color','w','Edgecolor','none');
 
-            title('Voxelized Target')
         end
         pause(0.1)
         runtime = toc;

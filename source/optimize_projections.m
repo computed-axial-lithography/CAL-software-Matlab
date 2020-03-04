@@ -29,7 +29,7 @@ Created by: Indrasen Bhattacharya 2017-05-07
 Modified by: Joseph Toombs 09/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -60,8 +60,21 @@ end
 if params.verbose
     addpath('autoArrangeFigures_bin'); % add path to function for automatically arranging figures on monitor
     fprintf('Beginning optimization of projections\n');
-    tic;
+    
+    error_plot = 2;
+    figure(error_plot)
+    
+    optimized_recon_plot = 3;
+    figure(optimized_recon_plot)
+    
+    if strcmp(params.vol_viewer,'volshow')
+        p = uipanel;
+    end
+    
+    autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
+    tic;
+    
 
 end
 
@@ -201,10 +214,10 @@ for curr_iter = 1:params.max_iterations
     end
     delta_projections_prev = delta_projections;
         
-    
+%% Plotting    
     if params.verbose
         % Plot evolving error
-        figure(4)
+        figure(error_plot)
         semilogy(1:params.max_iterations,error,'LineWidth',2); 
         xlim([1 params.max_iterations]); 
         ylim([1e-4 1]);
@@ -213,26 +226,28 @@ for curr_iter = 1:params.max_iterations
         title_string = sprintf('Iteration = %2.0f',curr_iter);
         title(title_string)
         
-        figure(5)
-        autoArrangeFigures()  % automatically arrange figures on screen
         if strcmp(params.vol_viewer,'volshow')
             % Show evolving reconstruction using volshow
-            
-            volshow(thresholded_reconstruction,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','white');
-            axis vis3d
-            title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
-            title(title_string)
-            
+            figure(optimized_recon_plot)
+            if curr_iter == 1
+                vol = volshow(thresholded_reconstruction,'Parent',p,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','white');
+                axis vis3d
+                annotation(p,'textbox',[0.01 0 0.05 0.1],'String','Optimized reconstruction','FitBoxToText','on','Color','k','Edgecolor','none');
+            else
+                setVolume(vol,thresholded_reconstruction)
+                vol.Isovalue = curr_threshold;
+                axis vis3d                
+            end
         elseif strcmp(params.vol_viewer,'pcshow')
             % Alternative method of plotting reconstruction (requires Computer
             % Vision Toolbox)
-            
+            figure(optimized_recon_plot)
             pcshow(coord_above_threshold);
             axis vis3d
             colormap jet
-            title_string = sprintf('Optimized reconstruction\nIteration = %2.0f',curr_iter);
-            title(title_string)
-            
+            if curr_iter == 1
+                annotation('textbox',[0.01 0 0.05 0.1],'String','Voxelized target','FitBoxToText','on','Color','w','Edgecolor','none');
+            end
         end
         pause(0.05);
         
@@ -251,6 +266,7 @@ if params.verbose
     runtime = toc;
     fprintf('Finished optimization of projections in %5.2f seconds\n\n',runtime);
 end
+
 end
 
 function y = sigmoid(x,g)

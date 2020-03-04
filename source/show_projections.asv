@@ -1,10 +1,13 @@
 %{
-Function that displays cumulative dose in slices
+Function that displays projections
 
 INPUTS:
-    cumulative_dose =   matrix, if 3D (nR x nTheta x nZ) the display will be
+    projections     =   matrix, if 3D (nR x nTheta x nZ) the display will be
                         sequential; if 2D (nR x nTheta) the display will be in sinogram form
-    intensity_range =   vector, [LOW HIGH] brightness values of dose profile images
+    intensity_range =   vector, [LOW HIGH] brightness values of projected
+                        images
+    figure_number   =   [Optional] scalar, number of the figure to be created
+    title_string    =   [Optional] string, title of the plot
 
 OUTPUTS:
   none
@@ -12,7 +15,7 @@ OUTPUTS:
 Created by: Joseph Toombs 09/2019
 
 ----------------------------------------------------------------------------
-Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright © 2017-2019. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -29,18 +32,12 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 
-function show_dose_slices(cumulative_dose,intensity_range,figure_number,title_string)
+function show_projections(projections,intensity_range,figure_number,title_string)
 
-if ~exist('intensity_range','var') || isempty(intensity_range)
-  	intensity_range = NaN;
-end
-
-if ~exist('figure_number','var') || isempty(figure_number)
-  	figure_number = NaN;
-end
-
-if ~exist('title_string','var') || isempty(title_string)
-  	title_string = NaN;
+if nargin < 4
+if nargin < 3
+    intensity_range = NaN;
+    figure_number = NaN;
 end
 
 % add path containing files for inferno colormap
@@ -48,48 +45,48 @@ addpath('inferno_bin');
 addpath('imshow_3D_bin');
 
 pause(0.5)
-
-
-if numel(size(cumulative_dose)) == 2
-    if ~isnan(figure_number)
-        figure(figure_number)
-    else
-        figure
-    end
-    imagesc(cumulative_dose)
+if numel(size(projections)) == 2
+    subplot(2,4,4)
+    imagesc(projections)
     colormap inferno
-    title('Cumulative Dose')
+    title('Optimized Sinogram')
     pause(0.02);
 else
     
     if isnan(intensity_range)
       
+        projections = flip(projections,3);
         if ~isnan(figure_number)
             figure(figure_number)
         else
             figure
         end
         colormap inferno
-        if isnan(title_string)
-            imshow3D(cumulative_dose,[],1);
-        else
-            imshow3D(cumulative_dose,[],1,title_string);
-        end 
+        imshow3D(permute(projections,[3,1,2]),[],1);
     else
         
+        projections = flip(projections,3);
         if ~isnan(figure_number)
             figure(figure_number)
         else
             figure
         end
         colormap inferno
-        
-        if isnan(title_string)
-            imshow3D(cumulative_dose,intensity_range,1);
-        else
-            imshow3D(cumulative_dose,intensity_range,1,title_string);
-        end        
-        
+        imshow3D(permute(projections,[3,1,2]),intensity_range,1);    
     end
-
+    
+% Deprecated routine for showing projections  
+%     for ii_theta = 1:nTheta
+% %         axes(optimized_projections_axes);
+%         
+%         imagesc(squeeze(projections(:,ii_theta,:))')
+%        
+%         colormap inferno
+%         title_string = sprintf('Optimized Projections\n\\theta = %2.0f°', params.angles(ii_theta));
+%         title(title_string)
+%         axis equal
+%         axis off
+%         pause(0.02);
+%     end
+    
 end

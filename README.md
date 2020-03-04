@@ -1,6 +1,6 @@
 # CAL-software
 This README describes how the CAL projection-generation and projector-control code should be used. 
-This code has been developed in Matlab 2018b, and 2019a and is compatible, to our knowledge, with 2017a and newer versions. 
+This code has been developed in Matlab 2018b and 2019a and is compatible, to our knowledge, with 2017a and newer versions. 
 
 More details on the algorithms used in this software can be found here:  
 [Science article](https://science.sciencemag.org/content/363/6431/1075) (Paywall)  

@@ -114,8 +114,8 @@ else
             
 %             projection_z_filt = (projection_z_filt)+abs(min(projection_z_filt)); % offset negatives
 %             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0);
-            projection_z_filt = 0.0*((projection_z_filt)+abs(min(projection_z_filt))) + 1*(double(projection_z_filt > 0).*(projection_z_filt));
-            projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0); % apply mask
+            projection_z_filt = 0*((projection_z_filt)+abs(min(projection_z_filt))) + 1*(double(projection_z_filt > 0).*(projection_z_filt));
+%             projection_z_filt = projection_z_filt.*(radon(target(:,:,z),params.angles)>0); % apply mask
 
 %             projection_z_filt = double(projection_z_filt > 0).*(projection_z_filt); % truncate negativeS
             projections(:,:,z) = projection_z_filt;

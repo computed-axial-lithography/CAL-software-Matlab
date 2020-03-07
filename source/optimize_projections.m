@@ -193,9 +193,18 @@ for curr_iter = 1:params.max_iterations
         end
     end
 
+    %%%%%%%%%% EXPERIMENTAL %%%%%%%%%%%
+%     mean_dose = mean(curr_reconstruction.*target,'all');
+%     variance_dose = (curr_reconstruction - mean_dose).^2;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     % Average the target space errors
     delta_target_feedback = (delta_target + delta_target_eroded + delta_target_dilated)/3;
-      
+    
+    
+
+    
+    
     % update optimized projections over z-positions
     if params.parallel
         parfor z = 1:nZ

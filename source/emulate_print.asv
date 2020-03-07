@@ -33,30 +33,24 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 function emulate_print(params,projections)
 
-% if length(size(projections)) == 3  
-%     cumulative_dose = zeros([size(iradon(projections(:,:,1),params.angles)),size(projections,3)]);
-% elseif length(size(projections)) == 2
-%     cumulative_dose = zeros(size(iradon(projections,params.angles)));
-% end
+if length(size(projections)) == 3
+    cumulative_dose = zeros(params.domain_size);
+elseif length(size(projections)) == 2
+    [nR,nTheta] = size(projections);
+    cumulative_dose = zeros(nR,nR);
+end
 
 
 
-
-I_c = 4e-3;
-Oxy_c = 10e-3;
-molar_abs = 1;
-avagadro = 6.022e23;
-planck = 6.626e-34;
-light_freq = 7.383e14;
 
 
 
 % Preallocate 3D matrices for tracking concentrations of radical, oxygen,
 % monomer, and polymer
 intensity = zeros(params.domain_size,'single');
-initiator_conc = I_c*ones(params.domain_size,'single');
+initiator_conc = ones(params.domain_size,'single');
 radical_conc = zeros(params.domain_size,'single');
-oxygen_conc = Oxy_c*ones(params.domain_size,'single');
+oxygen_conc = ones(params.domain_size,'single');
 radial_monomer_conc = zeros(params.domain_size,'single');
 monomer_conc = ones(params.domain_size,'single');
 polymer_conc = zeros(params.domain_size,'single');
@@ -80,9 +74,8 @@ for i = 1:length(params.angles)
 %     oxygen_conc = oxygen_conc - dt*(k_T_oxy*radical_monomer_conc.*oxygen_conc);
 %     initiator_conc = initiator_conc - dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
     
-    figure(10)
-    volshow(radical_conc./max(radical_conc,[],'all'),'Renderer','VolumeRendering');
-    pause(0.1)
+    
+    volshow(radical_con
     
 end    
 

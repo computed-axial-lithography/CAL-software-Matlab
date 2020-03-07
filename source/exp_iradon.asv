@@ -98,9 +98,8 @@ recon = zeros(N,'like',p);
 
 
 %%%%%%%%%%%%%%
-radius = linspace(0,0.5,5);
-radius_mask = ones(N,N);
-radius_mask(N/2,round(N.*radius./2)+N/2) = 0;
+radius = [0.1, 0.2, 0.3, 0.4];
+radis
 I = zeros(length(radius),length(params.angles));
 
 %%%%%%%%%%%%
@@ -136,7 +135,7 @@ else
     %%%%%%%%%%%%%%%%%%%%
         I(:,i) = curr_dose(N/2,round(N.*radius./2)+N/2);
         figure(100)
-        imagesc(curr_dose.*radius_mask)
+        imagesc(curr_dose.*)
         pause(0.01)
     %%%%%%%%%%%%%%%%%%%%%%
 
@@ -148,7 +147,7 @@ recon(isnan(recon)) = 0;
 
 
 figure(90)
-plot(repmat(params.angles,[5,1])',I')
+plot(repmat(params.angles,[4,1])',I')
 pause(0.1)
 
 

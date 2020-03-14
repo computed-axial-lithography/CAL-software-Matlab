@@ -134,10 +134,10 @@ else
 
 
     %%%%%%%%%%%%%%%%%%%%
-        I(:,i) = curr_dose(N/2,round(N.*radius./2)+N/2);
-        figure(100)
-        imagesc(curr_dose.*radius_mask)
-        pause(0.01)
+%         I(:,i) = curr_dose(N/2,round(N.*radius./2)+N/2);
+%         figure(100)
+%         imagesc(curr_dose.*radius_mask)
+%         pause(0.01)
     %%%%%%%%%%%%%%%%%%%%%%
 
     end
@@ -147,9 +147,9 @@ end
 recon(isnan(recon)) = 0;
 
 
-figure(90)
-plot(repmat(params.angles,[5,1])',I')
-pause(0.1)
+% figure(90)
+% plot(repmat(params.angles,[5,1])',I')
+% pause(0.1)
 
 
 

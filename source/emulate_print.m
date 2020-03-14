@@ -74,11 +74,19 @@ for i = 1:length(params.angles)
         intensity(:,:,z) = exp_iradon(params,projections(:,:,z),i);
     end
     
+    
+    
     radical_conc = radical_conc + 2*dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
+    
+    monomer_conc = monomer_conc - (k_P/k_T^0.5*(quantum_efficiency*intensity)^0.5);
+    polymer_conc = polymer_conc + dt*(k_P*radical_monomer_conc.*monomer_conc + k_T*radical_monomer_conc.^2);
+    
+    
+    
 %     radical_monomer_conc = radical_monomer_conc - dt*(k_I*radical_conc.*monomer_conc - k_T*radical_monomer_conc.^2 - k_T_oxy.*radical_monomer_conc.*oxygen_conc);
-%     polymer_conc = polymer_conc + dt*(k_P*radical_monomer_conc.*monomer_conc + k_T*radical_monomer_conc.^2);
-%     oxygen_conc = oxygen_conc - dt*(k_T_oxy*radical_monomer_conc.*oxygen_conc);
-%     initiator_conc = initiator_conc - dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
+    
+    oxygen_conc = oxygen_conc - dt*(k_T_oxy*radical_monomer_conc.*oxygen_conc);
+    initiator_conc = initiator_conc - dt*(molar_abs*quantum_efficiency.*(intensity./(avagadro*planck*light_freq)).*initiator_conc);        % G. Miller Modeling of photobleaching for the photoinitiation of thick polymerization systems 2001
     
     figure(10)
     volshow(radical_conc./max(radical_conc,[],'all'),'Renderer','VolumeRendering');

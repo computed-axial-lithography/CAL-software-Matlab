@@ -41,9 +41,9 @@ function emulate_print(params,projections)
 
 
 
-
-I_c = 4e-3;
-Oxy_c = 10e-3;
+%% 
+initiator_conc_0 = 4e-3;
+oxygen_conc_0 = 10e-3;
 molar_abs = 1;
 avagadro = 6.022e23;
 planck = 6.626e-34;
@@ -54,9 +54,9 @@ light_freq = 7.383e14;
 % Preallocate 3D matrices for tracking concentrations of radical, oxygen,
 % monomer, and polymer
 intensity = zeros(params.domain_size,'single');
-initiator_conc = I_c*ones(params.domain_size,'single');
+initiator_conc = initiator_conc_0*ones(params.domain_size,'single');
 radical_conc = zeros(params.domain_size,'single');
-oxygen_conc = Oxy_c*ones(params.domain_size,'single');
+oxygen_conc = oxygen_conc_0*ones(params.domain_size,'single');
 radial_monomer_conc = zeros(params.domain_size,'single');
 monomer_conc = ones(params.domain_size,'single');
 polymer_conc = zeros(params.domain_size,'single');

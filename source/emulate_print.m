@@ -33,22 +33,21 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 %}
 function emulate_print(params,projections)
 
-% if length(size(projections)) == 3  
-%     cumulative_dose = zeros([size(iradon(projections(:,:,1),params.angles)),size(projections,3)]);
-% elseif length(size(projections)) == 2
-%     cumulative_dose = zeros(size(iradon(projections,params.angles)));
-% end
 
+max_projector_intensity = 10;           % mW/cm^2
 
+initiator_conc_0        = 4e-3;         % mol/L
+quantum_efficiency      = 0.5;
+oxygen_conc_0           = 10e-3;        % mol/L
 
-%% 
-initiator_conc_0        = 4e-3;
-oxygen_conc_0           = 10e-3;
-molar_abs               = 1;
-avagadro                = 6.022e23;
-planck                  = 6.626e-34;
-light_wavelength        = 405e-9;
-light_speed             = 3e8;
+monomer_density         = 1.12;         % g/mol
+monomer_MW              = 575;          % g/mol
+monomer_conc_0          = monomer_density*1000/monomer_MW;
+molar_abs               = 30;           % m^2/mol    NOTE: if in L/(mol*cm) multiply by 0.1
+avagadro                = 6.022e23;     % mol^-1
+planck                  = 6.626e-34;    % J*s
+light_wavelength        = 405e-9;       % m
+light_speed             = 3e8;          % m/s
 light_freq              = light_speed/light_wavelength;
 
 
@@ -60,39 +59,60 @@ initiator_conc       = initiator_conc_0*ones(params.domain_size,'single');
 radical_conc         = zeros(params.domain_size,'single');
 oxygen_conc          = oxygen_conc_0*ones(params.domain_size,'single');
 radial_monomer_conc  = zeros(params.domain_size,'single');
-monomer_conc         = ones(params.domain_size,'single');
+monomer_conc         = monomer_conc_0*ones(params.domain_size,'single');
 polymer_conc         = zeros(params.domain_size,'single');
 
 
 % k_I = 
-k_T = 1e7;
-k_T_oxy = 5e8;
-k_P = 1e3;
+k_T = 1e7;          % L/(mol*s)
+k_T_oxy = 5e8;      % L/(mol*s)
+k_P = 1e3;          % L/(mol*s)
 
 dt = 12/length(params.angles);
 
+projections = projections./max(projections,[],'all');
+
 for i = 1:length(params.angles)
     for z = 1:size(intensity,3)
-        intensity(:,:,z) = exp_iradon(params,projections(:,:,z),i);
+        intensity(:,:,z) = max_projector_intensity*exp_iradon(params,projections(:,:,z),i);
     end
+ 
+%     DOC = 1 - exp(-k_P/k_T^0.5*(quantum_efficiency*intensity).^0.5*t);
+%     radical_conc = radical_conc + 2*dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
     
-    
-    
-    radical_conc = radical_conc + 2*dt*(molar_abs/(avagadro*planck*light_freq)).*initiator_conc.*intensity;
-    
-    monomer_conc = monomer_conc - (k_P/k_T^0.5*(quantum_efficiency*intensity)^0.5);
-    polymer_conc = polymer_conc + dt*(k_P*radical_monomer_conc.*monomer_conc + k_T*radical_monomer_conc.^2);
-    
-    
-    
+%     monomer_conc = monomer_conc - (k_P/k_T^0.5*(quantum_efficiency*intensity).^0.5);
+%     polymer_conc = polymer_conc + dt*(k_P*radical_monomer_conc.*monomer_conc + k_T*radical_monomer_conc.^2);
+
 %     radical_monomer_conc = radical_monomer_conc - dt*(k_I*radical_conc.*monomer_conc - k_T*radical_monomer_conc.^2 - k_T_oxy.*radical_monomer_conc.*oxygen_conc);
+%     oxygen_conc = oxygen_conc - dt*(k_T_oxy*radical_monomer_conc.*oxygen_conc);
+  
+
+
+
+    initiator_conc = initiator_conc - dt*(molar_abs*quantum_efficiency.*(intensity./(avagadro*planck*light_freq)).*initiator_conc);        % (1) G. Miller Modeling of photobleaching for the photoinitiation of thick polymerization systems 2001
+    radical_conc = radical_conc + dt*(molar_abs*quantum_efficiency.*(intensity./(avagadro*planck*light_freq)).*initiator_conc);            % (2) G. Miller Modeling of photobleaching for the photoinitiation of thick polymerization systems 2001
+
     
-    oxygen_conc = oxygen_conc - dt*(k_T_oxy*radical_monomer_conc.*oxygen_conc);
-    initiator_conc = initiator_conc - dt*(molar_abs*quantum_efficiency.*(intensity./(avagadro*planck*light_freq)).*initiator_conc);        % G. Miller Modeling of photobleaching for the photoinitiation of thick polymerization systems 2001
+    DOC = polymer_conc/monomer_conc_0*ones(params.domain_size,'single');
     
-    figure(10)
-    volshow(radical_conc./max(radical_conc,[],'all'),'Renderer','VolumeRendering');
-    pause(0.1)
+    
+    figure(11)
+    subplot(2,2,1)
+    imagesc(intensity(:,:,40))
+    colorbar
+    axis off
+    subplot(2,2,3)
+    imagesc(initiator_conc(:,:,40))
+    colorbar
+    axis off
+    subplot(2,2,4)
+    imagesc(radical_conc(:,:,40))
+    colorbar
+    axis off
+    
+%     figure(10)
+%     volshow(radical_conc./max(radical_conc,[],'all'),'Renderer','VolumeRendering');
+%     pause(0.1)
     
 end    
 

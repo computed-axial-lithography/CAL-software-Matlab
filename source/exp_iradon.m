@@ -113,8 +113,8 @@ if ~isnan(curr_angle)
     t = x.*costheta(curr_angle) + y.*sintheta(curr_angle);
 
     proj_contrib = reshape(interp1(taxis,proj,t(:),'linear'),N,N);
-    curr_dose = exp_contrib_LU(:,:,curr_angle).*proj_contrib;
-    recon = curr_dose;
+    int_adj_proj = exp_contrib_LU(:,:,curr_angle).*proj_contrib;
+    recon = int_adj_proj;
     
 else 
     for i=1:length(params.angles)
@@ -129,8 +129,8 @@ else
         t = x.*costheta(i) + y.*sintheta(i);
 
         proj_contrib = reshape(interp1(taxis,proj,t(:),'linear'),N,N);
-        curr_dose = exp_contrib_LU(:,:,i).*proj_contrib;
-        recon = recon + curr_dose;
+        int_adj_proj = (exp_contrib_LU(:,:,i).^params.resin_abs_coeff).*proj_contrib;
+        recon = recon + int_adj_proj;
 
 
     %%%%%%%%%%%%%%%%%%%%

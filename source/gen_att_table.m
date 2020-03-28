@@ -85,7 +85,7 @@ for i = 1:length(params.angles)
     
     w = real(sqrt(params.vial_radius^2 - x.^2)) - y;  % path length of light ray in resin
     w(:,abs(x(1,:)) > params.vial_radius) =  inf;  % set all values outside vial radius to zero
-    relative_intensity = exp(-w.*params.resin_abs_coeff);   % also could be exp(w./(resin_abs_coeff_pix)^-1)) which is exp(w./(resin_penetration_depth_pix))
+    relative_intensity = exp(-w);   % also could be exp(w./(resin_abs_coeff_pix)^-1)) which is exp(w./(resin_penetration_depth_pix))
     
     
 %     w = real(sqrt(vial_radius_pix^2 - x.^2)) - y;  % path length of light ray in resin

@@ -1,6 +1,6 @@
 %{
 ----------------------------------------------------------------------------
-Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright Â© 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -69,34 +69,25 @@ projections = initialize_projections(params,target); % create initial guess of p
 
 [optimized_projections,optimized_reconstruction,error,thresholds] = optimize_projections(params,projections,target,target_care_area); % optimize projections to minimize error between target and reconstruction  
 
-[X,Y] = meshgrid(linspace(-size(target,1)/2,size(target,1)/2,size(target,1)),...
-    linspace(-size(target,2)/2,size(target,2)/2,size(target,2)));
-R = sqrt(X.^2 + Y.^2);
 
-circleMask = logical(R.*(R<=size(target,1)/2));
-gelInds = find(circleMask & target==1);
-voidInds = find(circleMask & ~target);
-
-
-smallestGelDose = min(optimized_reconstruction(gelInds)./max(optimized_reconstruction(:)),[],'all');
-maxVoidDose = max(optimized_reconstruction(voidInds)./max(optimized_reconstruction(:)),[],'all');
 %% Display
 show_projections(projections,[],4,'Initial projections') % display initial projections
 show_projections(optimized_projections,[0,255],6,'Optimized projections') % display optimized projections
-show_dose_slices(optimized_reconstruction.*circleMask./max(optimized_reconstruction,[],'all'),[],5,'Dose slices') % display sliced dose profile
+show_dose_slices(optimized_reconstruction./max(optimized_reconstruction,[],'all'),[],5,'Dose slices') % display sliced dose profile
 
 autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
 
 
 
-
-
-figure(10)
+%% Dose distribution histogram
+gelInds = find(target==1);
+voidInds = find(~target);
+figure
 hold on
 histogram(optimized_reconstruction(voidInds)./max(optimized_reconstruction(:)),linspace(0,1,100),'facecolor','r','facealpha',0.4)
 histogram(optimized_reconstruction(gelInds)./max(optimized_reconstruction(:)),linspace(0,1,100),'facecolor','b','facealpha',0.4)
 xlim([0,1])
 xlabel('Normalized dose')
-ylabel('Pixel error rate')
+ylabel('Frequency')
 

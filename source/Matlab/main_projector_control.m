@@ -85,9 +85,9 @@ elseif exist('projection_set','var')
 end
 
 %% Continue to projection of images
-if input('Continue to projection?    ')
+if input('Continue to projection?   (1) yes, (0) no ')
     [final_projection_time] = project(params,projection_set);
-elseif input('Save projections as images?   ')
+elseif input('Save projections as images?   (1) yes, (0) no ')
     if mkdir('ProjImages')
         cd('ProjImages')
         for img_i = 1:size(projection_set,2)

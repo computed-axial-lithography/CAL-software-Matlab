@@ -159,22 +159,14 @@ for curr_iter = 1:params.max_iterations
     % curr_reconstruction consists of normalized continuous values while
     % thresholded_reconstruction consists of sigmoid thresholded values of
     % curr_reconstruction
-    %%% Working %%%%
-    %     sigma = (0.1-params.max_iterations/curr_iter)*curr_threshold;
-% 
-%     sigma = 0.01; 
-%     thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu)/sigma, params.sigmoid), sigma_AA);
-%     thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded)/sigma, params.sigmoid), sigma_AA);
-%     thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated)/sigma, params.sigmoid), sigma_AA);
+    thresholded_reconstruction = sigmoid((curr_reconstruction-mu), params.sigmoid);
+    thresholded_reconstruction_eroded = sigmoid((curr_reconstruction-mu_eroded), params.sigmoid);
+    thresholded_reconstruction_dilated = sigmoid((curr_reconstruction-mu_dilated), params.sigmoid);
 
-%     thresholded_reconstruction = sigmoid((curr_reconstruction-mu), params.sigmoid);
-%     thresholded_reconstruction_eroded = sigmoid((curr_reconstruction-mu_eroded), params.sigmoid);
-%     thresholded_reconstruction_dilated = sigmoid((curr_reconstruction-mu_dilated), params.sigmoid);
-
-    thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu), params.sigmoid), sigma_AA);
-    thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded), params.sigmoid), sigma_AA);
-    thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated), params.sigmoid), sigma_AA);
-    
+%     thresholded_reconstruction = imgaussfilt3( sigmoid((curr_reconstruction-mu), params.sigmoid), sigma_AA);
+%     thresholded_reconstruction_eroded = imgaussfilt3( sigmoid((curr_reconstruction-mu_eroded), params.sigmoid), sigma_AA);
+%     thresholded_reconstruction_dilated = imgaussfilt3( sigmoid((curr_reconstruction-mu_dilated), params.sigmoid), sigma_AA);
+%     
 
 
     
@@ -184,16 +176,11 @@ for curr_iter = 1:params.max_iterations
     delta_target = (thresholded_reconstruction - target).*target_care_area; % Target space error   
     delta_target_eroded = (thresholded_reconstruction_eroded - target).*target_care_area; % Eroded version
     delta_target_dilated = (thresholded_reconstruction_dilated - target).*target_care_area; % Dilated version
-%     delta_target = (curr_reconstruction - target).*target_care_area; % Target space error   
  
     % Average the target space errors
     delta_target_feedback = (delta_target + delta_target_eroded + delta_target_dilated)/3;
-%     delta_target_feedback = delta_target;
     
-%     error(curr_iter) = sum(delta_target(:).^2)/curr_voxel_count;
-%     error(curr_iter) = sum(delta_target(:).^2);
 
-    
     %%%%%%%%%%%% Charlie's pixel error rate %%%%%%%%%%
     [X,Y] = meshgrid(linspace(-size(target,1)/2,size(target,1)/2,size(target,1)),...
         linspace(-size(target,2)/2,size(target,2)/2,size(target,2)));
@@ -211,6 +198,10 @@ for curr_iter = 1:params.max_iterations
     error(curr_iter) = PER;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 %     error(curr_iter) = norm(curr_reconstruction(:)-target(:))^2;
+%     error(curr_iter) = sum(delta_target(:).^2)/curr_voxel_count;
+%     error(curr_iter) = sum(delta_target(:).^2);
+
+    
 
 
 
@@ -252,10 +243,8 @@ for curr_iter = 1:params.max_iterations
     if params.verbose
         % Plot evolving error
         figure(error_plot)
-%         semilogy(1:params.max_iterations,error,'LineWidth',2); 
         plot(1:params.max_iterations,error,'LineWidth',2); 
         xlim([1 params.max_iterations]); 
-%         ylim([1e-2 1e4]);
         xlabel('Iteration #')
         ylabel('Error')
         title_string = sprintf('Iteration = %2.0f',curr_iter);
@@ -300,8 +289,20 @@ end
 
 % Output of the final optimized reconstruction dose profile
 opt_reconstruction = curr_reconstruction;
+if params.create_proj_for_2DCAL == 1 && isfield(params,'target_2D')
+    tmp_proj = zeros(nX,length(params.angles),nX);
+    for j = 1:length(params.angles)
+        tmp_proj(:,j,:) = iradon([opt_projections(:,j,1),opt_projections(:,j,1)], [params.angles(j), params.angles(j)], 'none',nX);
+    end
+    opt_projections = tmp_proj;
+else
+    fprintf('\nTarget should be 2D for creating projections for 2D planar CAL. Use params.target_2D to set the target\n');
+end
+
 
 [opt_projections,~] = find_scale(opt_projections);
+
+
 
 if params.verbose
     runtime = toc;

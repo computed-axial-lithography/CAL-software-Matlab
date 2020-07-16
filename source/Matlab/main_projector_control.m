@@ -87,4 +87,15 @@ end
 %% Continue to projection of images
 if input('Continue to projection?    ')
     [final_projection_time] = project(params,projection_set);
+elseif input('Save projections as images?   ')
+    if mkdir('ProjImages')
+        cd('ProjImages')
+        for img_i = 1:size(projection_set,2)
+            img = projection_set{img_i};
+            imwrite(img, sprintf('%d.jpg',img_i))
+        end
+        cd('..')
+    else
+        disp('Could not create ProjImages directory.')
+    end
 end

@@ -35,8 +35,8 @@ params.verbose = 1;                     % 1 to activate informational display; 0
 params.vol_viewer = 'volshow';           % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
 params.stl_filename = 'Thinker_reduced.stl';        % 
 % params.target_3D ;                    % use this to directly define the 3D target matrix
-% params.target_2D = create_target(500,'L');
-params.resolution = 100;                 % number of voxels in the dimension of minimum length
+% params.target_2D = create_target(500,'L'); % use this to directly define a 2D target matrix; create_target(#pixels in W and H of target, preset type) 'L','phantom','star','dots'
+params.resolution = 100;                 % number of voxels in the dimension of Z-axis (height)
 params.angles = 0:2:178;                % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0;                    % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 params.create_proj_for_2DCAL = 1;       % 1 to activate gen of projections for 2D planar CAL; 0 to deactivate

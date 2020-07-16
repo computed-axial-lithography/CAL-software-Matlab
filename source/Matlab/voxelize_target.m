@@ -210,7 +210,7 @@ elseif isfield(params,'stl_filename')
         if strcmp(params.vol_viewer,'volshow')
                        
             p = uipanel;
-            volshow(imgaussfilt3(target,params.sigma_init),'Parent',p,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w','Isosurfacecolor','w');
+            volshow(imgaussfilt3(target,0.01),'Parent',p,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','w','Isosurfacecolor','w');
             axis vis3d
             
             annotation(p,'textbox',[0.01 0 0.05 0.1],'String','Voxelized target','FitBoxToText','on','Color','k','Edgecolor','none');

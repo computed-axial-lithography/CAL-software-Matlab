@@ -1,6 +1,6 @@
 %{
 ----------------------------------------------------------------------------
-Copyright © 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
+Copyright Â© 2017-2020. The Regents of the University of California, Berkeley. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -80,11 +80,13 @@ autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
 
 
+
+
+
+%% Dose distribution histogram
+figure(10)
 gelInds = find(target==1);
 voidInds = find(~target);
-
-
-figure(10)
 hold on
 histogram(optimized_reconstruction(voidInds)./max(optimized_reconstruction(:)),linspace(0,1,100),'facecolor','r','facealpha',0.4)
 histogram(optimized_reconstruction(gelInds)./max(optimized_reconstruction(:)),linspace(0,1,100),'facecolor','b','facealpha',0.4)
@@ -93,4 +95,5 @@ title('Dose distribution')
 xlabel('Normalized dose')
 ylabel('Frequency')
 legend('Void doses','Gel doses')
+
 

@@ -65,10 +65,10 @@ if isfield(params,'target_2D')
         imagesc(target)
         colorbar
         colormap('hot')
+        
+        runtime = toc;
+        fprintf('Finished preparation of target %.2f seconds\n\n',runtime);
     end
-    
-    runtime = toc;
-    fprintf('Finished preparation of target %.2f seconds\n\n',runtime);
     
 elseif isfield(params,'target_3D')
     if params.verbose
@@ -81,8 +81,10 @@ elseif isfield(params,'target_3D')
     se = strel('sphere',2);
     target_care_area = imdilate(target,se);
     
-    runtime = toc;
-    fprintf('Finished preparation of target %.2f seconds\n\n',runtime);
+    if params.verbose
+        runtime = toc;
+        fprintf('Finished preparation of target %.2f seconds\n\n',runtime);
+    end
     
 elseif isfield(params,'stl_filename')
     if params.verbose

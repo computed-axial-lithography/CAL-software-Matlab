@@ -76,13 +76,6 @@ show_dose_slices(optimized_reconstruction./max(optimized_reconstruction,[],'all'
 
 autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
-
-
-
-
-
-
-
 %% Dose distribution histogram
 figure(10)
 gelInds = find(target==1);

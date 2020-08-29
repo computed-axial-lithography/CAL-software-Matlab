@@ -40,8 +40,8 @@ end
 % 2D target and reconstruction
 if numel(size(input)) == 2
     ii = 1;
-    nX = size(input,2);
-    nY = size(input,1);
+    nX = size(input,1);
+    nY = size(input,2);
     nZ = 1;
     
     voxel_count = 0;

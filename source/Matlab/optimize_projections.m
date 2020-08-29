@@ -104,8 +104,8 @@ target_orig = target; % store a copy of the original padded_target
 
 
 target_voxel_count = get_voxel_count(target);
-
-for curr_iter = 1:params.max_iterations
+curr_iter = 1;
+while curr_iter <= params.max_iterations
     
 %     [projections_power,~] = find_scale(opt_projections); % maps the current optimized projections to 8-bit numbers with the calibration curve of the projector
     
@@ -284,7 +284,13 @@ for curr_iter = 1:params.max_iterations
         
         
     end
-    
+    if mod(curr_iter,30) == 0 && curr_iter ~= 30
+        cont_iters = input('Run more iterations? (0) stop;   (1) continue   :');
+        if cont_iters == 0
+            break
+        end
+    end
+    curr_iter = curr_iter + 1;
 end
 
 % Output of the final optimized reconstruction dose profile
@@ -295,7 +301,7 @@ if params.create_proj_for_2DCAL == 1 && isfield(params,'target_2D')
         tmp_proj(:,j,:) = iradon([opt_projections(:,j,1),opt_projections(:,j,1)], [params.angles(j), params.angles(j)], 'none',nX);
     end
     opt_projections = tmp_proj;
-else
+elseif params.create_proj_for_2DCAL == 1
     fprintf('\nTarget should be 2D for creating projections for 2D planar CAL. Use params.target_2D to set the target\n');
 end
 

@@ -33,13 +33,13 @@ close all
 params = struct;
 params.verbose = 1;                     % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'volshow';           % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'Thinker_reduced.stl';        % 
+params.stl_filename = 'thinker_reduced.stl';        % 
 % params.target_3D ;                    % use this to directly define the 3D target matrix
 % params.target_2D = create_target(500,'L'); % use this to directly define a 2D target matrix; create_target(#pixels in W and H of target, preset type) 'L','phantom','star','dots'
-params.resolution = 100;                 % number of voxels in the dimension of Z-axis (height)
-params.angles = 0:2:178;                % vector of real angles of projection; should be [0-180 deg]
+params.resolution = 250;                 % number of voxels in the dimension of Z-axis (height)
+params.angles = 0:1:179;                % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0;                    % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
-params.create_proj_for_2DCAL = 1;       % 1 to activate gen of projections for 2D planar CAL; 0 to deactivate
+params.create_proj_for_2DCAL = 0;       % 1 to activate gen of projections for 2D planar CAL; 0 to deactivate
 %%% EXPERIMENTAL %%%
 params.axisymmetric = 0;                % 1 for axisymmetric targets; 0 for non-axisymmetric targets
 
@@ -58,7 +58,7 @@ params.Rho = 0.1;                      % Robustness parameter
 params.Theta = 0.1;                    % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
 params.Beta = 0.5;                     % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
 params.sigmoid = 150;                    % Sharpness of target dose boundary; typical values range from [50-200]
-params.max_iterations = 20;             % number of iterations in the optimization
+params.max_iterations = 60;             % maximum number of iterations in the optimization; prompt will ask to continue every 30 iterations
 % params.tol;                           % use this to set the error tolerance of optimization
 
 %% Optimization procedure

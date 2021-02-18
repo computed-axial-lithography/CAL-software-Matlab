@@ -8,7 +8,8 @@ More details on the algorithms used in this software can be found here:
 [Arxiv article](https://arxiv.org/pdf/1705.05893.pdf)
 
 
-
+Contact:
+Joseph Toombs (jtoombs@berkeley.edu)
 
 
 ## Projection Optimization

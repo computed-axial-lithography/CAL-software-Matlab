@@ -96,7 +96,8 @@ if numel(size(target)) == 2
     FT_projections = fftshift(fft(projections,[],1)); % Fourier transform projections
     projections = real(ifft(ifftshift(FT_projections.*rampK_matrix))); % apply ramp filter in Fourier space
     projections = double(projections > 0).*(projections); % truncate negatives
-
+%     projections = projections+abs(min(projections));
+    
 else
     if params.parallel
         parfor z = 1:nZ            

@@ -33,31 +33,32 @@ close all
 params = struct;
 params.verbose = 1;                     % 1 to activate informational display; 0 to deactivate
 params.vol_viewer = 'volshow';           % defines the type of volume viewer to be used; change to 'pcshow' if point cloud is desired
-params.stl_filename = 'thinker_reduced.stl';        % 
+params.stl_filename = 'thinker.stl';        % 
 % params.target_3D ;                    % use this to directly define the 3D target matrix
+t = Tiff('C:\Users\Joseph Toombs\Downloads\resChart_padded.tif','r');
+params.target_2D = double(read(t)==255);
 % params.target_2D = create_target(500,'L'); % use this to directly define a 2D target matrix; create_target(#pixels in W and H of target, preset type) 'L','phantom','star','dots'
-params.resolution = 250;                 % number of voxels in the dimension of Z-axis (height)
-params.angles = 0:1:179;                % vector of real angles of projection; should be [0-180 deg]
+params.resolution = 150;                 % number of voxels in the dimension of Z-axis (height)
+params.angles = 0:0.5:359.5;                % vector of real angles of projection; should be [0-180 deg]
 params.parallel = 0;                    % 1 to activate parallel computing; 0 to deactivate; require Parallel Computing toolbox
 params.create_proj_for_2DCAL = 0;       % 1 to activate gen of projections for 2D planar CAL; 0 to deactivate
-%%% EXPERIMENTAL %%%
-params.axisymmetric = 0;                % 1 for axisymmetric targets; 0 for non-axisymmetric targets
+
 
 
 %%% EXPERIMENTAL %%%
 % Physical setup parameters (NOTE: if resin_abs_coeff is set angles should
 % go from [0-360 deg]
-params.voxel_size = 0.0457;               % side length of cubic voxel in mm
-params.vial_radius = 1;                % radius of resin container in mm
-params.resin_abs_coeff = 0;             % absorption coefficient of resin at projector's center wavelength in 1/mm
+params.voxel_size = 0.04;               % side length of cubic voxel in mm
+params.vial_radius = 12.5;                % radius of resin container in mm
+params.resin_abs_coeff = 0.00;             % absorption coefficient of resin at projector's center wavelength in 1/mm
 params.light_intensity = 10;             % intensity of light source at the location of the vial's center axis in mW/cm^2
 
 % Optimization parameters
-params.learningRate = 0.002;            % Relaxation parameter: how far along do we move in the Newton iteration
-params.Rho = 0.1;                      % Robustness parameter
-params.Theta = 0.1;                    % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
-params.Beta = 0.5;                     % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
-params.sigmoid = 150;                    % Sharpness of target dose boundary; typical values range from [50-200]
+params.learningRate = 0.8;            % Relaxation parameter: how far along do we move in the Newton iteration
+params.Rho = 0.0;                      % Robustness parameter
+params.Theta = 0.0;                    % Hybrid input-output parameter; Theta = 0 corresponds to perfect constraint
+params.Beta = 0.0;                     % Memory Effect - how much of the previous iteration error is used in computing the current iteration update; Beta = 0 corresponds no memory
+params.sigmoid = 100;                    % Sharpness of target dose boundary; typical values range from [50-200]
 params.max_iterations = 60;             % maximum number of iterations in the optimization; prompt will ask to continue every 30 iterations
 % params.tol;                           % use this to set the error tolerance of optimization
 
@@ -72,7 +73,7 @@ projections = initialize_projections(params,target); % create initial guess of p
 %% Display
 show_projections(projections,[],4,'Initial projections') % display initial projections
 show_projections(optimized_projections,[0,255],6,'Optimized projections') % display optimized projections
-show_dose_slices(optimized_reconstruction./max(optimized_reconstruction,[],'all'),[],5,'Dose slices') % display sliced dose profile
+show_dose_slices(optimized_reconstruction./max(optimized_reconstruction,[],'all'),[0,1],5,'Dose slices') % display sliced dose profile
 
 autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
@@ -85,8 +86,8 @@ histogram(optimized_reconstruction(voidInds)./max(optimized_reconstruction(:)),l
 histogram(optimized_reconstruction(gelInds)./max(optimized_reconstruction(:)),linspace(0,1,100),'facecolor','b','facealpha',0.4)
 xlim([0,1])
 title('Dose distribution')
-xlabel('Normalized dose')
-ylabel('Frequency')
-legend('Void doses','Gel doses')
+xlabel('Normalized Dose')
+ylabel('Voxel Counts')
+legend('Out-of-part Dose','In-part Dose')
 
 

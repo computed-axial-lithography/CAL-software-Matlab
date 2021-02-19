@@ -46,11 +46,11 @@ end
 
 % Preallocate 3D matrix for lookup table
 att_table = single(zeros([params.domain_size(1),params.domain_size(2),length(params.angles)]));
-N = params.domain_size(1);
+N = domain_size(1);
 
 % Generate trignometric tables
-costheta = cosd(params.angles);
-sintheta = sind(params.angles);
+costheta = cosd(angles);
+sintheta = sind(angles);
 
 % Define the x & y axes for the reconstructed image so that the origin
 % (center) is in the spot which RADON would choose.

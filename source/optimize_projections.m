@@ -102,7 +102,6 @@ curr_reconstruction = zeros(size(target));
 target_orig = target; % store a copy of the original padded_target
 
 
-
 target_voxel_count = get_voxel_count(target);
 curr_iter = 1;
 while curr_iter <= params.max_iterations
@@ -133,9 +132,11 @@ while curr_iter <= params.max_iterations
      end % end params.resin_abs_coeff
     
     
-    curr_reconstruction = curr_reconstruction/sum(curr_reconstruction(:))*sum(target(:));
-    curr_threshold = find_threshold(curr_reconstruction,target_orig,target_voxel_count);
+%     curr_reconstruction = curr_reconstruction/sum(curr_reconstruction(:))*sum(target(:));
+    curr_reconstruction = curr_reconstruction/max(curr_reconstruction(:));
 
+%     curr_threshold = find_threshold(curr_reconstruction,target_orig,target_voxel_count)
+    curr_threshold = 0.875;
 %     curr_threshold = params.threshold; %DELETE
     thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
 
@@ -253,9 +254,9 @@ while curr_iter <= params.max_iterations
         
         if nZ == 1
             figure(optimized_recon_plot)
-            imagesc(thresholded_reconstruction)
+            imagesc(clip_to_circle(curr_reconstruction))
             colorbar
-            colormap('hot')
+            colormap(CMRmap())
         elseif strcmp(params.vol_viewer,'volshow') && nZ ~= 1
             % Show evolving reconstruction using volshow
             figure(optimized_recon_plot)
@@ -284,12 +285,12 @@ while curr_iter <= params.max_iterations
         
         
     end
-    if mod(curr_iter,30) == 0 && curr_iter ~= 30
-        cont_iters = input('Run more iterations? (0) stop;   (1) continue   :');
-        if cont_iters == 0
-            break
-        end
-    end
+%     if mod(curr_iter,30) == 0 && curr_iter ~= 30
+%         cont_iters = input('Run more iterations? (0) stop;   (1) continue   :');
+%         if cont_iters == 0
+%             break
+%         end
+%     end
     curr_iter = curr_iter + 1;
 end
 

@@ -121,29 +121,30 @@ if isa(projections,'double') || isa(projections,'single') || isa(projections,'ui
             pause(0.01)
         end
     end
+    
+    if params.max_angle == 180
+        for i = N_projections+1:2*N_projections  % reverse and concatenate projections of 180 degress
 
-    for i = N_projections+1:2*N_projections  % reverse and concatenate projections of 180 degress
-
-        curr_image = zeros(params.ht_screen,params.wd_screen);
-        curr_image(img_rows,img_cols) = flipud(squeeze(projections_processed(:,:,i-N_projections)))';
-
-
-        % Rotate image before appending to image_stack
-        if params.rotate_projections ~= 0
-            curr_image = imrotate(curr_image,params.rotate_projections,'bilinear','crop');
-        end
-        image_stack{i} = uint8(params.intensity_scale_factor*curr_image);
+            curr_image = zeros(params.ht_screen,params.wd_screen);
+            curr_image(img_rows,img_cols) = flipud(squeeze(projections_processed(:,:,i-N_projections)))';
 
 
-        if params.verbose && mod(i,20) == 0
-            imagesc(image_stack{i}); 
-            title(['Frame ' num2str(i) ' of ' num2str(2*N_projections)])
-            axis equal
-            axis off
-            pause(0.01)
+            % Rotate image before appending to image_stack
+            if params.rotate_projections ~= 0
+                curr_image = imrotate(curr_image,params.rotate_projections,'bilinear','crop');
+            end
+            image_stack{i} = uint8(params.intensity_scale_factor*curr_image);
+
+
+            if params.verbose && mod(i,20) == 0
+                imagesc(image_stack{i}); 
+                title(['Frame ' num2str(i) ' of ' num2str(2*N_projections)])
+                axis equal
+                axis off
+                pause(0.01)
+            end
         end
     end
-    
 %%%%%%%%%%% If input projections are already in cell image stack form %%%%%%%%%%%
 elseif isa(projections,'cell')
     image_stack = projections;

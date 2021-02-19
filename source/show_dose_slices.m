@@ -56,8 +56,12 @@ if numel(size(cumulative_dose)) == 2
     else
         figure
     end
+    cumulative_dose = clip_to_circle(cumulative_dose);
     imagesc(cumulative_dose)
-    colormap hot
+    colormap(CMRmap())
+    daspect([1 1 1])
+    colorbar
+    caxis(intensity_range)
     title(title_string)
     pause(0.02);
 else

@@ -1,4 +1,6 @@
 # Ignore Matlab autosave .asv files
 *.asv
+*.prj
+*.mltbx
 
 

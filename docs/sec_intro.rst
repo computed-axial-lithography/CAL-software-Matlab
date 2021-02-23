@@ -21,8 +21,7 @@ The `CAL-software-Matlab`_ package can be installed by completing the following 
    ::
     toolboxFile = 'C:\Downloads\CAL-software-Matlab.mltbx';
     matlab.addons.toolbox.installToolbox(toolboxFile)
-3. This will open a dialog box with the license information. You must accept the license to proceed with installation.
-4. To test the installation run the following code in the Matlab command line:
+3. To test the installation run the following code in the Matlab command line:
    ::
     CALtest()
 

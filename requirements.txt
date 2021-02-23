@@ -1,2 +1,1 @@
-sphinx
-sphinxcontrib-matlabdomain
+git+https://github.com/syarra/sphinxcontrib-matlabdomain#egg=sphinxcontrib-matlabdomain

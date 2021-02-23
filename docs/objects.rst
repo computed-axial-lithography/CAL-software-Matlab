@@ -61,7 +61,7 @@ ImageSetObj
 
 .. class:: ImageSetObj(image_set,,proj_params_used,opt_params_used)
 
-   This class creates an object that contains a reconstruction and the parameters that were used in creation of the reconstruction.
+   This class creates an object that contains an image set and the parameters that were used in creation of the image set.
 
    :Parameters:   * image_set - cell array of images (used for image projection)
                   * image_params_used - structure of image parameters

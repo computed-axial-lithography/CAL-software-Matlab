@@ -10,8 +10,10 @@ Documentation
    :maxdepth: 4
    
    sec_intro
-   sec_code_reference
+   sec_usage
    sec_examples
+   sec_code_ref
+   
 
 .. toctree::
    :maxdepth: 1
@@ -26,19 +28,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-
-.. Projection Generation and Optimization
-.. ======================================
-
-.. Example parameters definition:
-
-.. .. code-block:: matlab
-
-..    a = 'b';
-
-
-.. Projection Control
-.. ==================
-

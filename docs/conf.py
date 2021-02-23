@@ -10,15 +10,25 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 
+matlab_keep_package_prefix = False
+
+matlab_src_dir = os.path.abspath('..')
+
+
+print(matlab_src_dir)
+# sys.path.append(os.path.abspath('../'))
+# this_dir = os.path.dirname(os.path.abspath(__file__))
+# matlab_src_dir = os.path.abspath(os.path.join(this_dir, '..','src'))
+primary_domain = 'mat'
 
 # -- Project information -----------------------------------------------------
 
-project = 'CAL-software'
-copyright = '2021, Joseph Toombs'
+project = 'CAL-software-Matlab'
+copyright = '2021, University of California, Berkeley'
 author = 'Joseph Toombs'
 
 # The full version, including alpha/beta/rc tags
@@ -32,7 +42,9 @@ release = '1.0.0'
 # ones.
 import sphinx_rtd_theme
 extensions = [
-    "sphinx_rtd_theme",
+    'sphinx_rtd_theme',
+    'sphinxcontrib.matlab',
+    'sphinx.ext.autodoc',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

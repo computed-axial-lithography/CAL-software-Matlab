@@ -1,14 +1,15 @@
 [ReadtheDocs](https://cal-software-matlab.readthedocs.io/en/latest/sec_intro.html)
 
 
-============
+
 Introduction
 ============
+
 .. highlight:: matlab
 
 You have reached the documentation of the `CAL-software-Matlab`_ toolbox! Computed axial lithography (CAL) is a 3D printing process inspired by the tomographic principles of computed tomography (CT) scanning. It consists creating light intensity images with iterative optimization and projecting these with a DLP-type projector into a rotating vial of photocurable resin to acheive a prescribed dose in the shape of a target object. 
 
-.. image:: docs/images/title.png
+.. image:: https://raw.githubusercontent.com/computed-axial-lithography/CAL-software-Matlab/master/docs/images/title.png
    :width: 1000
 
 
@@ -26,11 +27,11 @@ The `CAL-software-Matlab`_ package can be installed by completing the following 
     matlab.addons.toolbox.installToolbox(toolboxFile)
 3. To test the installation run the following code in the Matlab command line:
    ::
-    CALtest()
+      CALtest()
 
    You should see the following if the installation succeeded:
    ::
-    CAL-software-Matlab Toolbox installed successfully!
+      CAL-software-Matlab Toolbox installed successfully!
 
 
 

@@ -8,7 +8,7 @@ Introduction
 
 .. highlight:: matlab
 
-You have reached the documentation of the `CAL-software-Matlab`_ toolbox! Computed axial lithography (CAL) is a 3D printing process inspired by the tomographic principles of computed tomography (CT) scanning. It consists creating light intensity images with iterative optimization and projecting these with a DLP-type projector into a rotating vial of photocurable resin to acheive a prescribed dose in the shape of a target object. 
+You have reached the documentation of the `CAL-software-Matlab`_ toolbox! Computed axial lithography (CAL) is a 3D printing process inspired by the tomographic principles of computed tomography (CT) scanning. It consists of creating light intensity images with iterative optimization and projecting these with a DLP-type projector into a rotating vial of photocurable resin to acheive a prescribed dose in the shape of a target object. 
 
 .. image:: https://raw.githubusercontent.com/computed-axial-lithography/CAL-software-Matlab/master/docs/images/title.png
    :width: 1000

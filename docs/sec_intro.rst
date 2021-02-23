@@ -16,7 +16,7 @@ Installation
 
 The `CAL-software-Matlab`_ package can be installed by completing the following steps:
 
-1. Download a the ``CAL-software-Matlab.mltbx`` from the latest `release`_. This is a Matlab toolbox file (.mltbx) with all the necessary files for the CAL-software package.
+1. Download the ``CAL-software-Matlab.mltbx`` file from the latest `release`_. This is a Matlab toolbox file (.mltbx) with all the necessary files for the CAL-software package.
 2. Open Matlab and run the following code in the Matlab command line. Be sure to change ``toolboxFile`` to the correct path to the downloaded .mltbx file.
    ::
     toolboxFile = 'C:\Downloads\CAL-software-Matlab.mltbx';

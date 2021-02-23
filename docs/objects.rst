@@ -56,7 +56,7 @@ ReconObj
 
 
 
-ProjSetObj
+ImageSetObj
 ~~~~~~~~~~
 
 .. class:: ImageSetObj(image_set,,proj_params_used,opt_params_used)

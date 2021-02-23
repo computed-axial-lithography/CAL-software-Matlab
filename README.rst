@@ -1,5 +1,5 @@
 `ReadtheDocs`_
-.. _`[ReadtheDocs]`: https://cal-software-matlab.readthedocs.io/en/latest/sec_intro.html
+.. _`ReadtheDocs`: https://cal-software-matlab.readthedocs.io/en/latest/sec_intro.html
 
 
 Introduction

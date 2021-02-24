@@ -9,7 +9,7 @@ Image set creation
     Constructor for the :class:`CALCreateImageSet` class that creates an image set given a :class:`ProjObj` and structure of image transformation parameters.
 
 
-    :Parameters:    * projection_obj - :class:`ProjObj` containing the projections
+    :Parameters:    * projection_obj - :class:`ProjObj` containing the projections OR a "plain" 3D projection matrix (FOR BACKWARD COMPATIBILITY)
                     
                     * image_params - structure of image transformation parameters (refer to image at the end of this section for visual depiction of some of the parameters)
                         * image_width     -  width in pixels of the projection display                             
@@ -20,8 +20,9 @@ Image set creation
                         * array_offset    - offset in the z-direction in pixels of each copy from each other
                         * size_scale_factor    - size scaling of the projection within the image           
                         * intensity_scale_factor    - intensity scaling of the projection within the image (intensity saturates at 255)
-                        * invert_vert          -  flip orientation of the projeciton within the image over the transverse or horizontal axis
+                        * invert_vert          -  flip orientation of the projection within the image over the transverse or horizontal axis
                         * rotate        - rotation in degrees of the projection within the image
+                        * angles(ONLY FOR BACKWARD COMPATIBILITY) - angles of the input 3D projection matrix
 
                         +------------------------+-----------------+
                         | **image_params.x**     |**Default value**|

@@ -98,10 +98,10 @@ More information on setting optimization parameters (:ref:`optimization` and :re
 Creating image sets
 ###################
 
-Image sets are what is typically used to when commanding the projector system during a CAL print. They are generated from the optimized projections given some image parameters that perform scaling, rotation, multiplication, etc. based on the configuration of the CAL system and the desired print characteristics. More information on the image parameters can be found in :ref:`imagesetcreation` in the code reference.
-
 .. image:: images/image_set_create.png
    :width: 1000
+
+Image sets are what is typically used to when commanding the projector system during a CAL print. They are generated from the optimized projections given some image parameters that perform scaling, rotation, multiplication, etc. based on the configuration of the CAL system and the desired print characteristics. More information on the image parameters can be found in :ref:`imagesetcreation` in the code reference.
 
 To generate an image set, you can use the :class:`CALCreateImageSet` class. First, initialize the class with the :class:`ProjObj`, generated during optimization, and the image parameters:
 ::
@@ -113,7 +113,7 @@ Then use the class function :func:`run` to start creating the image set:
 ::
     image_set_obj = C.run();
 
-Here :func:`run` creates an :class:`ImageSetObj` and it is saved to ``image_set_obj``. 
+Here :func:`run` creates an :class:`ImageSetObj` and it is saved to ``image_set_obj`` in this example case. 
 
 
 
@@ -131,7 +131,49 @@ Or you can run the class function :func:`saveImages` standalone if you only have
 
 A folder called ``images`` will be created at the specified filepath (here the current working directory is used) and the images will be saved individually into the folder with filenames ``0001.png``, ``0002.png``, and so on.
 
+
+Backward compatibility
+----------------------
+
+Previous versions of the CAL-software-Matlab toolbox have used a "plain" 3D projection matrix when generating the image set. In the current and all future versions of the toolbox, the projection matrix is contained in the :class:`ProjObj` along with all of the parameters that were used to create the optimized projection matrix. 
+
+:class:`CALCreateImageSet` takes in a :class:`ProjObj` and uses these parameters to generate the correct image set. However, it has also been designed to accept a "plain" 3D projection matrix in place of the :class:`ProjObj` as long as the image parameter ``angles`` is set to the angles at which this "plain" projection matrix was calculated. 
+
+
 ----
+
+
+Image projection control
+########################
+
+Once the image set is created, image projection with the DLP projector can begin. To do this, the toolbox assumes that `Pysch Toolbox 3 for Matlab`_ is installed. Pysch Toolbox allows precise control of images on a DLP projector that is connected as a second monitor. 
+
+To begin, the projector should be connected as a second monitor and should be responsive to changes such as a system file explorer being dragged across the monitor or normal web video. The following code can be used to check if Matlab recognizes there are two monitors:
+::
+    monitors = get(groot,'MonitorPositions')
+
+Once you verify the monitor number corresponding to the projector, you can begin the image projection by first initializing the :class:`CALProjectImageSet` with the :class:`ImageSetObj` created in the previous section and the rotation velocity of the rotation stage in degrees/s as:
+::
+    DLP = CALProjectImageSet(image_set_obj,24);
+
+The DLP projector is assumed to be the second monitor by default. If your projector is not the second monitor, you may also specify the monitor number (4 as an example) as a third argument:
+::
+    DLP = CALProjectImageSet(image_set_obj,24,4);
+
+When initializing, sometimes the projector can flash a bright image so make sure that the resin remains blocked from light at this point. 
+
+Next, to begin projecting, use the class function :func:`startProjecting`:
+::
+    DLP.startProjecting();
+
+After this, by default, the code will wait until the user presses the **space bar** to begin playing the image sequence. This is a good time to remove a light blocker in front of the resin. Then, as the image sequence plays the user can press the **tab key** to pause the image sequence (**space bar** resumes the sequence). To stop the image sequence at any time, the user can press the **escape key**.
+
+For more information setting up the image sequence projection, see :ref:`imageproject` and :ref:`examples`.
+
+.. _`Pysch Toolbox 3 for Matlab`: http://psychtoolbox.org/download
+
+
+-----
 
 
 Saving data for later use

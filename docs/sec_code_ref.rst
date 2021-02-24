@@ -9,6 +9,7 @@ Code Reference
    targetprep.rst
    optimize.rst
    imageset.rst
+   imageproject.rst
    projectors.rst
    objects.rst
     

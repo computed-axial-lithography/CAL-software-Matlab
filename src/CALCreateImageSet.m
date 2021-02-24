@@ -17,17 +17,22 @@ classdef CALCreateImageSet
             
             if ~isequal(class(projection_obj),'ProjObj')
                 if ~isfield(obj.image_params,'angles')
-                    error('Backwards compatibility: Creating projection set directly from projection matrix requires image_params.angles to be set to the angles at which the projection matrix was derived.')
+                    error('Backwards compatibility: Creating projection set directly from projection matrix requires image_params.angles to be set to the angles at which the projection matrix was generated.')
                     return
                 else
-                    obj.angles = obj.image_params.angles;
+                    fprintf('\nAttempting backward compatible image set creation.\nCheck that the output image set matches expectations.\n');
+                    pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');
                 end
+                obj.angles = obj.image_params.angles;
+                obj.proj = projection_obj;
+                
             else
                 obj.angles = projection_obj.proj_params_used.angles;
+                obj.proj = obj.projection_obj.projection;
             end
             
             
-            obj.proj = projection_obj.projection;
+            
             
             % set default parameters
             obj.default.image_width = 1920;
@@ -106,6 +111,7 @@ classdef CALCreateImageSet
             if max(obj.angles) <= 180
                 image_set = cell(1,2*length(obj.angles));
                 for i=1:length(obj.angles)
+                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,2*length(obj.angles));
                     image_set{i} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...
@@ -114,9 +120,10 @@ classdef CALCreateImageSet
                                                         obj.image_params.array_num,...
                                                         obj.image_params.array_offset);
                 end
-                i_r=2*length(obj.angles):-1:length(obj.angles)+1;
-                for i=length(obj.angles):-1:1
-                    image_set{i_r(i)} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
+                proj_mod = obj.flipLR(proj_mod);
+                for i=1:length(obj.angles)
+                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i+length(obj.angles),i+length(obj.angles),2*length(obj.angles));
+                    image_set{i+length(obj.angles)} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...
                                                         obj.image_params.t_offset,...
@@ -128,6 +135,7 @@ classdef CALCreateImageSet
             if max(obj.angles) > 180 && max(obj.angles) <= 360
                 image_set = cell(1,length(obj.angles));
                 for i=1:length(obj.angles)
+                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,length(obj.angles));
                     image_set{i} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...
@@ -137,10 +145,24 @@ classdef CALCreateImageSet
                                                         obj.image_params.array_offset);
                 end
             end
-            image_set_obj = ImageSetObj(image_set,...
+            
+            
+
+            try 
+                backwards_comp_params = struct();
+                backwards_comp_params.angles = obj.angles;
+                backwards_comp_params.gen_from_old_proj = true;
+                image_set_obj = ImageSetObj(image_set,...
+                                          obj.image_params,...
+                                          backwards_comp_params,...
+                                          []);
+                
+            catch
+                image_set_obj = ImageSetObj(image_set,...
                                       obj.image_params,...
                                       obj.projection_obj.proj_params_used,...
                                       obj.projection_obj.opt_params_used);
+            end
         end
         
         

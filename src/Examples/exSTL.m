@@ -11,7 +11,7 @@ proj_params.angles = linspace(0,179,180);
 proj_params.bit8 = 1;
 
 % set optimization parameters
-opt_params.max_iter = 50;
+opt_params.max_iter = 40;
 opt_params.threshold = 0.8;
 opt_params.learning_rate = 0.005;
 

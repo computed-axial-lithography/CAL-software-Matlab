@@ -115,13 +115,13 @@ Typical example
 ---------------
 This example shows how to set the image parameters and create an image set from a projection object. If the STL example above is run before this example the image set should appear as in the image below.
 ::
-    image_params.size_scale_factor = 3;
+    image_params.size_scale_factor = 2;
     image_params.invert_vert = 1;
     image_params.intensity_scale_factor = 1;
     image_params.t_offset = 0;
-    image_params.z_offset = 100;
+    image_params.z_offset = 0;
     image_params.array_num = 2;
-    image_params.array_offset = 300;
+    image_params.array_offset = 350;
     image_params.image_width = 1920;
     image_params.image_height = 1080;
 

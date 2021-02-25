@@ -92,7 +92,7 @@ classdef CALOptimize
 
             
             if obj.verbose
-                addpath('autoArrangeFigures_bin'); % add path to function for automatically arranging figures on monitor
+                Display.addPathsDisplay();
                 fprintf('Beginning optimization of projections\n');
 
                 display_ev = DisplayEvolving(obj.target_obj.dim);

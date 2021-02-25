@@ -6,9 +6,7 @@ classdef Display
     
     methods
         function obj = Display()
-            addpath('colormaps_bin')
-            addpath('imshow_3D_bin')
-            addpath('autoArrangeFigures_bin')
+
         end
   
     
@@ -16,8 +14,17 @@ classdef Display
     
     
     methods (Static = true)
+        function [] = addPathsDisplay()
+            bin_filepath = fullfile(mfilename('fullpath'));
+            bin_filepath = erase(bin_filepath,'Display');
+            addpath(fullfile(bin_filepath,'colormaps_bin'));
+            addpath(fullfile(bin_filepath,'imshow_3D_bin'));
+            addpath(fullfile(bin_filepath,'autoArrangeFigures_bin'));
+        end
         
         function [] = displayReconstruction(x,varargin)
+            
+            Display.addPathsDisplay();
             
             if nargin==1
                 title_str = sprintf('Target');
@@ -94,7 +101,7 @@ classdef Display
         end
         
         function [] = showProjections(b,title_string,intensity_range,figure_number)
-
+            Display.addPathsDisplay();
             
             if ~exist('intensity_range','var') || isempty(intensity_range)
                 intensity_range = NaN;
@@ -163,7 +170,8 @@ classdef Display
         end
         
         function [] = showDose(x,title_string,intensity_range,figure_number)
-
+            Display.addPathsDisplay();
+            
             if ~exist('intensity_range','var') || isempty(intensity_range)
                 intensity_range = NaN;
             end
@@ -231,6 +239,7 @@ classdef Display
         end
             
         function [] = showImageSet(image_set_obj)
+            Display.addPathsDisplay();
             
             figure
             if ~isequal(class(image_set_obj),'ImageSetObj')

@@ -66,8 +66,11 @@ function [voxelized_target,target_care_area] = voxelizeTarget(stl_filename,resol
         fprintf('Beginning voxelization of target\n');
         tic;
     end
-
-    addpath('STL_read_bin'); % add functions specific to the STL read to the path
+    
+    bin_filepath = fullfile(mfilename('fullpath'));
+    bin_filepath = erase(bin_filepath,'CALPrepTarget');
+    bin_filepath = fullfile(bin_filepath,'STL_read_bin');
+    addpath(bin_filepath); % add functions specific to the STL read to the path
 
     fv = stlread(stl_filename); % read STL
     fvV = fv.vertices;

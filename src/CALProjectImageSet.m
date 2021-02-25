@@ -29,13 +29,25 @@ classdef CALProjectImageSet
             if nargin == 3
                 obj.monitor_id = varargin{1};
             else
-                obj.monitor_id = 2;
+                screens = Screen('Screens');
+                obj.monitor_id = max(screens);
             end
             
             if nargin == 4
                 obj.blank_when_paused = varargin{2};
             else
                 obj.blank_when_paused = 1;
+            end
+            
+            
+            try
+                ver_str = PsychtoolboxVersion;
+            catch
+                error('Pyschtoolbox is not installed or is improperly installed');
+            end
+            
+            if str2num(ver_str(1)) < 3
+                error('Pyschtoolbox version 3 is required. The installed version is %s.',ver_str);
             end
             
             sca % clear possible third screen window == screen('CloseAll')
@@ -93,7 +105,7 @@ classdef CALProjectImageSet
                     end
                     pressed_key = obj.pauseUntilKey([32,27]);
                     if pressed_key == 32
-                        fprintf('\nResumed...    (tab to pause, esc to stop)\n');
+                        obj.printResumed();
                     end
                 end
                 if pressed_key == 27 % if pressed key is esc, exit loop
@@ -106,7 +118,7 @@ classdef CALProjectImageSet
             % display blank image before closing to avoid white screen on
             % close
             obj.flipBlankImage()
-            Screen('Close');
+            Screen('CloseAll');
             
         end
         
@@ -162,10 +174,12 @@ classdef CALProjectImageSet
             end
             
         end
+        function [] = printResumed()
+            fprintf('\nResumed...                              (tab to pause, esc to stop)\n')
+        end
         
         function [] = printPaused(curr_frame,global_time)
             fprintf('\nPaused on image #%5.0f at %5.1f s...    (spacebar to resume, esc to stop)\n',curr_frame,global_time)
-
         end
         
         function [] = printStopped(curr_frame,total_run_time)

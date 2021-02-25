@@ -10,9 +10,7 @@ classdef DisplayEvolving < handle
     
     methods
         function obj = DisplayEvolving(dim)
-            %DISPLAY Construct an instance of this class
-            %   Detailed explanation goes here
-            addpath('colormaps_bin')
+            
             if dim ~= 2
                 obj.panel_3D = uipanel(figure(3));
             end
@@ -21,7 +19,7 @@ classdef DisplayEvolving < handle
     
     
         function [obj] = displayEvolvingReconstruction(obj,x,curr_iter,curr_threshold)
-            
+            Display.addPathsDisplay();
             title_str = sprintf('Optimized reconstruction iter = %d',curr_iter);
             
             if ndims(x) == 2
@@ -53,6 +51,7 @@ classdef DisplayEvolving < handle
     methods (Static = true)
         
         function [] = displayReconstruction(x,varargin)
+            Display.addPathsDisplay()
             
             if ~exist('varargin{1}','var')
                 title_str = sprintf('Target');

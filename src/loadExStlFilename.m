@@ -1,6 +1,7 @@
 function filepath = loadExStlFilename(type)
     filepath = fullfile(mfilename('fullpath'));
-    filepath = erase(filepath,'loadExStlFilename');    
+    filepath = erase(filepath,'loadExStlFilename');  
+    filepath = fullfile(filepath,'Examples');
     if strcmp(type,'bear')
         filepath = fullfile(filepath,'bear.stl');
     elseif strcmp(type,'thinker')

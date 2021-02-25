@@ -6,14 +6,19 @@ classdef CALCreateImageSet
         default
         angles
         proj
+        verbose
     end
     
     methods
-        function obj = CALCreateImageSet(projection_obj,image_params)
+        function obj = CALCreateImageSet(projection_obj,image_params,varargin)
             
             obj.projection_obj = projection_obj;
             obj.image_params = image_params;
-
+            if nargin == 3
+                obj.verbose = varargin{1};
+            else
+                obj.verbose = 0;
+            end
             
             if ~isequal(class(projection_obj),'ProjObj')
                 if ~isfield(obj.image_params,'angles')
@@ -111,7 +116,9 @@ classdef CALCreateImageSet
             if max(obj.angles) <= 180
                 image_set = cell(1,2*length(obj.angles));
                 for i=1:length(obj.angles)
-                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,2*length(obj.angles));
+                    if obj.verbose
+                        fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,2*length(obj.angles));
+                    end
                     image_set{i} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...
@@ -122,7 +129,9 @@ classdef CALCreateImageSet
                 end
                 proj_mod = obj.flipLR(proj_mod);
                 for i=1:length(obj.angles)
-                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i+length(obj.angles),i+length(obj.angles),2*length(obj.angles));
+                    if obj.verbose
+                        fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i+length(obj.angles),i+length(obj.angles),2*length(obj.angles));
+                    end
                     image_set{i+length(obj.angles)} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...
@@ -135,7 +144,9 @@ classdef CALCreateImageSet
             if max(obj.angles) > 180 && max(obj.angles) <= 360
                 image_set = cell(1,length(obj.angles));
                 for i=1:length(obj.angles)
-                    fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,length(obj.angles));
+                    if obj.verbose
+                        fprintf('\nAdding projection #%5.0f to image #%5.0f/%5.0f',i,i,length(obj.angles));
+                    end
                     image_set{i} = obj.arrayInsertProj(  squeeze(proj_mod(:,i,:)),...
                                                         obj.image_params.image_width,...
                                                         obj.image_params.image_height,...

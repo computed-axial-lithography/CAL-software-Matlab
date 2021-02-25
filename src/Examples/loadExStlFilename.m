@@ -1,11 +1,13 @@
 function filepath = loadExStlFilename(type)
+    filepath = fullfile(mfilename('fullpath'));
+    filepath = erase(filepath,'loadExStlFilename');    
     if strcmp(type,'bear')
-        filepath = fullfile(pwd,'Examples','bear.stl');
+        filepath = fullfile(filepath,'bear.stl');
     elseif strcmp(type,'thinker')
-        filepath = fullfile(pwd,'Examples','thinker.stl');
+        filepath = fullfile(filepath,'thinker.stl');
     elseif strcmp(type,'octet')
-        filepath = fullfile(pwd,'Examples','octet.stl');
+        filepath = fullfile(filepath,'octet.stl');
     elseif strcmp(type,'octahedron')
-        filepath = fullfile(pwd,'Examples','octahedron.stl');
+        filepath = fullfile(filepath,'octahedron.stl');
     end
 end

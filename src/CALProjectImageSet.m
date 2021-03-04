@@ -56,7 +56,7 @@ classdef CALProjectImageSet
             % Define the SLM struct
             Screen('Preference', 'Verbosity', 1);
             Screen('Preference', 'VisualDebugLevel', 1);
-            Screen('Preference','SkipSyncTests',0);
+            % Screen('Preference','SkipSyncTests',0);
             
             obj.SLM = Screen('OpenWindow',obj.monitor_id);
             Screen(obj.SLM, 'PutImage',obj.blank_image); 

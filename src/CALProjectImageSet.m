@@ -56,7 +56,13 @@ classdef CALProjectImageSet
             % Define the SLM struct
             Screen('Preference', 'Verbosity', 1);
             Screen('Preference', 'VisualDebugLevel', 1);
-            % Screen('Preference','SkipSyncTests',0);
+            try
+                Screen('Preference','SkipSyncTests',0);
+            catch
+                Screen('Preference','SkipSyncTests',2);
+                warning('Warning! Failed Sync Tests in PyschToolbox. Continuing projection by skipping Sync Tests. Ensure that images are displaying correctly.');
+            end
+
             
             obj.SLM = Screen('OpenWindow',obj.monitor_id);
             Screen(obj.SLM, 'PutImage',obj.blank_image); 

@@ -122,9 +122,9 @@ This example shows how to set the image parameters and create an image set from 
     image_params.z_offset = 0;
     image_params.array_num = 2;
     image_params.array_offset = 350;
-    image_params.image_width = 1920;
-    image_params.image_height = 1080;
-
+    image_params.image_width = 1920; % this parameter should be changed to match your projector image, default is 1920
+    image_params.image_height = 1080; % this parameter should be changed to match your projector image, default is 1080
+ 
     C = CALCreateImageSet(proj_obj,image_params);
 
     image_set_obj = C.run();
@@ -149,8 +149,8 @@ This example shows how to set the image parameters and create an image set from 
     image_params.z_offset = 100;
     image_params.array_num = 2;
     image_params.array_offset = 300;
-    image_params.image_width = 1920;
-    image_params.image_height = 1080;
+    image_params.image_width = 1920; % this parameter should be changed to match your projector image, default is 1920
+    image_params.image_height = 1080; % this parameter should be changed to match your projector image, default is 1080
     image_params.angles = linspace(0,179,180); % this parameter must be added 
 
     C = CALCreateImageSet(optimized_projections,image_params); % Note: now a 3D matrix is in the place of the typical projection object
@@ -176,8 +176,10 @@ This example shows how to set up image sequence projection with an :class:`Image
     % set the rotation velocity in deg/s
     rot_vel = 24;
 
-    % initialize the CALProjectImageSet class
-    DLP = CALProjectImageSet(image_set_obj,24);
+    % initialize the CALProjectImageSet class, this basic example assumes the projector is connected
+    % to the highest monitor number (e.g. if there are 2 monitors, it assumes projector is connected to 
+    % monitor #2)
+    DLP = CALProjectImageSet(image_set_obj,rot_vel);
 
     % begin projecting images
     DLP.startProjecting(); 
@@ -191,10 +193,13 @@ This example shows how to set up image sequence projection with an :class:`Image
     rot_vel = 24;
 
     % set the monitor ID
-    monitor_id = 3
+    monitor_id = 3;
+
+    % set whether the screen projects a black screen when projection is paused
+    blank_when_paused = 1;
 
     % initialize the CALProjectImageSet class
-    DLP = CALProjectImageSet(image_set_obj,24,monitor_id,0); % Note: 0 sets blank_when_paused to deactivated
+    DLP = CALProjectImageSet(image_set_obj,rot_vel,monitor_id,blank_when_paused);
 
     % begin projecting images
     DLP.startProjecting(); 

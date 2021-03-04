@@ -10,7 +10,7 @@ Image sequence projection
 
     To use with optional parameters:
     ::
-        T = CALProjectImageSet(image_set_obj,rot_vel,monitor_id,blank_when_paused);
+        DLP = CALProjectImageSet(image_set_obj,rot_vel,monitor_id,blank_when_paused);
 
     :Parameters:    * image_set_obj - :class:`ImageSetObj` containing the image set (output from :func:`CALCreateImageSet.run`)
                     

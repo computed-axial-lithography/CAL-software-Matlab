@@ -58,13 +58,15 @@ classdef CALProjectImageSet
             Screen('Preference', 'VisualDebugLevel', 1);
             try
                 Screen('Preference','SkipSyncTests',0);
+                obj.SLM = Screen('OpenWindow',obj.monitor_id);
+                warning('Warning! Failed to open PyschToolbox window after Sync Tests. Continuing projection by skipping Sync Tests. Ensure that images are displaying correctly.');
             catch
                 Screen('Preference','SkipSyncTests',2);
-                warning('Warning! Failed Sync Tests in PyschToolbox. Continuing projection by skipping Sync Tests. Ensure that images are displaying correctly.');
+                obj.SLM = Screen('OpenWindow',obj.monitor_id);
             end
 
             
-            obj.SLM = Screen('OpenWindow',obj.monitor_id);
+            
             Screen(obj.SLM, 'PutImage',obj.blank_image); 
             Screen(obj.SLM,'Flip');
         end

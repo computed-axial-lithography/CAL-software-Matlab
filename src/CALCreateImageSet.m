@@ -3,6 +3,7 @@ classdef CALCreateImageSet
     properties
         projection_obj
         image_params
+        backwards_comp_params
         default
         angles
         proj
@@ -14,6 +15,7 @@ classdef CALCreateImageSet
             
             obj.projection_obj = projection_obj;
             obj.image_params = image_params;
+            
             if nargin == 3
                 obj.verbose = varargin{1};
             else
@@ -25,13 +27,15 @@ classdef CALCreateImageSet
                     error('Backwards compatibility: Creating projection set directly from projection matrix requires image_params.angles to be set to the angles at which the projection matrix was generated.')
                     return
                 else
-                    fprintf('\nAttempting backward compatible image set creation.\nCheck that the output image set matches expectations.\n');
+                    obj.backwards_comp_params.gen_from_old_proj = true;
+                    warning('Attempting backward compatible image set creation. Check that the output image set matches expectations.');
                     pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');
                 end
                 obj.angles = obj.image_params.angles;
                 obj.proj = projection_obj;
                 
             else
+                obj.backwards_comp_params.gen_from_old_proj = false;
                 obj.angles = projection_obj.proj_params_used.angles;
                 obj.proj = obj.projection_obj.projection;
             end
@@ -40,8 +44,6 @@ classdef CALCreateImageSet
             
             
             % set default parameters
-            obj.default.image_width = 1920;
-            obj.default.image_height = 1080;
             obj.default.t_offset = 0;
             obj.default.z_offset = 0;
             obj.default.array_offset = 0;
@@ -52,10 +54,10 @@ classdef CALCreateImageSet
             obj.default.rotate = 0;
             
             if ~isfield(obj.image_params,'image_width')
-                obj.image_params.image_width = obj.default.image_width;
+                error('You must specify the width of the projection image in dimensions of pixels in the image parameters.');
             end          
             if ~isfield(obj.image_params,'image_height')
-                obj.image_params.image_height = obj.default.image_height;
+                error('You must specify the height of the projection image in dimensions of pixels in the image parameters.');
             end 
             if ~isfield(obj.image_params,'t_offset')
                 obj.image_params.t_offset = obj.default.t_offset;
@@ -159,16 +161,14 @@ classdef CALCreateImageSet
             
             
 
-            try 
-                backwards_comp_params = struct();
-                backwards_comp_params.angles = obj.angles;
-                backwards_comp_params.gen_from_old_proj = true;
+            if obj.backwards_comp_params.gen_from_old_proj == true 
+                obj.backwards_comp_params.angles = obj.angles;
                 image_set_obj = ImageSetObj(image_set,...
                                           obj.image_params,...
-                                          backwards_comp_params,...
+                                          obj.backwards_comp_params,...
                                           []);
                 
-            catch
+            else
                 image_set_obj = ImageSetObj(image_set,...
                                       obj.image_params,...
                                       obj.projection_obj.proj_params_used,...

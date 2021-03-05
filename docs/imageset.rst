@@ -12,8 +12,8 @@ Image set creation
     :Parameters:    * projection_obj - :class:`ProjObj` containing the projections OR a "plain" 3D projection matrix (FOR BACKWARD COMPATIBILITY)
                     
                     * image_params - structure of image transformation parameters (refer to image at the end of this section for visual depiction of some of the parameters)
-                        * image_width     -  width in pixels of the projection display                             
-                        * image_height     -  height in pixels of the projection display
+                        * image_width     -  width in pixels of the projection display, (THIS IS REQUIRED TO CREATE AN IMAGE SET)                            
+                        * image_height     -  height in pixels of the projection display, (THIS IS REQUIRED TO CREATE AN IMAGE SET)
                         * t_offset          - offset in the transverse or x-direction in pixels of the projection within the image
                         * z_offset      - offset in the z-direction in pixels of the projection within the image                       
                         * array_num    - number of copies of the projection within the image
@@ -26,10 +26,6 @@ Image set creation
 
                         +------------------------+-----------------+
                         | **image_params.x**     |**Default value**|
-                        +------------------------+-----------------+
-                        | image_width            |    1920         |
-                        +------------------------+-----------------+
-                        | image_height           |    1080         |
                         +------------------------+-----------------+
                         | t_offset               |   0             |
                         +------------------------+-----------------+

@@ -26,6 +26,20 @@ classdef CALProjectImageSet
             
             obj.blank_image = uint8(zeros(obj.image_set_obj.image_params_used.image_height,...
                                           obj.image_set_obj.image_params_used.image_width));
+
+            try
+                ver_str = PsychtoolboxVersion;
+            catch
+                error('Pyschtoolbox is not installed or is improperly installed');
+            end
+
+            if str2num(ver_str(1)) < 3
+                error('Pyschtoolbox version 3 is required. The installed version is %s.',ver_str);
+            end
+
+            AssertOpenGL; % Assure Screen() visual stimulation is working.
+            KbName ('UnifyKeyNames'); % Use same key names on all operating systems.
+
             if nargin == 3
                 obj.monitor_id = varargin{1};
             else
@@ -37,17 +51,6 @@ classdef CALProjectImageSet
                 obj.blank_when_paused = varargin{2};
             else
                 obj.blank_when_paused = 1;
-            end
-            
-            
-            try
-                ver_str = PsychtoolboxVersion;
-            catch
-                error('Pyschtoolbox is not installed or is improperly installed');
-            end
-            
-            if str2num(ver_str(1)) < 3
-                error('Pyschtoolbox version 3 is required. The installed version is %s.',ver_str);
             end
             
             sca % clear possible third screen window == screen('CloseAll')
@@ -83,7 +86,7 @@ classdef CALProjectImageSet
             
             if wait_to_start
                 fprintf('\n\n---------Press spacebar to start image projection--------\n\n');
-                obj.pauseUntilKey(32); % 32 is spacebar
+                obj.pauseUntilKey(KbName('space')); % 32 is spacebar
                 fprintf('\nStarted...\n');
             end
             
@@ -104,17 +107,17 @@ classdef CALProjectImageSet
                 
                 
                 pressed_key = obj.checkKey();
-                if pressed_key == 9 % if pressed key is tab, pause until spacebar is pressed again
+                if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
                     obj.printPaused(i,toc(global_time));
                     if obj.blank_when_paused
                         obj.flipBlankImage();
                     end
-                    pressed_key = obj.pauseUntilKey([32,27]);
-                    if pressed_key == 32
+                    pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
+                    if pressed_key == KbName('space')
                         obj.printResumed();
                     end
                 end
-                if pressed_key == 27 % if pressed key is esc, exit loop
+                if pressed_key == KbName('ESCAPE') % if pressed key is esc, exit loop
                     total_run_time = toc(global_time);
                     obj.printStopped(i,total_run_time);
                     run_flag = 0;

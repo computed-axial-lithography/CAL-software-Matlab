@@ -24,9 +24,6 @@ classdef CALProjectImageSet
                 warning('Warning!!! Frame rate %6.1fHz is higher than 60Hz. Only proceed if your projector is capable of refresh rates >60Hz.',obj.frame_rate)
             end
             
-            obj.blank_image = uint8(zeros(obj.image_set_obj.image_params_used.image_height,...
-                                          obj.image_set_obj.image_params_used.image_width));
-
             try
                 ver_str = PsychtoolboxVersion;
             catch
@@ -68,10 +65,7 @@ classdef CALProjectImageSet
                 obj.SLM = Screen('OpenWindow',obj.monitor_id);
             end
 
-            
-            
-            Screen(obj.SLM, 'PutImage',obj.blank_image); 
-            Screen(obj.SLM,'Flip');
+            obj.flipBlankImage();
         end
                 
         
@@ -148,7 +142,7 @@ classdef CALProjectImageSet
         end
         
         function [] = flipBlankImage(obj)
-            Screen(obj.SLM, 'PutImage',obj.blank_image); 
+            Screen('FillRect', obj.SLM, 0);
             Screen(obj.SLM,'Flip');   
         end
         

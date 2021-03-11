@@ -58,3 +58,26 @@ patterns of light that are refreshed in sync with the rotation of the container.
 projection creates a 3D dose distribution that photopolymerizes the resin into the desired object.
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.
+
+Citation
+--------
+
+If you use this code in your research, please cite the following publication:
+::
+   [1] B.E. Kelly, I. Bhattacharya, H. Heidari, M. Shusteff, C.M. Spadaccini, H.K. Taylor, Volumetric additive manufacturing via tomographic reconstruction, Science (80-. ). 363 (2019) 1075–1079. https://doi.org/10.1126/science.aau7114.
+
+Bibtex entry:
+::
+   @article{Kelly2019a,
+   author = {Kelly, Brett E. and Bhattacharya, Indrasen and Heidari, Hossein and Shusteff, Maxim and Spadaccini, Christopher M. and Taylor, Hayden K.},
+   doi = {10.1126/science.aau7114},
+   issn = {10959203},
+   journal = {Science},
+   number = {6431},
+   pages = {1075--1079},
+   title = {{Volumetric additive manufacturing via tomographic reconstruction}},
+   volume = {363},
+   year = {2019}
+   }
+
+

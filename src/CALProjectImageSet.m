@@ -6,6 +6,9 @@ classdef CALProjectImageSet
         frame_rate
         frame_hold_time
         blank_when_paused
+        motor_sync % boolean
+        startpos % 0 or +ve int =< 360
+        motor_vel % float
         SLM
         blank_image
         movie
@@ -68,9 +71,29 @@ classdef CALProjectImageSet
             obj.flipBlankImage();
         end
                 
-        
-        function [obj,total_run_time] = startProjecting(obj,varargin)
+        %%% Sync w/ motor
+        %%% Home rotation stage and set up rotation params
+        function obj = motorsyncinit(obj,MotorSerialNum,Motor_Vel,Pos_start)
+            obj.motor_sync = 1;
+%           TODO: before actual rotation check motor_sync
+            obj.startpos = Pos_start;   % 0 or +ve int =< 360
+            obj.motor_vel = Motor_Vel;
+           
+            % Thorlabs APT functions. See APT Server help file for more
+            % info
+            handle = actxcontrol('MGMOTOR.MGMotorCtrl.1');
+            handle.HWSerialNum = MotorSerialNum;
+            handle.StartCtrl(); % shows a GUI window
+%           TODO: close GUI window w/o crashing
+            handle.SetVelParams(0,0,24,MaxV); % default IChanID=0, MinV=0, Acc=24
             
+            fprintf('\nHoming rotation stage\n')
+            handle.MoveHome(0,true); % default IChanID=0 and bWait=true
+            fprintf('\nDone homing\n')
+        end
+        
+        %%% TODO: start proj only if Agnle_start AND MaxV is reached
+        function [obj,total_run_time] = startProjecting(obj,varargin)
             
             obj = obj.prepareFrames();
 
@@ -80,26 +103,72 @@ classdef CALProjectImageSet
                 wait_to_start = 1;
             end
             
-            if wait_to_start
+            if wait_to_start && obj.motor_sync
+                error("wait_to_start and motor_sync cannot be both 1") 
+            elseif wait_to_start
                 fprintf('\n\n---------Press spacebar to start image projection--------\n\n');
                 obj.pauseUntilKey(KbName('space')); % 32 is spacebar
                 fprintf('\nStarted...\n');
             end
             
+            %%% TODO: add wait to start
+            %%% outline of main
+            %%% start stage rotation
+            %%% at startangle check if speed=MaxV+-tolerance
+            %%% if speed=MaxV+-tolerance, start projection by showing the
+            %%% img in the bin that the angle belongs to 
+            %%% repeat until projection stopped by user
+            %%% stop the stage 
+            
+            % at startangle check if speed=MaxV+-tolerance
+            if ~wait_to_start && obj.motor_sync
+                fprintf('\nMoving stage\n')
+                handle.MoveVelocity(0,1); %(IChanID, direction sense=forward)
+                
+                speed_flag = 0;
+                tol = 0.2; %%% pos err tolerance. TODO
+
+                while ~speed_flag
+                    currpos = handle.GetPosition_Position(0);
+                    % try combining the 2 statements 
+                    while currpos>=startangle-tol && currpos<startangle+tol
+                        currvel = handle.GetVelParams_MaxVel(0);
+                        if currvel >= obj.motor_vel
+                            speed_flag = 1;
+                        end
+                        currpos = handle.GetPosition_Position(0);
+                    end
+                end
+            end
             
             % show movie
-            i = 0;
+            if ~wait_to_start && obj.motor_sync
+                i = round(obj.startpos/obj.num_frame*360);
+            else
+                i = 0;  % TODO
+            end
+            
             run_flag = 1;
             global_time = tic;
             
             while run_flag
-
-                    
-                i = mod(i + 1,obj.num_frames); if i==0; i=i+1; end
+                
+                if ~wait_to_start && obj.motor_sync
+                    currpos = handle.GetPosition_Position(0);
+                    i = round(currpos/obj.num_frame*360);%%TODO: check num_i
+                else
+                    i = mod(i + 1,obj.num_frames); if i==0; i=i+1; end
+                end
+                
                 frame_local_time = tic;
+                %%% TODO: check if cp window causes flashing
                 Screen('CopyWindow',obj.movie(i),obj.SLM);
                 Screen('Flip', obj.SLM);
-                obj.holdOnFrame(frame_local_time,obj.frame_hold_time);
+                if ~wait_to_start && obj.motor_sync
+                   return
+                else
+                    obj.holdOnFrame(frame_local_time,obj.frame_hold_time);
+                end
                 
                 
                 pressed_key = obj.checkKey();

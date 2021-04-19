@@ -41,7 +41,7 @@ params.parallel = 0;                    % 1 to activate parallel computing; 0 to
 
 % Physical setup parameters (NOTE: if resin_abs_coeff is set angles should
 % go from [0-360 deg]
-params.voxel_size = 0.0457;               % side length of cubic voxel in mm
+params.voxel_size = 0.05;               % side length of cubic voxel in mm
 params.vial_radius = 10;                % radius of resin container in mm
 params.resin_abs_coeff = 0.2;             % absorption coefficient of resin at projector's center wavelength in 1/mm
 params.light_intensity = 10;             % intensity of light source at the location of the vial's center axis in mW/cm^2

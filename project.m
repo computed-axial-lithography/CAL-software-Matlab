@@ -36,11 +36,6 @@ hold_time = params.max_angle/n_angles/params.rot_velocity; % time each projectio
 total_frames = size(image_stack,2); % total number of frames 
 frame_rate = total_frames/params.max_angle*params.rot_velocity
 
-% calculate wait time between start of rotation and projection of first
-% image
-frame_angular_separation = params.max_angle/n_angles;
-start_wait_time = sqrt(2*frame_angular_separation/params.rot_acceleration);
-
 sca % clear possible third screen window == screen('CloseAll')
 close all
 
@@ -53,90 +48,42 @@ blank_image = zeros(params.ht_screen,params.wd_screen);
 blank_image_ptr = Screen('OpenOffscreenWindow', SLM.window, 2);
 Screen('PutImage',blank_image_ptr,blank_image);
 
-Screen(SLM.window,'PutImage',blank_image); % start by projection of a blank image
+Screen(SLM.window, 'PutImage',blank_image); % start by projection of a blank image
 Screen(SLM.window,'Flip');
 
 
-%% Initialize motor control
-thorlabs_devices = motor.listdevices;   % List connected devices
-rotation_stage = motor;              % Create a motor object
-
-fprintf('\nConnecting to rotation stage\n');
-connect(rotation_stage,thorlabs_devices{1})      % Connect the first devce in the list of devices
-fprintf('Successfully connected\n');
-
-setvelocity(rotation_stage,params.rot_velocity,params.rot_acceleration)
-
-% start continuous rotation for vial centering
-movecont(rotation_stage,24,24)
-input('\nCenter vial in fixture, then press enter to continue.\n')
-stop(rotation_stage)
-Screen(SLM.window,'PutImage',blank_image); 
-Screen(SLM.window,'Flip');
-
-% home the rotation stage
-input('\nSet starting position of rotation stage, then press enter to continue.\n')
-Screen(SLM.window,'PutImage',blank_image);
-Screen(SLM.window,'Flip');
-
-
-%% Create a GUI window to display projections and stop projection
-projection_control_window = figure;
-H = uicontrol('Style', 'PushButton', 'String', 'Stop', 'Callback', 'delete(gcbf)');
-ax = axes('Parent',projection_control_window,'position',[0.13 0.39  0.77 0.54]);
-projection_image_plot = imagesc(ax,zeros(size(image_stack{1})));
-pause(0.5)
-
-%% Assign projection images to pointers
-
+% First create image pointers
 window_ptrs = zeros(1,total_frames); % vector for storing the pointers to each image
 for i=1:total_frames
     if mod(i,50) == 0
         display(['Mounting image:', num2str(i)]);
     end
-    window_ptrs(i)=Screen('OpenOffscreenWindow', SLM.window, 2); % mount sll images to an offscreen window
+    window_ptrs(i)=Screen('OpenOffscreenWindow', SLM.window, 0); % mount sll images to an offscreen window
     Screen('PutImage',window_ptrs(i), image_stack{i});
 end
 
-
-
-%% Project images
 % Begin sequential projection of image stack
 frame_stop_time = hold_time;
 t_start_all = tic;
 t_end = 0;
 break_flag = 0;
-
-movecont(rotation_stage,params.rot_velocity,params.rot_acceleration)
-
-current_rotation = 1;
 for k = 1:params.n_rotations
-
-    if current_rotation == 1
-        tstart = tic;
-        while true 
-            if toc(tstart) >= start_wait_time
-                break
-            end
-        end
-    end
+%     if t_end >= params.time_project
+%         Screen('CopyWindow',blank_image_ptr, SLM.window); % project blank window when projection time is complete
+%         Screen(SLM.window,'Flip');  % display the current image on the projector screen
+% 
+%         break
+%     end
     
     for i = 1:n_angles %n_angles+1
-        Screen('CopyWindow',window_ptrs(i), SLM.window);  % copy the image from the offscreen window to the onscreen currently displaying window
         Screen(SLM.window,'Flip');  % display the current image on the projector screen
-        
-        set(projection_image_plot,'CData',image_stack{i})
-        pause(0.0001)
-        
+        tstart = tic;
+        Screen('CopyWindow',window_ptrs(i), SLM.window);  % copy the image from the offscreen window to the onscreen currently displaying window
+                
         while true
-            drawnow;
             t_end = toc(t_start_all);
             if t_end >= frame_stop_time
                 frame_stop_time = frame_stop_time + hold_time;
-                break
-            end
-            
-            if ~ishandle(H)
                 break
             end
         end
@@ -148,10 +95,6 @@ for k = 1:params.n_rotations
             t_end = toc(t_start_all);
             break
         end
-        
-        if ~ishandle(H)
-            break
-        end
     end
     
     if break_flag
@@ -160,13 +103,8 @@ for k = 1:params.n_rotations
 
         break
     end
-    if ~ishandle(H)
-        break
-    end
-    current_rotation = current_rotation + 1;
+
 end
-stop(rotation_stage)
-disconnect(rotation_stage)
 end
 
 

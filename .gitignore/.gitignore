@@ -4,3 +4,7 @@
 # Ignore STL files
 *.stl
 
+# Ignore documentation build files
+docs/_build/
+docs/_static/
+docs/_templates/

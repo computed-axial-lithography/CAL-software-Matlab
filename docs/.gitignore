@@ -1,0 +1,5 @@
+# Ignore documentation build files
+_build/
+_static/
+_templates/
+.vscode/

@@ -249,7 +249,7 @@ classdef Display
             image_set = image_set_obj.image_set;
             
 %             tmp_projections = zeros([size(proj_set{1},2),size(proj_set,2),size(proj_set{1},1)]);
-            tmp_images = zeros([size(image_set{1}),size(image_set,2)]);
+            tmp_images = zeros([size(image_set{1}),size(image_set,2)],'single'); % changed to single to save memory
             for i=1:size(image_set,2)
                 tmp_images(:,:,i) = image_set{i};
             end

@@ -14,7 +14,7 @@ import src.imshow_3D_bin.*
 import src.colormaps_bin.*
 
 % set projection parameters
-proj_params.angles = linspace(0,179,180);
+proj_params.angles = linspace(0,359.5,720);
 proj_params.bit8 = 1;
 
 % set optimization parameters
@@ -62,10 +62,10 @@ rot_vel = 24;
 % to the highest monitor number (e.g. if there are 2 monitors, it assumes projector is connected to
 % monitor #2)
 DLP = CALProjectImageSet(image_set_obj,rot_vel);
-
-DLP.motorsyncinit(55941090,90);
-
-% begin projecting images
-DLP.startProjecting(0);
 %%
+DLP = DLP.motorsyncinit(55941090,0);
+ %%
+% begin projecting images
+DLP.startProjecting(0); 
+         %%
 % end

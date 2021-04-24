@@ -1,15 +1,18 @@
 classdef CALProjectImageSet
-
+%%% TODO: error control, stop timer when paused
     properties
         image_set_obj
         monitor_id
         frame_rate
         frame_hold_time
         blank_when_paused
+        
         motor_sync % boolean
         motor   % handle for motor stage
         startpos % 0 or +ve int =< 360
         rot_vel % float
+        acc
+        
         SLM
         blank_image
         movie
@@ -69,15 +72,16 @@ classdef CALProjectImageSet
                 Screen('Preference','SkipSyncTests',2);
                 obj.SLM = Screen('OpenWindow',obj.monitor_id);
             end
-
+            
             obj.flipBlankImage();
+            obj = obj.prepareFrames();
         end
                 
         % Home rotation stage and set up rotation params. OPTIONAL
         function obj = motorsyncinit(obj,MotorSerialNum,Start_Pos)
             assert(0<=Start_Pos && Start_Pos<=360,'Start_Pos is not between 0 and 360.')
             obj.startpos = Start_Pos;
-            acc = 24;
+            obj.acc = 24;
            
             % Start Thorlabs APT. See APT Server help file for more info
             try
@@ -91,26 +95,24 @@ classdef CALProjectImageSet
                         close
                         rethrow(ME)
                 end
-                close
-                return
             end
             
             obj.motor.HWSerialNum = MotorSerialNum;
             obj.motor.StartCtrl(); % shows a GUI window   
-            close;  % closes GUI window. Note: can cause crashing sometimes
+%             close;  % closes GUI window. Note: can cause crashing sometimes
 
-            obj.motor.SetVelParams(0,0,acc,obj.rot_vel);
+            obj.motor.SetVelParams(0,0,obj.acc,obj.rot_vel);
             
             fprintf('\nHoming rotation stage\n')
             obj.motor.MoveHome(0,true);
             fprintf('\nMotor stage initialized\n')
-            obj.motor_sync = 1;
+            obj.motor_sync = 1;  
         end
         
 
         function [obj,total_run_time] = startProjecting(obj,varargin)
             
-            obj = obj.prepareFrames();
+%             obj = obj.prepareFrames();
 
             if nargin == 2
                 wait_to_start = varargin{1};
@@ -151,7 +153,10 @@ classdef CALProjectImageSet
                     end
                 end
                 % set image counter at start position
-                i = round(obj.startpos/360*obj.num_frames);
+                angles = linspace(0,360-360/obj.num_frames,obj.num_frames);
+                indexes = 1:obj.num_frames;
+                i = interp1(angles,indexes,obj.startpos,'nearest',obj.num_frames);
+%                 i = round(obj.startpos/360*obj.num_frames);
                 proj_started = 0;
                 
             else
@@ -168,7 +173,8 @@ classdef CALProjectImageSet
                         % check stage position and set image counter at that
                         % position
                         currpos = obj.motor.GetPosition_Position(0); % format: .4f
-                        i = round(currpos/360*obj.num_frames);
+%                         i = round(currpos/360*obj.num_frames);
+                        i = interp1(angles,indexes,currpos,'nearest',obj.num_frames);
                     end
                 else
                     if mod(i,obj.num_frames)~=0
@@ -240,8 +246,8 @@ classdef CALProjectImageSet
         end
         
         function [] = startStage(obj)
-            assert(obj.motor_sync,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
-            acc_time = obj.rot_vel/acc;
+            assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
+            acc_time = obj.rot_vel/obj.acc;
             fprintf('\nStarting stage\n')
             obj.motor.MoveVelocity(0,1); 
             pause(acc_time);

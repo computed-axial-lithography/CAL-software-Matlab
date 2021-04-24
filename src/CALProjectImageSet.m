@@ -113,6 +113,10 @@ classdef CALProjectImageSet
         function [obj,total_run_time] = startProjecting(obj,varargin)
             
 %             obj = obj.prepareFrames();
+%%%TODO
+            if isempty(obj.motor_sync)
+                obj.motor_sync = 0;
+            end
 
             if nargin == 2
                 wait_to_start = varargin{1};

@@ -10,6 +10,7 @@ Documentation
    :maxdepth: 4
    
    sec_intro
+   sec_setup
    sec_usage
    sec_examples
    sec_code_ref

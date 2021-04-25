@@ -34,6 +34,8 @@ The `CAL-software-Matlab`_ package can be installed by completing the following 
    ::
       CAL-software-Matlab Toolbox installed successfully!
 
+Now the toolbox can be used like any other Matlab toolbox. You do not need to be in a particular working directory to access the functions of the toolbox.
+
 To read about how to use the toolbox, go to the documentation page on `ReadtheDocs`_.
 
 

@@ -17,6 +17,8 @@ classdef CALProjectImageSet
         blank_image
         movie
         num_frames
+        
+        proj_duration % numeric > 0
     end
     
     methods
@@ -113,17 +115,23 @@ classdef CALProjectImageSet
         end
         
 
-        function [obj,total_run_time] = startProjecting(obj,varargin)
+        function obj = startProjecting(obj,varargin)
             %%% TEST: is obj deleted before onCleanup can reach obj.method? %%%
             cleanup = onCleanup(@() obj.projectionCleanup());  
-            expose_times = []; % 
-            %%%%%%%%%%%%
 
-            if nargin == 2
+            if nargin >= 1
                 wait_to_start = varargin{1};
+                if nargin == 2
+                    obj.proj_duration = varargin{2};
+                    assert(isnumeric(obj.proj_duration)&& obj.proj_duration>0,'proj_duration must be a number greater than zero.');
+                    timed = 1;
+                else
+                    timed = 0;
+                end
             else
                 wait_to_start = 1;
             end
+            %%%%%%%%%%%%
             
             if wait_to_start
                 if obj.motor_sync
@@ -136,6 +144,7 @@ classdef CALProjectImageSet
                 fprintf('\nStarted...\n');
             end
                
+            
             % set the stage moving
             if obj.motor_sync
                 obj.startStage()
@@ -159,10 +168,18 @@ classdef CALProjectImageSet
             else
                 i = 1;
             end
+                     
             
             % show movie            
             run_flag = 1;
             global_time = tic;
+            
+            if timed
+                mytimer = obj.setTimer(obj.proj_duration);
+                start(mytimer);
+            else
+                expose_times = []; 
+            end   
             
             while run_flag
                 
@@ -192,42 +209,14 @@ classdef CALProjectImageSet
                     i = i+1;                
                 end
                 
-                pressed_key = obj.checkKey();
-                %%% TEST %%%
-                if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
-                    expose_time = [expose_time;toc(global_time)];
-                    obj.printPaused(i,expose_time(end));
-                    if obj.blank_when_paused
-                        obj.flipBlankImage();
-                    end
-                    if obj.motor_sync
-                        obj.stopStage(0);
-                    end
-                    
-                    pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
-                    if pressed_key == KbName('space')
-                        obj.printResumed();
-                        global_time = tic;
-                        
-                        if obj.motor_sync
-                            obj.startStage();
-                        end
-                    end
+                if ~timed
+                    run_flag = obj.keyInteraction(expose_times,global_time,i);
                 end
-                
-                if pressed_key == KbName('ESCAPE') % if pressed key is esc, exit loop
-                    expose_time = [expose_time;toc(global_time)];
-                    total_run_time = sum(expose_time);
-                    obj.printStopped(i,total_run_time);
-                    run_flag = 0;
-                end
-                %%%%%%%%%%%%%%%%
             end
         end
         
             
         function obj = prepareFrames(obj)
-            
             % First create image pointers
             obj.movie = zeros(1,obj.num_frames); % vector for storing the pointers to each image
             for i=1:obj.num_frames
@@ -266,11 +255,57 @@ classdef CALProjectImageSet
         end
         %%%%%%%%%
         
+        %%%TEST%%%
+        function mytimer = setTimer(obj)
+            mytimer = timer;
+            mytimer.startdelay = obj.proj_duration;
+            mytimer.TimerFcn = {@setFlag,obj};
+        end
+        
+        function obj = setFlag(~,~,obj)
+            obj.run_flag = 0;
+        end
+        %%%%%%%%%%%
+        
         function [] = flipBlankImage(obj)
             Screen('FillRect', obj.SLM, 0);
             Screen(obj.SLM,'Flip');   
         end
         
+        %%% TEST %%%%
+        function [obj,run_flag] = keyInteraction(obj,expose_times,global_time,i)
+            pressed_key = obj.checkKey();
+                if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
+                    expose_times = [expose_times;toc(global_time)];
+                    obj.printPaused(i,expose_times(end));
+                    if obj.blank_when_paused
+                        obj.flipBlankImage();
+                    end
+                    if obj.motor_sync
+                        obj.stopStage(0);
+                    end
+                    
+                    pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
+                    if pressed_key == KbName('space')
+                        obj.printResumed();
+                        global_time = tic;
+                        
+                        if obj.motor_sync
+                            obj.startStage();
+                        end
+                    end
+                end
+                
+                if pressed_key == KbName('ESCAPE') % if pressed key is esc, exit loop
+                    expose_times = [expose_times;toc(global_time)];
+                    total_run_time = sum(expose_times);
+                    obj.printStopped(i,total_run_time);
+                    run_flag = 0;
+                else
+                    run_flag = 1;
+                end
+        end
+        %%%%%%%%%%
     end
     
     methods (Static = true)        
@@ -331,7 +366,11 @@ classdef CALProjectImageSet
             % stop stage and terminate motor stage control
             if obj.motor_sync
                 obj.stopStage(1)
-            end           
+            end
+            
+            if timed
+                stop(mytimer);
+            end
         end
 
     end

@@ -39,8 +39,8 @@ fprintf('\noptimized\n')
 %%
 image_params.size_scale_factor = 2;
 image_params.invert_vert = 1;
-image_params.z_offset = 100;
-image_params.array_num = 2;
+image_params.z_offset = 380;
+image_params.array_num = 1;
 image_params.array_offset = 350;
 image_params.image_width = 2716; % this parameter MUST be changed to match your projector image width for proper scaling
 image_params.image_height = 1528; % this parameter MUST be changed to match your projector image height for proper scaling
@@ -56,16 +56,16 @@ fprintf('\nImage Set created\n')
 % C.saveImages(image_set_obj,pwd,'.png');
 %%
 % set the rotation velocity in deg/s
-rot_vel = 24;
+rot_vel = 12;
 
 % initialize the CALProjectImageSet class, this basic example assumes the projector is connected
 % to the highest monitor number (e.g. if there are 2 monitors, it assumes projector is connected to
 % monitor #2)
 DLP = CALProjectImageSet(image_set_obj,rot_vel);
 %%
-DLP = DLP.motorsyncinit(55941090,0);
+DLP = DLP.motorsyncinit(55941090,20);
  %%
 % begin projecting images
-DLP.startProjecting(0); 
+DLP.startProjecting(0,10); 
          %%
 % end

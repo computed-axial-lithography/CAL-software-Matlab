@@ -226,7 +226,10 @@ classdef CALCreateImageSet
             end
             
             function image = insertProj(proj,image,image_width,image_height,t_offset,z_offset)
-
+                
+                assert(abs(t_offset) < image_width/2,'Transverse projection offset is too large and the projection falls outside the image bounds');
+                assert(abs(z_offset) < image_height/2,'Z projection offset is too large and the projection falls outside the image bounds. Decrease z offset or array offset (if multiplying projection images).')
+                
                 [proj_height,proj_width] = size(proj);
 
                 % Define the position of the projection within the full size projected

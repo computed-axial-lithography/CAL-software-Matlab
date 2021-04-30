@@ -24,7 +24,12 @@ classdef CALProjectImageSet
     end
     
     methods
+        % obj is set to global for onCelanup
         function obj = CALProjectImageSet(image_set_obj,rot_vel,varargin)
+            % Uncomment the line below to turn off warning regarding global variables. OPTIONAL 
+            %             warning('off','MATLAB:declareGlobalBeforeUse')
+
+            global obj
             obj.image_set_obj = image_set_obj;
             obj.num_frames = size(obj.image_set_obj.image_set,2);
             obj.frame_rate = obj.num_frames/360*rot_vel;
@@ -83,10 +88,10 @@ classdef CALProjectImageSet
         
         % Home rotation stage and set up rotation params. OPTIONAL
         function obj = motorsyncinit(obj,MotorSerialNum,Start_Pos,varargin)
+            global obj
             assert(0<=Start_Pos && Start_Pos<=360,'Start_Pos is not between 0 and 360.')
             obj.startpos = Start_Pos;
             
-            %%%TEST%%%
             if nargin == 4
                 obj.acc = varargin{1};
             else
@@ -99,7 +104,6 @@ classdef CALProjectImageSet
             if obj.rot_vel>=24
                 warning('Warning!!! Rotation speed %6.1fdeg/sec is higher than 24deg/sec. Proceed only if your stepper motor is capable of rotation speeds >24deg/sec.',obj.rot_vel)
             end
-            %%%%%%%%
            
             % Start Thorlabs APT. See APT Server help file for more info
             try
@@ -128,8 +132,8 @@ classdef CALProjectImageSet
         
 
         function obj = startProjecting(obj,varargin)
-% % %             %% TEST: is obj deleted before onCleanup can reach obj.method? %%%
-% %             cleanup = onCleanup(@() obj.projectionCleanup());  
+            global obj
+            cleanup = onCleanup(@() obj.projectionCleanup());  
 
             if nargin >= 2
                 wait_to_start = varargin{1};
@@ -183,7 +187,7 @@ classdef CALProjectImageSet
             end
                      
             
-            % show movie            
+            % show movie 
             obj.run_flag = true;
             global_time = tic;
             
@@ -233,6 +237,7 @@ classdef CALProjectImageSet
         
             
         function obj = prepareFrames(obj)
+            global obj
             % First create image pointers
             obj.movie = zeros(1,obj.num_frames); % vector for storing the pointers to each image
             for i=1:obj.num_frames
@@ -246,19 +251,24 @@ classdef CALProjectImageSet
         
 
         function obj = startStage(obj)
+            global obj
             assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
             assert(isempty(obj.stage_started),'Motor stage has already started. If not, it was probably stopped unexpectedly.')
             acc_time = obj.rot_vel/obj.acc;
             fprintf('\nStarting stage\n')
             obj.motor.MoveVelocity(0,1); 
             pause(acc_time);
+            fprintf('\nStage started\n')
             obj.stage_started = 1;
-        end
-        %%% TEST: assert, exit flag %%%  
+        end 
+        
+        
         function obj = stopStage(obj,exit)
+            global obj
             assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
-            if obj.stage_started==1
+            if ~isempty(obj.stage_started)
                 obj.motor.StopImmediate(0);
+                fprintf('\nStage stopped\n')
                 obj.stage_started = [];
             else
                 fprintf('\nMotor stage was not started and therefore is not stopped.\n')
@@ -269,15 +279,16 @@ classdef CALProjectImageSet
                 fprintf('\nStage control terminated. Run obj.motorsyncinit() to re-initialize motor stage.\n')
             end
         end
-        %%%%%%%%%
+        
         
         function [] = flipBlankImage(obj)
             Screen('FillRect', obj.SLM, 0);
             Screen(obj.SLM,'Flip');   
         end
         
-        %%% TEST %%%%
+        
         function obj = keyInteraction(obj,expose_times,global_time,i)
+            global obj
             pressed_key = obj.checkKey();
                 if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
                     expose_times = [expose_times;toc(global_time)];
@@ -286,16 +297,16 @@ classdef CALProjectImageSet
                         obj.flipBlankImage();
                     end
                     if obj.motor_sync
-                        obj.stopStage(0);
-                    end
+                        obj = obj.stopStage(0);
+                    end 
                     
                     pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
                     if pressed_key == KbName('space')
                         obj.printResumed();
                         global_time = tic;
-                        
+                             
                         if obj.motor_sync
-                            obj.startStage();
+                            obj =  obj.startStage();
                         end
                     end
                 end
@@ -309,24 +320,25 @@ classdef CALProjectImageSet
                     obj.run_flag = 1;
                 end
         end
-        %%%%%%%%%%
+        
         
         function obj = projectionCleanup(obj)
+            global obj
             fprintf('\n-------------------Terminating projection---------------------\n')
             
             % display blank image before closing to avoid white screen on
             % close
             obj.flipBlankImage();
             Screen('CloseAll');
+            fprintf('\nScreen window(s) closed. Run obj.CALProjectImageSet() to re-open screen window(s).\n')
             
             % stop stage and terminate motor stage control
             if obj.motor_sync
-                obj = obj.stopStage(1);
+                obj = obj.stopStage(1); % temp 0
             end
             
-            if obj.timed
-                stop(mytimer);
-            end
+            % delete the global variable after cleanup
+            clear obj
         end
     end
     

@@ -40,7 +40,7 @@ fprintf('\noptimized\n')
 image_params.size_scale_factor = 2;
 image_params.invert_vert = 1;
 image_params.z_offset = 380;
-image_params.array_num = 2;
+image_params.array_num = 1;
 image_params.array_offset = 350;
 image_params.image_width = 2716; % this parameter MUST be changed to match your projector image width for proper scaling
 image_params.image_height = 1528; % this parameter MUST be changed to match your projector image height for proper scaling
@@ -65,12 +65,8 @@ DLP = CALProjectImageSet(image_set_obj,rot_vel);
 %%
 DLP = DLP.motorsyncinit(55941090,20);
  %%
-% begin projecting images
-DLP.startProjecting(0,10); 
+% begin projecting images 
+DLP.startProjecting(0); 
 %%
-mytimer = setTimer(1);
-start(mytimer);
-flag = 
-
 
 

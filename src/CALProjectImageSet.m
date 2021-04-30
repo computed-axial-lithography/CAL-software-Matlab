@@ -6,20 +6,20 @@ classdef CALProjectImageSet
         frame_hold_time
         blank_when_paused
         
-        motor_sync % flag, [] (empty) or 1
+        motor_sync % flag
         motor   % handle for motor stage
-        startpos % 0 or +ve int =< 360
-        rot_vel % <= max. allowable velocity of the motor
-        acc  % <= max. allowable acceleration of the motor
-        stage_started % flag, [] (empty) or 1
+        startpos % angular position to start projection. 0 or +ve integer =< 360
+        rot_vel % rotation speed of the motor stage. leq max. allowable velocity of the motor
+        acc  % leq max. allowable acceleration of the motor
+        stage_started % flag
         
         SLM
         blank_image
         movie
         num_frames
-        run_flag % flag, [] (empty) or 1 or 0
+        run_flag % flag
         
-        timed % flag, [] (empty) or 1
+        timed % flag
         proj_duration % numeric > 0
     end
     
@@ -82,9 +82,24 @@ classdef CALProjectImageSet
 
         
         % Home rotation stage and set up rotation params. OPTIONAL
-        function obj = motorsyncinit(obj,MotorSerialNum,Start_Pos)
+        function obj = motorsyncinit(obj,MotorSerialNum,Start_Pos,varargin)
             assert(0<=Start_Pos && Start_Pos<=360,'Start_Pos is not between 0 and 360.')
             obj.startpos = Start_Pos;
+            
+            %%%TEST%%%
+            if nargin == 4
+                obj.acc = varargin{1};
+            else
+                obj.acc = 24;
+            end
+            
+            % Alternative: APT controller function 'GetVelParamLimits'
+            % obtains max. allowable rotation speed of the motor. However,
+            % it does not seem to work in MATLAB.
+            if obj.rot_vel>=24
+                warning('Warning!!! Rotation speed %6.1fdeg/sec is higher than 24deg/sec. Proceed only if your stepper motor is capable of rotation speeds >24deg/sec.',obj.rot_vel)
+            end
+            %%%%%%%%
            
             % Start Thorlabs APT. See APT Server help file for more info
             try
@@ -92,7 +107,7 @@ classdef CALProjectImageSet
             catch ME
                 switch ME.identifier 
                     case 'MATLAB:COM:InvalidProgid'
-                        close   % close empty figure window
+                        close
                         error('Thorlabs APT ActiveX control program ID(MGMOTOR.MGMotorCtrl.1) not found. Check that the program is installed properly.');
                     otherwise
                         close
@@ -103,16 +118,6 @@ classdef CALProjectImageSet
             obj.motor.HWSerialNum = MotorSerialNum;
             obj.motor.StartCtrl(); % shows a GUI window   
             
-            %%%GetVelParamLimits does not seem to work in MATLAB%%%
-%             obj.motor.GetVelParamLimits(0,MaxAcc,MaxVel);
-%             assert(obj.rot_vel<=MaxVel,'obj.rot_vel greater than maximum allowable motor velocity.')
-            MaxVel = 24;
-            MaxAcc = 24;
-            if obj.rot_vel>=MaxVel
-                warning('obj.rot_vel may exceed maximum allowable motor velocity.')
-            end
-            obj.acc = MaxAcc; 
-            %%%%%%%%%%
             obj.motor.SetVelParams(0,0,obj.acc,obj.rot_vel);
             
             fprintf('\nHoming rotation stage\n')
@@ -123,11 +128,12 @@ classdef CALProjectImageSet
         
 
         function obj = startProjecting(obj,varargin)
-            %%% TEST: is obj deleted before onCleanup can reach obj.method? %%%
-%             cleanup = onCleanup(@() obj.projectionCleanup());  
+% % %             %% TEST: is obj deleted before onCleanup can reach obj.method? %%%
+% %             cleanup = onCleanup(@() obj.projectionCleanup());  
 
             if nargin >= 2
                 wait_to_start = varargin{1};
+                
                 if nargin == 3
                     obj.proj_duration = varargin{2};
                     assert(isnumeric(obj.proj_duration)&& obj.proj_duration>0,'proj_duration must be a number greater than zero.');
@@ -138,6 +144,7 @@ classdef CALProjectImageSet
             else
                 wait_to_start = 1;
             end
+            
             
             if wait_to_start
                 if obj.motor_sync
@@ -154,10 +161,10 @@ classdef CALProjectImageSet
             % set the stage moving
             if obj.motor_sync
                 obj = obj.startStage();
-                tol = 0.2; % tolerance of position error in degrees
+                tol = 0.2; % tolerance of positional error in degrees
                 at_pos = 0;
                 
-                % wait for stage to arrive start position
+                % wait for the motor to arrive at starting position
                 while ~at_pos
                     currpos = obj.motor.GetPosition_Position(0);
                     if currpos>=obj.startpos-tol && currpos<obj.startpos+tol
@@ -181,7 +188,7 @@ classdef CALProjectImageSet
             global_time = tic;
             
             if obj.timed
-                mytimer = obj.setTimer();
+                mytimer = setTimer(obj.proj_duration);
                 start(mytimer);
             else
                 expose_times = []; 
@@ -215,7 +222,10 @@ classdef CALProjectImageSet
                     i = i+1;                
                 end
                 
-                if ~obj.timed
+                % update run_flag
+                if obj.timed
+                    obj.run_flag = get(mytimer,'UserData');
+                else
                     obj = obj.keyInteraction(expose_times,global_time,i);
                 end
             end
@@ -244,7 +254,7 @@ classdef CALProjectImageSet
             pause(acc_time);
             obj.stage_started = 1;
         end
-              %%% TEST: assert, exit flag %%%  
+        %%% TEST: assert, exit flag %%%  
         function obj = stopStage(obj,exit)
             assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
             if obj.stage_started==1
@@ -260,18 +270,6 @@ classdef CALProjectImageSet
             end
         end
         %%%%%%%%%
-        
-        %%%TEST%%%
-        function mytimer = setTimer(obj)
-            mytimer = timer;
-            mytimer.startdelay = obj.proj_duration;
-            mytimer.TimerFcn = @(~,~)obj.setFlag();
-        end
-        
-        function obj = setFlag(obj)
-            obj.run_flag = 0;
-        end
-        %%%%%%%%%%%
         
         function [] = flipBlankImage(obj)
             Screen('FillRect', obj.SLM, 0);

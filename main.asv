@@ -70,7 +70,7 @@ DLP.startProjecting(0,10);
 %%
 mytimer = setTimer(1);
 start(mytimer);
-flag = get(mytimer,'UserData')
+flag = 
 
 
 

@@ -3,13 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Documentation
-=============
+Contents
+========
 
 .. toctree::
    :maxdepth: 4
    
    sec_intro
+   sec_setup
    sec_usage
    sec_examples
    sec_code_ref

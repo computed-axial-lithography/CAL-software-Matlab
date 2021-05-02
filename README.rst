@@ -34,11 +34,22 @@ The `CAL-software-Matlab`_ package can be installed by completing the following 
    ::
       CAL-software-Matlab Toolbox installed successfully!
 
+Now the toolbox can be used like any other Matlab toolbox. You do not need to be in a particular working directory to access the functions of the toolbox.
+
 To read about how to use the toolbox, go to the documentation page on `ReadtheDocs`_.
 
 
 .. _`CAL-software-Matlab`: https://github.com/computed-axial-lithography/CAL-software-Matlab
 .. _`release`: https://github.com/computed-axial-lithography/CAL-software-Matlab/releases
+
+Uninstallation
+--------------
+
+The toolbox can be uninstalled in the Add-on manager. Go to the Matlab Home tab, then Add-Ons in the Environments panel. Click the dropdown arrow and select Manage Add-Ons. Then click the Options and Uninstall for the CAL-software-Matlab toolbox. 
+
+Uninstallation can also be performed through the command line with the following code:
+::
+ matlab.addons.toolbox.uninstallToolbox('CAL-software-Matlab')
 
 
 Background
@@ -62,7 +73,7 @@ This code package is provided to support the generation of the light projections
 Citation
 --------
 
-If you use this code in your research, please cite the following publication:
+If you use this code in your research, please cite the following publication `[Kelly2019]`_:
 ::
    [1] B.E. Kelly, I. Bhattacharya, H. Heidari, M. Shusteff, C.M. Spadaccini, H.K. Taylor, Volumetric additive manufacturing via tomographic reconstruction, Science (80-. ). 363 (2019) 1075–1079. https://doi.org/10.1126/science.aau7114.
 

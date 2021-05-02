@@ -162,6 +162,10 @@ The DLP projector is assumed to be the second monitor by default. If your projec
 
 When initializing, sometimes the projector can flash a bright image so make sure that the resin remains blocked from light at this point. 
 
+If your rotation stage is compatible with Thorlabs' APT software suite, you can synchronize the projection with the stage. The stage needs to be initialized by the :class:`ImageSetObj`, the stage's serial number, and the angular position of the stage you would like to start the projection in degrees/s:
+::
+    DLP = DLP.motorInit(12345678,0);
+
 Next, to begin projecting, use the class function :func:`startProjecting`:
 ::
     DLP.startProjecting();

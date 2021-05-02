@@ -87,13 +87,16 @@ classdef CALProjectImageSet
 
         
         % Home rotation stage and set up rotation params. OPTIONAL
-        function obj = motorsyncinit(obj,MotorSerialNum,Start_Pos,varargin)
+        function obj = motorInit(obj,MotorSerialNum,Start_Pos,varargin)
             global obj
             assert(0<=Start_Pos && Start_Pos<=360,'Start_Pos is not between 0 and 360.')
             obj.startpos = Start_Pos;
             
             if nargin == 4
                 obj.acc = varargin{1};
+                if obj.acc>24
+                    warning('Warning!!! Stage acceleration %6.1fdeg/sec is higher than 24deg/sec^2. Proceed only if your stepper motor is capable of rotation speeds >24deg/sec^2.',obj.acc)
+                end
             else
                 obj.acc = 24;
             end
@@ -101,7 +104,7 @@ classdef CALProjectImageSet
             % Alternative: APT controller function 'GetVelParamLimits'
             % obtains max. allowable rotation speed of the motor. However,
             % it does not seem to work in MATLAB.
-            if obj.rot_vel>=24
+            if obj.rot_vel>24
                 warning('Warning!!! Rotation speed %6.1fdeg/sec is higher than 24deg/sec. Proceed only if your stepper motor is capable of rotation speeds >24deg/sec.',obj.rot_vel)
             end
            
@@ -252,7 +255,7 @@ classdef CALProjectImageSet
 
         function obj = startStage(obj)
             global obj
-            assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
+            assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorInit() to initialize motor stage.')
             assert(isempty(obj.stage_started),'Motor stage has already started. If not, it was probably stopped unexpectedly.')
             acc_time = obj.rot_vel/obj.acc;
             fprintf('\nStarting stage\n')
@@ -265,7 +268,7 @@ classdef CALProjectImageSet
         
         function obj = stopStage(obj,exit)
             global obj
-            assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorsyncinit() to initialize motor stage.')
+            assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorInit() to initialize motor stage.')
             if ~isempty(obj.stage_started)
                 obj.motor.StopImmediate(0);
                 fprintf('\nStage stopped\n')
@@ -276,7 +279,7 @@ classdef CALProjectImageSet
             if exit
                 obj.motor.StopCtrl();
                 obj.motor_sync = [];
-                fprintf('\nStage control terminated. Run obj.motorsyncinit() to re-initialize motor stage.\n')
+                fprintf('\nStage control terminated. Run obj.motorInit() to re-initialize motor stage.\n')
             end
         end
         

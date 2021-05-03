@@ -243,8 +243,8 @@ classdef CALCreateImageSet
             proj = uint8(proj/max(proj(:))*255);
             image = zeros(image_height,image_width,'uint8');
             array_vec = arrayVec(array_num);
-            for i=1:array_num
-                tmp_z_offset = array_offset*array_vec(i) + z_offset;
+            for k=1:array_num
+                tmp_z_offset = array_offset*array_vec(k) + z_offset;
                 image = insertProj(proj,image,image_width,image_height,t_offset,tmp_z_offset);
             end
 

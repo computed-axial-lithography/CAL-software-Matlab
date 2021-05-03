@@ -23,13 +23,13 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 clearvars -except optimized_projections
 
 %% Options
-params.wd_screen = 1920; % width in pixels of the projector's DMD
-params.ht_screen = 1080; % height in pixels of the projector's DMD
-params.scale_factor = 1; % projection image XY scaling factor 
-params.invert_vertical = 0; % invert vertical orientation of projection
+params.wd_screen = 2716; % width in pixels of the projector's DMD
+params.ht_screen = 1528; % height in pixels of the projector's DMD
+params.scale_factor = 2.06; % projection image XY scaling factor 
+params.invert_vertical = 1; % invert vertical orientation of projection
 params.invert_horizontal = 0; % invert horizontal orientation of projection
-params.rotate_projections = -45; % degrees, rotate images in plane 
-params.ht_offset = 0; % height offset of projection within the bounds of the projected image
+params.rotate_projections = 0; % degrees, rotate images in plane 
+params.ht_offset = 380; % height offset of projection within the bounds of the projected image
 params.wd_offset = 0; % width offset of projection within the bounds of the projected image
 params.array_num = 0;
 params.array_shift = 0;

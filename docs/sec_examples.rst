@@ -180,7 +180,7 @@ This example shows how to set up image sequence projection with an :class:`Image
 
 Custom settings example
 -----------------------
-This example shows how to set up image sequence projection with an :class:`ImageSetObj`, a specified rotation velocity, custom monitor ID, and no blank image when paused.
+This example shows how to set up image sequence projection with an :class:`ImageSetObj`, a specified rotation velocity, custom monitor ID, no blank image when paused, and duration of projection.
 ::
     % set the rotation velocity in deg/s
     rot_vel = 24;
@@ -191,14 +191,40 @@ This example shows how to set up image sequence projection with an :class:`Image
     % set whether the screen projects a black screen when projection is paused
     blank_when_paused = 1;
 
+    % set whether to wait for user to press space bar before beginning projection
+    wait_to_start =  0;
+
+    % set the duration of projection
+    Proj_Duration = 120;
+
     % initialize the CALProjectImageSet class
     DLP = CALProjectImageSet(image_set_obj,rot_vel,monitor_id,blank_when_paused);
 
     % begin projecting images
-    DLP.startProjecting(); 
+    DLP.startProjecting(wait_to_start, Proj_Duration);
 
 
+Rotation stage example
+-----------------------
+This example shows how to set up image sequence projection that is in sync with rotation stage with an :class:`ImageSetObj`, a specified rotation velocity, custom rotation stage serial number and custom starting position of the stage.
+::
+    % set the rotation velocity in deg/s
+    rot_vel = 24;
 
+    % set the rotation stage serial number
+    MotorSerialNum = 12345678;
+
+    % set the position of the rotation stage to start projection
+    Start_Pos = 90;
+
+    % initialize the CALProjectImageSet class
+    DLP = CALProjectImageSet(image_set_obj,rot_vel);
+
+    % initialize the rotation stage
+    DLP = DLP.motorInit(MotorSerialNum,Start_Pos);
+
+    % begin projecting images
+    DLP.startProjecting();
 -----
 
 

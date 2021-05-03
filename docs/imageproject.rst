@@ -22,19 +22,27 @@ Image sequence projection
 
     :Returns:       * obj - instance of :class:`CALProjectImageSet`
 
+    .. classmethod:: motorInit(obj,MotorSerialNum,Start_Pos,varargin)
+
+    :Parameters:    * MotorSerialNum - serial number of motor stage that is controllable by Thorlabs APT suite
+                    * Start_Pos - angular position to start projection in degrees
+                    * varargin - optional arguments
+                    * acc(*optional*) - stage acceleration in degrees per second^2, default is 24
+
+    :Returns:       * obj - :class:`CALProjectImageSet`
+
     .. classmethod:: startProjecting(obj,varargin) 
 
     :Parameters:    * varargin - optional arguments
                     * wait_to_start(*optional*) - wait for user to press space bar before beginning projection, 1 or 0, default is 1
+                    * proj_duration(*optional*) - duration of projection in seconds. This input disables user interaction through keyboard and terminates the projection when time equals proj_duration has elapsed.
 
     :Returns:       * obj - :class:`CALProjectImageSet`
-                    * total_run_time - image sequence time from start of first press of **space bar** to stop with **esc key**
 
-
-User interaction
+User interaction (Optional)
 ----------------
 
-This table summarizes the key actions the user can take during the image sequence projection:
+This table summarizes the key actions the user can take during the image sequence projection (and stage rotation if enabled with :classmethod: `motorInit`):
 
 +------------------------+-----------------+
 | **Key**                |**Action**       |

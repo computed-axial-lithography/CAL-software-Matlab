@@ -6,3 +6,6 @@ function mytimer = setTimer(duration)
     mytimer.TimerFcn = {@setFlag};
 end
 
+function [] = setFlag(timerobj,~)
+    set(timerobj,'UserData',0);
+end

@@ -1,4 +1,4 @@
-classdef CALProjectImageSet
+classdef CALProjectImageSet < handle
     properties
         image_set_obj
         monitor_id
@@ -21,15 +21,12 @@ classdef CALProjectImageSet
         
         timed % flag
         proj_duration % numeric > 0
+        exposure_timer
     end
     
     methods
-        % obj is set to global for onCelanup
         function obj = CALProjectImageSet(image_set_obj,rot_vel,varargin)
-            % Uncomment the line below to turn off warning regarding global variables. OPTIONAL 
-            %             warning('off','MATLAB:declareGlobalBeforeUse')
-
-            global obj
+        
             obj.image_set_obj = image_set_obj;
             obj.num_frames = size(obj.image_set_obj.image_set,2);
             obj.frame_rate = obj.num_frames/360*rot_vel;
@@ -88,7 +85,6 @@ classdef CALProjectImageSet
         
         % Home rotation stage and set up rotation params. OPTIONAL
         function obj = motorInit(obj,MotorSerialNum,Start_Pos,varargin)
-            global obj
             assert(0<=Start_Pos && Start_Pos<=360,'Start_Pos is not between 0 and 360.')
             obj.startpos = Start_Pos;
             
@@ -135,8 +131,6 @@ classdef CALProjectImageSet
         
 
         function obj = startProjecting(obj,varargin)
-            global obj
-            cleanup = onCleanup(@() obj.projectionCleanup());  
 
             if nargin >= 2
                 wait_to_start = varargin{1};
@@ -189,16 +183,17 @@ classdef CALProjectImageSet
                 i = 1;
             end
                      
-            
+            cleanup = onCleanup(@() projectionCleanup(obj));  
             % show movie 
             obj.run_flag = true;
-            global_time = tic;
+            
             
             if obj.timed
                 mytimer = setTimer(obj.proj_duration);
                 start(mytimer);
             else
-                expose_times = []; 
+                obj.exposure_timer = ExposureTimer();
+                obj.exposure_timer = obj.exposure_timer.start();
             end   
             
             while obj.run_flag
@@ -233,14 +228,30 @@ classdef CALProjectImageSet
                 if obj.timed
                     obj.run_flag = get(mytimer,'UserData');
                 else
-                    obj = obj.keyInteraction(expose_times,global_time,i);
+                    obj = obj.keyInteraction(i);
                 end
             end
+            
+                    
+
+        
+            function projectionCleanup(obj)
+                fprintf('\n-------------------Terminating projection---------------------\n')
+
+                % display blank image stopping
+                obj.flipBlankImage();
+
+                % stop stage and terminate motor stage control
+                if obj.motor_sync
+                    obj.stopStage(1); % temp 0
+                end
+
+            end
+            
         end
         
             
         function obj = prepareFrames(obj)
-            global obj
             % First create image pointers
             obj.movie = zeros(1,obj.num_frames); % vector for storing the pointers to each image
             for i=1:obj.num_frames
@@ -254,7 +265,6 @@ classdef CALProjectImageSet
         
 
         function obj = startStage(obj)
-            global obj
             assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorInit() to initialize motor stage.')
             assert(isempty(obj.stage_started),'Motor stage has already started. If not, it was probably stopped unexpectedly.')
             acc_time = obj.rot_vel/obj.acc;
@@ -267,7 +277,6 @@ classdef CALProjectImageSet
         
         
         function obj = stopStage(obj,exit)
-            global obj
             assert(obj.motor_sync==1,'Motor stage not initialized. Run obj.motorInit() to initialize motor stage.')
             if ~isempty(obj.stage_started)
                 obj.motor.StopImmediate(0);
@@ -290,59 +299,39 @@ classdef CALProjectImageSet
         end
         
         
-        function obj = keyInteraction(obj,expose_times,global_time,i)
-            global obj
+        function obj = keyInteraction(obj,i)
             pressed_key = obj.checkKey();
-                if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
-                    expose_times = [expose_times;toc(global_time)];
-                    obj.printPaused(i,expose_times(end));
-                    if obj.blank_when_paused
-                        obj.flipBlankImage();
-                    end
-                    if obj.motor_sync
-                        obj = obj.stopStage(0);
-                    end 
+            if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
+                obj.exposure_timer = obj.exposure_timer.pause();
+                obj.printPaused(i,obj.exposure_timer.total_exposure_time);
+                if obj.blank_when_paused
+                    obj.flipBlankImage();
+                end
+                if obj.motor_sync
+                    obj = obj.stopStage(0);
+                end 
+
+                pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
+                if pressed_key == KbName('space')
+                    obj.exposure_timer = obj.exposure_timer.resume();
+                    obj.printResumed();
                     
-                    pressed_key = obj.pauseUntilKey([KbName('space'), KbName('ESCAPE')]);
-                    if pressed_key == KbName('space')
-                        obj.printResumed();
-                        global_time = tic;
-                             
-                        if obj.motor_sync
-                            obj =  obj.startStage();
-                        end
+
+                    if obj.motor_sync
+                        obj =  obj.startStage();
                     end
                 end
-                
-                if pressed_key == KbName('ESCAPE') % if pressed key is esc, exit loop
-                    expose_times = [expose_times;toc(global_time)];
-                    total_run_time = sum(expose_times);
-                    obj.printStopped(i,total_run_time);
-                    obj.run_flag = 0;
-                else
-                    obj.run_flag = 1;
-                end
-        end
-        
-        
-        function obj = projectionCleanup(obj)
-            global obj
-            fprintf('\n-------------------Terminating projection---------------------\n')
-            
-            % display blank image before closing to avoid white screen on
-            % close
-            obj.flipBlankImage();
-            Screen('CloseAll');
-            fprintf('\nScreen window(s) closed. Run obj.CALProjectImageSet() to re-open screen window(s).\n')
-            
-            % stop stage and terminate motor stage control
-            if obj.motor_sync
-                obj = obj.stopStage(1); % temp 0
             end
-            
-            % delete the global variable after cleanup
-            clear obj
+
+            if pressed_key == KbName('ESCAPE') % if pressed key is esc, exit loop
+                total_exposure_time = obj.exposure_timer.stop();
+                obj.printStopped(i,total_exposure_time);
+                obj.run_flag = 0;
+            else
+                obj.run_flag = 1;
+            end
         end
+
     end
     
     methods (Static = true)        

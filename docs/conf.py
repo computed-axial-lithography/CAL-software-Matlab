@@ -29,7 +29,7 @@ primary_domain = 'mat'
 
 project = 'CAL-software-Matlab'
 copyright = '2021, University of California, Berkeley'
-author = ['Joseph Toombs', 'Sui Man (Nicole) LUK']
+author = ['Joseph Toombs@*Sui Man (Nicole) LUK']
 
 # The full version, including alpha/beta/rc tags
 release = '1.2.1'

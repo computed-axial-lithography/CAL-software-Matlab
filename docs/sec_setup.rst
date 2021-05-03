@@ -41,7 +41,3 @@ Uninstallation
 
 The toolbox can be uninstalled in the Add-on manager. Go to the Matlab Home tab, then Add-Ons in the Environments panel. Click the dropdown arrow and select Manage Add-Ons. Then click the Options and Uninstall for the CAL-software-Matlab toolbox. 
 
-Uninstallation can also be performed through the command line with the following code:
-::
- matlab.addons.toolbox.uninstallToolbox('CAL-software-Matlab')
-

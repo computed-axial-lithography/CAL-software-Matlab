@@ -42,7 +42,7 @@ Image sequence projection
 User interaction (Optional)
 ----------------
 
-This table summarizes the key actions the user can take during the image sequence projection (and stage rotation if enabled with :classmethod:`motorInit`):
+This table summarizes the key actions the user can take during the image sequence projection (and stage rotation if enabled):
 
 +------------------------+-----------------+
 | **Key**                |**Action**       |

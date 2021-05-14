@@ -152,8 +152,7 @@ classdef CALOptimize
                 
                 delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
                 
-                
-                obj.error(curr_iter) = obj.evalError(x);
+                obj.error(curr_iter) = CALMetrics.calcVER(obj.target_obj.target,x);
                 
                 delta_b = obj.A.forward(delta_x_feedback);
                 gradient_approx = ((1-obj.opt_params.Beta)*delta_b + obj.opt_params.Beta*delta_b_prev)/(1-obj.opt_params.Beta^curr_iter);
@@ -196,35 +195,6 @@ classdef CALOptimize
 
             end
             
-        end
-        
-        
-        function [gel_inds,void_inds] = getInds(obj)
-            
-            if obj.target_obj.dim == 2
-                [X,Y] = meshgrid(linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,1)));
-                R = sqrt(X.^2 + Y.^2);
-
-                circleMask = logical(R.*(R<=1));
-                gel_inds = find(circleMask & obj.target_obj.target==1);
-                void_inds = find(circleMask & ~obj.target_obj.target);
-            elseif obj.target_obj.dim == 3
-                [X,Y,~] = meshgrid(linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,3)));
-                R = sqrt(X.^2 + Y.^2);
-
-                circleMask = logical(R.*(R<=1));
-                gel_inds = find(circleMask & obj.target_obj.target==1);
-                void_inds = find(circleMask & ~obj.target_obj.target);
-            end
-        end
-        
-        function VER = evalError(obj,x)
-            min_gel_dose = min(x(obj.gel_inds),[],'all');
-            max_void_dose = max(x(obj.void_inds),[],'all');
-            void_doses = x(obj.void_inds);
-            n_pix_overlap = sum(void_doses>=min_gel_dose);
-            VER = n_pix_overlap/(length(obj.gel_inds)+length(obj.void_inds));
-
         end
         
     end

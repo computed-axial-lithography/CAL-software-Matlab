@@ -43,7 +43,7 @@ classdef CALOptimize
             
             obj.thresholds = zeros(1,opt_params.max_iter);
             obj.error = zeros(1,opt_params.max_iter);
-            [obj.gel_inds,obj.void_inds] = obj.getInds();
+%             [obj.gel_inds,obj.void_inds] = obj.getInds();
         end
         
         function [obj] = parseParams(obj,opt_params,proj_params)

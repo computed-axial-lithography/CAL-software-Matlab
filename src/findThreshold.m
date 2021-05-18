@@ -1,5 +1,7 @@
-function [thresh] = findThreshold(x,target,gel_inds,void_inds)
-
+function [thresh] = findThreshold(x,target)
+    
+    [gel_inds,void_inds] = CALMetrics.getInds(target);
+    
     thresh_low = min(x,[],'all');
     thresh_high = max(x,[],'all');
 

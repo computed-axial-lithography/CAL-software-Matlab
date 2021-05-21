@@ -6,16 +6,16 @@ function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
 
         
     if ~isempty(stl_filename)
-        [vox_target,target_care_area] = voxelizeTarget(stl_filename,resolution,verbose);
-        target_obj = TargetObj(vox_target,target_care_area,resolution,stl_filename);
+        [vox_target] = voxelizeTarget(stl_filename,resolution,verbose);
+        target_obj = TargetObj(vox_target,resolution,stl_filename);
     elseif nargin==4
-        [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
-        target_obj = TargetObj(prepped_target,target_care_area);
+        [prepped_target] = prepTarget(varargin{1},verbose);
+        target_obj = TargetObj(prepped_target);
         
     end
 end
 
-function [prepped_target, target_care_area] = prepTarget(target,verbose)
+function [prepped_target] = prepTarget(target,verbose)
     if length(size(target)) == 2
         if verbose
             fprintf('Preparing 2D target\n');
@@ -25,8 +25,8 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose)
         prepped_target = double(target > 0);
         
         % Care area dilation with a disk structuring element
-        se = strel('disk',1,4);
-        target_care_area = imdilate(target,se);
+%         se = strel('disk',1,4);
+%         target_care_area = imdilate(target,se);
 
         if verbose
             Display.displayReconstruction(target);
@@ -43,8 +43,8 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose)
         prepped_target = double(target > 0);
         
         % Care area dilation with a sphere structuring element
-        se = strel('sphere',4);
-        target_care_area = imdilate(prepped_target,se);
+%         se = strel('sphere',4);
+%         target_care_area = imdilate(prepped_target,se);
         
         if verbose
             Display.displayReconstruction(prepped_target,'Voxelized Target');
@@ -60,7 +60,7 @@ end
 
 
         
-function [voxelized_target,target_care_area] = voxelizeTarget(stl_filename,resolution,verbose)
+function [voxelized_target] = voxelizeTarget(stl_filename,resolution,verbose)
 
     if verbose
         fprintf('Beginning voxelization of target\n');
@@ -115,8 +115,8 @@ function [voxelized_target,target_care_area] = voxelizeTarget(stl_filename,resol
     domain_size = size(voxelized_target);
 
     % Care area dilation with a spherical structuring element
-    se = strel('sphere',4);
-    target_care_area = imdilate(voxelized_target,se);
+%     se = strel('sphere',4);
+%     target_care_area = imdilate(voxelized_target,se);
 
 
     if verbose

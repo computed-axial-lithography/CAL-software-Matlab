@@ -137,21 +137,22 @@ classdef CALOptimize
                     
 
                 mu = curr_threshold;
-                mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
-                mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
+%                 mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
+%                 mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
 
                 
                 x_thresh = obj.sigmoid((x-mu), obj.opt_params.sigmoid);
-                x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
-                x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
+%                 x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
+%                 x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
                 
                 
-                delta_x = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error   
-                delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
-                delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
+                delta_x = (x_thresh - obj.target_obj.target);%.*obj.target_obj.target_care_area; % Target space error   
+%                 delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
+%                 delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
                 
-                delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
-                
+%                 delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
+                delta_x_feedback = delta_x;
+
                 obj.error(curr_iter) = CALMetrics.calcVER(obj.target_obj.target,x);
                 
                 delta_b = obj.A.forward(delta_x_feedback);

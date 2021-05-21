@@ -8,21 +8,24 @@ function [ProjectorObj] = CALProjectorConstructor(target_obj,proj_params,paralle
         proj_params.inclination_angle = 0;
     end     
     
-    if target_obj.dim == 2
-        ProjectorObj = Projector2D(proj_params);
-    elseif target_obj.dim == 3
-        ProjectorObj = Projector3D(proj_params,parallel);
-    end
+    if ~isfield(proj_params,'CUDA') || proj_params.CUDA == 0
+        if target_obj.dim == 2
+            ProjectorObj = Projector2DParallel(proj_params);
+        elseif target_obj.dim == 3
+            ProjectorObj = Projector3DParallel(proj_params,parallel);
+        end
     
-    if proj_params.CUDA == 1
+    elseif proj_params.CUDA == 1
         assert(testAstra()==1)
         
-        if proj_params.inclination_angle ~= 0 
-            ProjectorObj = Projector3DCUDATomosynthesis(target_obj,proj_params);
+        if ~isfield(proj_params,'cone_angle') || proj_params.cone_angle == 0
+            ProjectorObj = Projector3DParallelCUDA(target_obj,proj_params);
         else
-            ProjectorObj = Projector3DCUDA(target_obj,proj_params);
+            ProjectorObj = Projector3DConeCUDA(target_obj,proj_params);
         end
-        
+    
+    else
+        error('CALProjectorConstructor failed because projector parameters not defined');
     end
 
 end

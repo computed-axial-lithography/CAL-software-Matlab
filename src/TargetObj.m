@@ -2,17 +2,17 @@ classdef TargetObj
     
     properties
         target
-        target_care_area
         resolution
         dim
         stl_filename
     end
     
     methods
-        function obj = TargetObj(target,target_care_area,resolution,varargin)
+%         function obj = TargetObj(target,target_care_area,resolution,varargin)
+        function obj = TargetObj(target,resolution,varargin)
 
             obj.target = target;
-            obj.target_care_area = target_care_area;
+%             obj.target_care_area = target_care_area;
             obj.dim = length(size(target));
             if obj.dim == 3 && exist('resolution','var')
                 obj.resolution = resolution;

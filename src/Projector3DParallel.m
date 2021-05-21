@@ -1,4 +1,4 @@
-classdef Projector3D
+classdef Projector3DParallel
     
     properties
         proj_params
@@ -6,7 +6,7 @@ classdef Projector3D
     end
     
     methods
-        function obj = Projector3D(proj_params,parallel)
+        function obj = Projector3DParallel(proj_params,parallel)
             obj.proj_params = proj_params;
             obj.parallel = parallel;
         end

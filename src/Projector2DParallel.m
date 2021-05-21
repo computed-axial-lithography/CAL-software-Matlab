@@ -1,11 +1,11 @@
-classdef Projector2D
+classdef Projector2DParallel
     
     properties
         proj_params
     end
     
     methods
-        function obj = Projector2D(proj_params)
+        function obj = Projector2DParallel(proj_params)
             obj.proj_params = proj_params;
 
         end

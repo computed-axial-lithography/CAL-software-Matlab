@@ -11,8 +11,6 @@ classdef CALOptimize
         
         thresholds
         error
-        gel_inds
-        void_inds
     end
     
     methods
@@ -43,7 +41,7 @@ classdef CALOptimize
             
             obj.thresholds = zeros(1,opt_params.max_iter);
             obj.error = zeros(1,opt_params.max_iter);
-%             [obj.gel_inds,obj.void_inds] = obj.getInds();
+
         end
         
         function [obj] = parseParams(obj,opt_params,proj_params)
@@ -130,7 +128,7 @@ classdef CALOptimize
                 if ~isnan(obj.opt_params.threshold)
                     curr_threshold = obj.opt_params.threshold;
                 else
-                    curr_threshold = findThreshold(x,obj.target_obj.target,obj.gel_inds,obj.void_inds);
+                    curr_threshold = findThreshold(x,obj.target_obj.target);
                 end
                 
                 obj.thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
@@ -189,7 +187,7 @@ classdef CALOptimize
                 runtime = toc;
                 fprintf('Finished optimization of projections in %.2f seconds\n',runtime);
                 
-                display.histogramProjRecon(opt_b,x,obj.gel_inds,obj.void_inds)
+                display.histogramProjRecon(obj.target_obj.target,opt_b,x)
                 display.showProjections(opt_b,'Optimized Projections');
                 display.showDose(x,'Optimized Reconstruction');
                 autoArrangeFigures(2,3)  % automatically arrange figures on screen

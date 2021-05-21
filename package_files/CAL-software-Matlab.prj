@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="F:\Github\CAL-software-Matlab\src\package_files\CAL-software-Matlab.prj" location="F:\Github\CAL-software-Matlab\src\package_files" name="CAL-software-Matlab" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.prj" location="F:\Github\CAL-software-Matlab\package_files" name="CAL-software-Matlab" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>CAL-software-Matlab</param.appname>
     <param.authnamewatermark>Joseph Toombs, Sui Man Luk</param.authnamewatermark>
     <param.email />
@@ -9,7 +9,7 @@
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
     <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
-    <param.version>1.3.0</param.version>
+    <param.version>1.3.1</param.version>
     <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -85,6 +85,7 @@ This code package is provided to support the generation of the light projections
     <fileset.rootfiles>
       <file>F:\Github\CAL-software-Matlab\src\.gitignore</file>
       <file>F:\Github\CAL-software-Matlab\src\archive</file>
+      <file>F:\Github\CAL-software-Matlab\src\astra</file>
       <file>F:\Github\CAL-software-Matlab\src\autoArrangeFigures_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\CALCreateImageSet.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALMetrics.m</file>
@@ -107,7 +108,6 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\imshow_3D_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\LICENSE.txt</file>
       <file>F:\Github\CAL-software-Matlab\src\loadExStlFilename.m</file>
-      <file>${PROJECT_ROOT}</file>
       <file>F:\Github\CAL-software-Matlab\src\Projector2D.m</file>
       <file>F:\Github\CAL-software-Matlab\src\Projector3D.m</file>
       <file>F:\Github\CAL-software-Matlab\src\ProjObj.m</file>
@@ -169,7 +169,7 @@ This code package is provided to support the generation of the light projections
     </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="CAL-software-Matlab.mltbx" optional="false">F:\Github\CAL-software-Matlab\src\package_files\CAL-software-Matlab.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="CAL-software-Matlab.mltbx" optional="false">F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>

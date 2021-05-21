@@ -65,7 +65,11 @@ classdef Display
             grid on
         end
         
-        function [] = histogramProjRecon(b,x,gel_inds,void_inds)
+        function [] = histogramProjRecon(target,b,x)
+            
+            
+            [gel_inds,void_inds] = CALMetrics.getInds(target);
+            
             figure(4)
             
             subplot(2,1,1)

@@ -61,13 +61,14 @@ classdef Projector3DParallelCUDA
 
         function [b] = forward(obj,x)
             
-            [~, b] = astra_create_sino3d_cuda(x, obj.astra_proj_geom, obj.astra_vol_geom);
-
+            [proj_id, b] = astra_create_sino3d_cuda(x, obj.astra_proj_geom, obj.astra_vol_geom);
+            astra_mex_data3d('delete', proj_id)
         end
         
         function [x] = backward(obj,b)
 
-            [~, x] = astra_create_backprojection3d_cuda(b, obj.astra_proj_geom, obj.astra_vol_geom);
+            [recon_id, x] = astra_create_backprojection3d_cuda(b, obj.astra_proj_geom, obj.astra_vol_geom);
+            astra_mex_data3d('delete', recon_id)
 
             x = clipToCircle(x);
         end

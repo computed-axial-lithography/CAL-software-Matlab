@@ -27,19 +27,19 @@ proj_params.CUDA = 1;
 proj_params.inclination_angle = 0;
 proj_params.cone_angle = 0;
 
-% set optimization parameters
+% set optimization parameterssy
 opt_params.max_iter = 60;
-opt_params.threshold = 0.8;
-opt_params.learning_rate = 0.004;
+opt_params.threshold = 0.65;
+opt_params.learning_rate = 0.003;
 
 verbose = 1;
 
 % prepare the target
-scalefactor = 2.5;
-height = 8/scalefactor;
+scalefactor = 3;
+height = 6.15/scalefactor;
 
 resolution = ceil(height/(0.0108*1.25));
-stl_filename =  'truncatedoctahedroncells2x2x4_1010degtilt.stl';% acceptable inputs 'bear', 'thinker', 'octet', 'octahedron'
+stl_filename =  'multilens_10degtilt_scaled1.26.stl';% acceptable inputs 'bear', 'thinker', 'octet', 'octahedron'
 target_obj = CALPrepTarget(stl_filename,resolution,verbose);
 
 % target_obj.target = padarray(target_obj.target,[0,0,40],0);
@@ -64,6 +64,7 @@ Opt = CALOptimize(target_obj,opt_params,proj_params,verbose);
 
 
 image_params.size_scale_factor = scalefactor;
+image_params.invert_vert = 1;
 image_params.rotate = 45;
 image_params.image_width = 1920; % this parameter should be changed to match your projector image, default is 1920
 image_params.image_height = 1080; % this parameter should be changed to match your projector image, default is 1080

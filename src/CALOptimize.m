@@ -29,7 +29,9 @@ classdef CALOptimize
             obj.default_proj.angles = linspace(0,179,180);  
             obj.default_proj.bit8 = 0;  
             obj.default_proj.equalize8bit = 0;  
-            
+            obj.default_proj.zero_constraint = false;
+            obj.default_proj.proj_mask = false;
+
             obj = obj.parseParams(opt_params,proj_params);
             
             obj.target_obj = target_obj;
@@ -38,8 +40,15 @@ classdef CALOptimize
             
             obj.verbose = verbose;
             
+            
+            if obj.proj_params.zero_constraint == true
+                % run image segmentation flood fill routine
+                [obj.proj_params.zero_constraint,~] = getFills(target_obj.target);
+            end
             obj.A = CALProjectorConstructor(target_obj,obj.proj_params,obj.opt_params.parallel);
             
+
+
             obj.thresholds = zeros(1,opt_params.max_iter);
             obj.error = zeros(1,opt_params.max_iter);
         end
@@ -86,6 +95,12 @@ classdef CALOptimize
             end
             if ~isfield(proj_params,'equalize8bit')
                 obj.proj_params.equalize8bit = obj.default_proj.equalize8bit;
+            end
+            if ~isfield(proj_params,'zero_constraint')
+                obj.proj_params.zero_constraint = obj.default_proj.zero_constraint;
+            end
+            if ~isfield(proj_params,'proj_mask')
+                obj.proj_params.proj_mask = obj.default_proj.proj_mask;
             end
         end
         

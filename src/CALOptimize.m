@@ -16,6 +16,7 @@ classdef CALOptimize
     methods
         function obj = CALOptimize(target_obj,opt_params,proj_params,verbose)
             % set default values
+            obj.default_opt.filter = true;
             obj.default_opt.parallel = 0;
             obj.default_opt.max_iter = 10;
             obj.default_opt.learning_rate = 0.005;
@@ -48,6 +49,9 @@ classdef CALOptimize
             obj.opt_params = opt_params;
             obj.proj_params = proj_params;
             
+            if ~isfield(opt_params,'filter')
+                obj.opt_params.filter = obj.default_opt.filter;
+            end
             if ~isfield(opt_params,'parallel')
                 obj.opt_params.parallel = obj.default_opt.parallel;
             end
@@ -104,8 +108,10 @@ classdef CALOptimize
             
             b = obj.A.forward(obj.target_obj.target);
             
-            b = filterProjections(b,'ram-lak');
-            b = max(b,0);
+            if obj.opt_params.filter
+                b = filterProjections(b,'ram-lak');
+                b = max(b,0);
+            end
             
             opt_b = b;
             delta_b_prev = zeros(size(b));

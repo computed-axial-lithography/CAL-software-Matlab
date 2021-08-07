@@ -114,6 +114,10 @@ classdef CALCreateImageSet
                 proj_mod = obj.intensityScale(proj_mod,obj.image_params.intensity_scale_factor);
             end
 
+            % remove any zero rows and columns after rotation and before
+            % insertion into images
+            proj_mod = cropToBounds(proj_mod);
+            
             
             if max(obj.angles) <= 180
                 image_set = cell(1,2*length(obj.angles));
@@ -214,6 +218,26 @@ classdef CALCreateImageSet
             proj = 255*proj/max(proj(:));
             out = min(255,proj.*scale);
             out = uint8(out);
+        end
+        
+        function proj_mod = cropToBounds(proj)
+            % remove any zero rows and columns after rotation and before
+            % insertion into images
+            collapsed_proj = squeeze(sum(proj,2)); % sum over angles
+            
+            
+            collapsed_t_proj = sum(collapsed_proj,1); % sum over columns
+            collapsed_z_proj = sum(collapsed_proj,2); % sum over rows
+            
+            first_z = find(collapsed_z_proj,1,'first');
+            last_z = find(collapsed_z_proj,1,'last');
+            first_t = find(collapsed_t_proj,1,'first');
+            last_t = find(collapsed_t_proj,1,'last');
+            
+            
+            proj_mod = proj(first_z-1:last_z+1,:,first_t-1:last_t+1); % crop to bounds of projections with 1 pixel buffer
+
+
         end
         
         function image = arrayInsertProj(proj,image_width,image_height,t_offset,z_offset,array_num,array_offset)

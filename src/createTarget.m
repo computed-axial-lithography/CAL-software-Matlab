@@ -15,6 +15,19 @@ elseif strcmp(type,'L')
     target(n_pixels/4:0.5827*n_pixels,n_pixels/4:0.5827*n_pixels) = 1;
     target(n_pixels/4:n_pixels/2,n_pixels/4:n_pixels/2) = 0;
     target(n_pixels/4:0.416*n_pixels,n_pixels/4:0.416*n_pixels) = 1;
+    
+elseif strcmp(type,'tube')
+    target = zeros(n_pixels,n_pixels);
+    [X,Y] = meshgrid(linspace(-1,1,n_pixels),linspace(-1,1,n_pixels));
+    
+    R = sqrt(Y.^2 + X.^2);
+    R1 = sqrt(Y.^2 + (X+1/3).^2);
+    R2 = sqrt(Y.^2 + (X-1/3).^2);
+    target(R<=2/3) = 1;
+    target(R1<=1/5) = 0;
+    target(R2<=1/5) = 0;
+
+    
 elseif strcmp(type,'dots')
     target = zeros(n_pixels,n_pixels);
     

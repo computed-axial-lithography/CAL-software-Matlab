@@ -87,7 +87,7 @@ classdef Display
             legend('Out-of-part Dose','In-part Dose','Location','northwest')
             
             subplot(2,1,2)
-            h = histogram(b(b~=0)./max(b(:)),linspace(min(b(b~=0)),1,256),'facecolor','r','facealpha',0.5);
+            h = histogram(b(b~=0)./max(b(:)),linspace(0,1,256),'facecolor','r','facealpha',0.5);
             cdf = cumsum(h.Values);
             hold on
             plot(h.BinEdges(2:end),cdf,'r')

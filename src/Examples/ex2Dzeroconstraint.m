@@ -7,14 +7,12 @@ close all
 % set projection parameters
 proj_params.angles = linspace(0,179,180);
 proj_params.zero_constraint = true;
-% proj_params.bit8 = 0;
-
+proj_params.bit8 = 1;
 
 % set optimization parameters
-opt_params.max_iter = 25;
+opt_params.max_iter = 100;
 opt_params.threshold = 0.85;
-opt_params.learning_rate = 0.1;
-% opt_params.filter = false;
+opt_params.learning_rate = 0.002;
 
 verbose = 1;
 

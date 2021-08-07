@@ -21,13 +21,21 @@ elseif strcmp(type,'tube')
     [X,Y] = meshgrid(linspace(-1,1,n_pixels),linspace(-1,1,n_pixels));
     
     R = sqrt(Y.^2 + X.^2);
+
+    target(R<=2/3) = 1;
+    target(R<=1/3) = 0;
+
+elseif strcmp(type,'channels')
+    target = zeros(n_pixels,n_pixels);
+    [X,Y] = meshgrid(linspace(-1,1,n_pixels),linspace(-1,1,n_pixels));
+    
+    R = sqrt(Y.^2 + X.^2);
     R1 = sqrt(Y.^2 + (X+1/3).^2);
     R2 = sqrt(Y.^2 + (X-1/3).^2);
     target(R<=2/3) = 1;
-    target(R1<=1/5) = 0;
-    target(R2<=1/5) = 0;
+    target(R1<=1/6) = 0;
+    target(R2<=1/6) = 0;
 
-    
 elseif strcmp(type,'dots')
     target = zeros(n_pixels,n_pixels);
     

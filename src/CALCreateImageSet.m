@@ -29,7 +29,6 @@ classdef CALCreateImageSet
                 else
                     obj.backwards_comp_params.gen_from_old_proj = true;
                     warning('Attempting backward compatible image set creation. Check that the output image set matches expectations.');
-                    pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');
                 end
                 obj.angles = obj.image_params.angles;
                 obj.proj = projection_obj;
@@ -116,7 +115,7 @@ classdef CALCreateImageSet
 
             % remove any zero rows and columns after rotation and before
             % insertion into images
-            proj_mod = cropToBounds(proj_mod);
+            proj_mod = obj.cropToBounds(proj_mod);
             
             
             if max(obj.angles) <= 180
@@ -234,9 +233,13 @@ classdef CALCreateImageSet
             first_t = find(collapsed_t_proj,1,'first');
             last_t = find(collapsed_t_proj,1,'last');
             
-            
-            proj_mod = proj(first_z-1:last_z+1,:,first_t-1:last_t+1); % crop to bounds of projections with 1 pixel buffer
-
+            if first_z == 1 || last_z == size(proj,3)
+                proj_mod = proj;
+            elseif first_t == 1 || last_t == size(proj,1)
+                proj_mod = proj;
+            else
+                proj_mod = proj(first_z-1:last_z+1,:,first_t-1:last_t+1); % crop to bounds of projections with 1 pixel buffer
+            end
 
         end
         

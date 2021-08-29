@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.prj" location="F:\Github\CAL-software-Matlab\package_files" name="CAL-software-Matlab" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="999437900" file="F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.prj" location="F:\Github\CAL-software-Matlab\package_files" name="CAL-software-Matlab" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>CAL-software-Matlab</param.appname>
     <param.authnamewatermark>Joseph Toombs, Sui Man Luk</param.authnamewatermark>
     <param.email />
@@ -9,14 +9,32 @@
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
     <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
-    <param.version>1.3.1</param.version>
+    <param.version>1.4.0</param.version>
     <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
     <param.platforms />
     <param.guid>029afe1f-3472-41ad-aaed-e6f4b2cffc30</param.guid>
-    <param.exclude.filters />
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
     <param.examples />
     <param.demosxml />
@@ -51,7 +69,6 @@ This code package is provided to support the generation of the light projections
       <param.products.id />
       <param.products.version />
       <param.platforms />
-      <param.exclude.filters />
       <param.exclude.pcodedmfiles />
       <param.examples />
       <param.demosxml />
@@ -85,18 +102,19 @@ This code package is provided to support the generation of the light projections
     <fileset.rootfiles>
       <file>F:\Github\CAL-software-Matlab\src\.gitignore</file>
       <file>F:\Github\CAL-software-Matlab\src\archive</file>
-      <file>F:\Github\CAL-software-Matlab\src\astra</file>
       <file>F:\Github\CAL-software-Matlab\src\autoArrangeFigures_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\CALCreateImageSet.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALMetrics.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALOptimize.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALPrepTarget.m</file>
-      <file>F:\Github\CAL-software-Matlab\src\CALProject.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALProjectImage.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALProjectImageSet.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALProjectorConstructor.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALSetup.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALtest.m</file>
       <file>F:\Github\CAL-software-Matlab\src\clipToCircle.m</file>
       <file>F:\Github\CAL-software-Matlab\src\colormaps_bin</file>
+      <file>F:\Github\CAL-software-Matlab\src\Copy_of_Projector3DCUDA.asv</file>
       <file>F:\Github\CAL-software-Matlab\src\createTarget.m</file>
       <file>F:\Github\CAL-software-Matlab\src\Display.m</file>
       <file>F:\Github\CAL-software-Matlab\src\DisplayEvolving.m</file>
@@ -111,10 +129,12 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\Projector2D.m</file>
       <file>F:\Github\CAL-software-Matlab\src\Projector3D.m</file>
       <file>F:\Github\CAL-software-Matlab\src\ProjObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\PTB.m</file>
       <file>F:\Github\CAL-software-Matlab\src\ReconObj.m</file>
       <file>F:\Github\CAL-software-Matlab\src\setTimer.m</file>
       <file>F:\Github\CAL-software-Matlab\src\STL_read_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\TargetObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\util</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded>

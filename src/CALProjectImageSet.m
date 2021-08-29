@@ -14,8 +14,6 @@ classdef CALProjectImageSet < handle
         stage_started % flag
         
         SLM
-        blank_image
-        movie
         num_frames
         run_flag % flag
         
@@ -36,50 +34,15 @@ classdef CALProjectImageSet < handle
             if obj.frame_rate > 60
                 warning('Warning!!! Frame rate %6.1fHz is higher than 60Hz. Only proceed if your projector is capable of refresh rates >60Hz.',obj.frame_rate)
             end
-            
-            try
-                ver_str = PsychtoolboxVersion;
-            catch
-                error('Pyschtoolbox is not installed or is improperly installed');
-            end
 
-            if str2num(ver_str(1)) < 3
-                error('Pyschtoolbox version 3 is required. The installed version is %s.',ver_str);
-            end
-
-            AssertOpenGL; % Assure Screen() visual stimulation is working.
-            KbName ('UnifyKeyNames'); % Use same key names on all operating systems.
-
-            if nargin == 3
-                obj.monitor_id = varargin{1};
-            else
-                screens = Screen('Screens');
-                obj.monitor_id = max(screens);
-            end
-            
             if nargin == 4
                 obj.blank_when_paused = varargin{2};
             else
                 obj.blank_when_paused = 1;
             end
-            
-            sca % clear possible third screen window == screen('CloseAll')
-            close all
 
-            % Define the SLM struct
-            Screen('Preference', 'Verbosity', 1);
-            Screen('Preference', 'VisualDebugLevel', 1);
-            try % first try to open window after performing sync tests
-                Screen('Preference','SkipSyncTests',0);
-                obj.SLM = Screen('OpenWindow',obj.monitor_id);
-            catch % if this fails, display warning and skip the sync tests
-                warning('Warning! Failed to open PyschToolbox window after Sync Tests. Continuing projection by skipping Sync Tests. Ensure that images are displaying correctly.');
-                Screen('Preference','SkipSyncTests',2);
-                obj.SLM = Screen('OpenWindow',obj.monitor_id);
-            end
-            
-            obj.flipBlankImage();
-            obj = obj.prepareFrames();
+            obj.SLM = PTB(varargin{1});
+            obj.SLM = obj.SLM.prepareImages(image_set_obj);
         end
 
         
@@ -215,9 +178,8 @@ classdef CALProjectImageSet < handle
                     end
                 end
                 
-                Screen('CopyWindow',obj.movie(i),obj.SLM);
-                Screen('Flip', obj.SLM);
-                
+                obj.SLM.refresh(i);
+
                 if isempty(obj.motor_sync)
                     frame_local_time = tic;
                     obj.holdOnFrame(frame_local_time,obj.frame_hold_time);
@@ -239,7 +201,7 @@ classdef CALProjectImageSet < handle
                 fprintf('\n-------------------Terminating projection---------------------\n')
 
                 % display blank image stopping
-                obj.flipBlankImage();
+                obj.SLM.flipBlankImage();
 
                 % stop stage and terminate motor stage control
                 if obj.motor_sync
@@ -250,18 +212,6 @@ classdef CALProjectImageSet < handle
             
         end
         
-            
-        function obj = prepareFrames(obj)
-            % First create image pointers
-            obj.movie = zeros(1,obj.num_frames); % vector for storing the pointers to each image
-            for i=1:obj.num_frames
-
-                disp(['Mounting images: ', num2str(i),'/',num2str(obj.num_frames)]);
-
-                obj.movie(i)=Screen('OpenOffscreenWindow', obj.SLM, 0); % mount all images to an offscreen window
-                Screen('PutImage',obj.movie(i), obj.image_set_obj.image_set{i});
-            end
-        end
         
 
         function obj = startStage(obj)
@@ -291,21 +241,14 @@ classdef CALProjectImageSet < handle
                 fprintf('\nStage control terminated. Run obj.motorInit() to re-initialize motor stage.\n')
             end
         end
-        
-        
-        function [] = flipBlankImage(obj)
-            Screen('FillRect', obj.SLM, 0);
-            Screen(obj.SLM,'Flip');   
-        end
-        
-        
+
         function obj = keyInteraction(obj,i)
             pressed_key = obj.checkKey();
             if pressed_key == KbName('tab') % if pressed key is tab, pause until spacebar is pressed again
                 obj.exposure_timer = obj.exposure_timer.pause();
                 obj.printPaused(i,obj.exposure_timer.total_exposure_time);
                 if obj.blank_when_paused
-                    obj.flipBlankImage();
+                    obj.SLM.flipBlankImage();
                 end
                 if obj.motor_sync
                     obj = obj.stopStage(0);

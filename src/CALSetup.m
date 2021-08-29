@@ -64,6 +64,7 @@ classdef CALSetup
             
             image = createLines(thickness,spacing,x_offset);
             SLM = PTB();
+            fprintf('\nProjecting image...                           (press esc to stop)\n')
             SLM.drawImage(image);
             
                         
@@ -88,6 +89,7 @@ classdef CALSetup
                     % shift right     
                     x_offset = x_offset - increment;
                 elseif pressed_key == KbName('ESCAPE')
+                    fprintf('\nStopped projection.\n')
                     break
                 end
                 if thickness <= increment, thickness = 2*increment; end
@@ -128,6 +130,7 @@ classdef CALSetup
             increment = 1/dimensions(2);
             image = createDisks(spacing,circle_radius,z_offset,t_offset);
             SLM = PTB();
+            fprintf('\nProjecting image...                           (press esc to stop)\n')
             SLM.drawImage(image);
 
             
@@ -153,6 +156,7 @@ classdef CALSetup
                     % shift down   
                     z_offset = z_offset - increment;
                 elseif pressed_key == KbName('ESCAPE')
+                    fprintf('\nStopped projection.\n')
                     break
                 end
                 if circle_radius <= increment, circle_radius = 2*increment; end

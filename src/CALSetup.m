@@ -26,7 +26,6 @@ classdef CALSetup
                 radius = 0.9*ii*1/(rings);
                 image(radius>(radius - 0.01) & radius<(radius + 0.01)) = 255;
             end
-%             CALSetup.showSaveImage(image,'setupfocus.png')
             CALProjectImage(image);
         end
         
@@ -41,7 +40,6 @@ classdef CALSetup
             image(R<=0.4 & R>=0.39) = 255;
             image(R<=0.6 & R>=0.59) = 255;
             image(R<=0.8 & R>=0.79) = 255;
-%             CALSetup.showSaveImage(image,'setupopticalalignment.png')
             CALProjectImage(image);
         end
         
@@ -65,7 +63,6 @@ classdef CALSetup
             increment = 1/dimensions(1);
             
             image = createLines(thickness,spacing,x_offset);
-            CALSetup.showSaveImage(image,'setupaxisalignment.png')
             SLM = PTB();
             SLM.drawImage(image);
             
@@ -169,7 +166,6 @@ classdef CALSetup
             spacing = round(spacing*dimensions(1));
             circle_radius = round(circle_radius*dimensions(1));
             z_offset = round(z_offset*dimensions(1));
-%             CALSetup.showSaveImage(image,'setupresincalibration.png')
 
             function image = createDisks(spacing,circle_radius,z_offset,x_offset)
                 image = zeros(dimensions(2),dimensions(1));
@@ -194,7 +190,6 @@ classdef CALSetup
         function [image] = intensityCalibration(dimensions,gray_value)
             % Gray value for measurement of optical power/intensity
             image = ones(dimensions(2),dimensions(1))*gray_value;
-%             CALSetup.showSaveImage(image,'setupintensitycalibration.png')
             CALProjectImage(image);
         end
         

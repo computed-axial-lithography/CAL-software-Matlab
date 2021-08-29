@@ -29,7 +29,6 @@ classdef CALCreateImageSet
                 else
                     obj.backwards_comp_params.gen_from_old_proj = true;
                     warning('Attempting backward compatible image set creation. Check that the output image set matches expectations.');
-                    pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');pause(1);fprintf('.');
                 end
                 obj.angles = obj.image_params.angles;
                 obj.proj = projection_obj;
@@ -114,6 +113,10 @@ classdef CALCreateImageSet
                 proj_mod = obj.intensityScale(proj_mod,obj.image_params.intensity_scale_factor);
             end
 
+            % remove any zero rows and columns after rotation and before
+            % insertion into images
+            proj_mod = obj.cropToBounds(proj_mod);
+            
             
             if max(obj.angles) <= 180
                 image_set = cell(1,2*length(obj.angles));
@@ -214,6 +217,30 @@ classdef CALCreateImageSet
             proj = 255*proj/max(proj(:));
             out = min(255,proj.*scale);
             out = uint8(out);
+        end
+        
+        function proj_mod = cropToBounds(proj)
+            % remove any zero rows and columns after rotation and before
+            % insertion into images
+            collapsed_proj = squeeze(sum(proj,2)); % sum over angles
+            
+            
+            collapsed_t_proj = sum(collapsed_proj,1); % sum over columns
+            collapsed_z_proj = sum(collapsed_proj,2); % sum over rows
+            
+            first_z = find(collapsed_z_proj,1,'first');
+            last_z = find(collapsed_z_proj,1,'last');
+            first_t = find(collapsed_t_proj,1,'first');
+            last_t = find(collapsed_t_proj,1,'last');
+            
+            if first_z == 1 || last_z == size(proj,3)
+                proj_mod = proj;
+            elseif first_t == 1 || last_t == size(proj,1)
+                proj_mod = proj;
+            else
+                proj_mod = proj(first_z-1:last_z+1,:,first_t-1:last_t+1); % crop to bounds of projections with 1 pixel buffer
+            end
+
         end
         
         function image = arrayInsertProj(proj,image_width,image_height,t_offset,z_offset,array_num,array_offset)

@@ -16,6 +16,7 @@ classdef CALOptimize
     methods
         function obj = CALOptimize(target_obj,opt_params,proj_params,verbose)
             % set default values
+            obj.default_opt.filter = true;
             obj.default_opt.parallel = 0;
             obj.default_opt.max_iter = 10;
             obj.default_opt.learning_rate = 0.005;
@@ -28,7 +29,9 @@ classdef CALOptimize
             obj.default_proj.angles = linspace(0,179,180);  
             obj.default_proj.bit8 = 0;  
             obj.default_proj.equalize8bit = 0;  
-            
+            obj.default_proj.zero_constraint = false;
+            obj.default_proj.proj_mask = false;
+
             obj = obj.parseParams(opt_params,proj_params);
             
             obj.target_obj = target_obj;
@@ -37,8 +40,15 @@ classdef CALOptimize
             
             obj.verbose = verbose;
             
+            
+            if obj.proj_params.zero_constraint == true
+                % run image segmentation flood fill routine
+                [obj.proj_params.zero_constraint,~] = getFills(target_obj.target);
+            end
             obj.A = CALProjectorConstructor(target_obj,obj.proj_params,obj.opt_params.parallel);
             
+
+
             obj.thresholds = zeros(1,opt_params.max_iter);
             obj.error = zeros(1,opt_params.max_iter);
 
@@ -49,6 +59,9 @@ classdef CALOptimize
             obj.opt_params = opt_params;
             obj.proj_params = proj_params;
             
+            if ~isfield(opt_params,'filter')
+                obj.opt_params.filter = obj.default_opt.filter;
+            end
             if ~isfield(opt_params,'parallel')
                 obj.opt_params.parallel = obj.default_opt.parallel;
             end
@@ -84,6 +97,12 @@ classdef CALOptimize
             if ~isfield(proj_params,'equalize8bit')
                 obj.proj_params.equalize8bit = obj.default_proj.equalize8bit;
             end
+            if ~isfield(proj_params,'zero_constraint')
+                obj.proj_params.zero_constraint = obj.default_proj.zero_constraint;
+            end
+            if ~isfield(proj_params,'proj_mask')
+                obj.proj_params.proj_mask = obj.default_proj.proj_mask;
+            end
         end
         
         function [opt_proj_obj,opt_recon_obj,obj] = run(obj)
@@ -105,8 +124,10 @@ classdef CALOptimize
             
             b = obj.A.forward(obj.target_obj.target);
             
-            b = filterProjections(b,'ram-lak');
-            b = max(b,0);
+            if obj.opt_params.filter
+                b = filterProjections(b,'ram-lak');
+                b = max(b,0);
+            end
             
             opt_b = b;
             delta_b_prev = zeros(size(b));

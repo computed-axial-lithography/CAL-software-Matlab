@@ -22,8 +22,7 @@ classdef Projector2DParallel
             b = logical(tmp_b);
         end
         
-        function [b] = forward(obj,target)
-            x = target;
+        function [b] = forward(obj,x)
             [nT,~] = size(x);
 
             tmp_b = radon(x, obj.proj_params.angles);
@@ -35,8 +34,7 @@ classdef Projector2DParallel
             end
         end
         
-        function [x] = backward(obj,proj)
-            b = proj;
+        function [x] = backward(obj,b)
             if ~isscalar(obj.proj_params.zero_constraint)
                 b(obj.proj_params.proj_mask) = 0;
             end

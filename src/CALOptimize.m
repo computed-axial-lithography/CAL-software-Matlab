@@ -71,7 +71,7 @@ classdef CALOptimize
             end
             
             if strcmp(obj.opt_params.optimizer,'FBP')
-
+                % FBP optimizer params
                             
             elseif strcmp(obj.opt_params.optimizer,'CAL')
                 % CAL optimizer params

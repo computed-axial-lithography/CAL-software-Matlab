@@ -15,6 +15,7 @@ classdef CALOptimize
     
     methods
         function obj = CALOptimize(target_obj,opt_params,proj_params,verbose)
+            
             % set default values
             obj.default_opt.filter = true;
             obj.default_opt.parallel = 0;
@@ -25,6 +26,7 @@ classdef CALOptimize
             obj.default_opt.Beta = 0;
             obj.default_opt.Theta = 0;           
             obj.default_opt.Rho = 0;
+                
             
             obj.default_proj.angles = linspace(0,179,180);  
             obj.default_proj.bit8 = 0;  
@@ -49,14 +51,14 @@ classdef CALOptimize
             
 
 
-            obj.thresholds = zeros(1,opt_params.max_iter);
-            obj.error = zeros(1,opt_params.max_iter);
+
         end
         
         function [obj] = parseParams(obj,opt_params,proj_params)
             
             obj.opt_params = opt_params;
             obj.proj_params = proj_params;
+            
             
             if ~isfield(opt_params,'filter')
                 obj.opt_params.filter = obj.default_opt.filter;
@@ -67,25 +69,31 @@ classdef CALOptimize
             if ~isfield(opt_params,'max_iter')
                 obj.opt_params.max_iter = obj.default_opt.max_iter;
             end
-            if ~isfield(opt_params,'learning_rate')
-                obj.opt_params.learning_rate = obj.default_opt.learning_rate;
-            end
-            if ~isfield(opt_params,'sigmoid')
-                obj.opt_params.sigmoid = obj.default_opt.sigmoid;
-            end
-            if ~isfield(opt_params,'threshold')
-                obj.opt_params.threshold = obj.default_opt.threshold;
-            end
-            if ~isfield(opt_params,'Beta')
-                obj.opt_params.Beta = obj.default_opt.Beta;
-            end
-            if ~isfield(opt_params,'Theta')
-                obj.opt_params.Theta = obj.default_opt.Theta;
-            end
-            if ~isfield(opt_params,'Rho')
-                obj.opt_params.Rho = obj.default_opt.Rho;
-            end
+            
+            if strcmp(obj.opt_params.optimizer,'FBP')
 
+                            
+            elseif strcmp(obj.opt_params.optimizer,'CAL')
+                % CAL optimizer params
+                if ~isfield(opt_params,'learning_rate')
+                    obj.opt_params.learning_rate = obj.default_opt.learning_rate;
+                end
+                if ~isfield(opt_params,'sigmoid')
+                    obj.opt_params.sigmoid = obj.default_opt.sigmoid;
+                end
+                if ~isfield(opt_params,'threshold')
+                    obj.opt_params.threshold = obj.default_opt.threshold;
+                end
+                if ~isfield(opt_params,'Beta')
+                    obj.opt_params.Beta = obj.default_opt.Beta;
+                end
+                if ~isfield(opt_params,'Theta')
+                    obj.opt_params.Theta = obj.default_opt.Theta;
+                end
+                if ~isfield(opt_params,'Rho')
+                    obj.opt_params.Rho = obj.default_opt.Rho;
+                end
+            end
             
             if ~isfield(proj_params,'angles')
                 obj.proj_params.angles = obj.default_proj.angles;
@@ -104,8 +112,64 @@ classdef CALOptimize
             end
         end
         
-        function [opt_proj_obj,opt_recon_obj,obj] = run(obj)
+        
+        
+        function [opt_proj_obj,opt_recon_obj,obj] = runFBP(obj)
+            if obj.verbose
+                Display.addPathsDisplay();
+                fprintf('Beginning optimization of projections\n');
 
+                display = Display();
+
+                autoArrangeFigures(2,3)  % automatically arrange figures on screen
+
+                tic;
+            end
+            
+            
+            
+            b = obj.A.forward(obj.target_obj.target);
+            
+            b = filterProjections(b,'ram-lak');
+            min_b = min(b,[],'all');
+
+         
+            opt_b = b + abs(min_b);
+            opt_b = opt_b/max(opt_b,[],'all');
+            
+            if obj.proj_params.bit8
+                opt_b = obj.to8Bit(opt_b);
+                opt_b = obj.equalize8Bit(opt_b);
+            end
+            
+            x = obj.A.backward(opt_b);
+            
+            obj.error = CALMetrics.calcVER(obj.target_obj.target,x);
+            
+
+            
+            opt_proj_obj = ProjObj(opt_b,obj.proj_params,obj.opt_params);
+            opt_recon_obj = ReconObj(x,obj.proj_params,obj.opt_params);
+            
+     
+            if obj.verbose
+                
+                runtime = toc;
+                fprintf('Finished optimization of projections in %.2f seconds\n',runtime);
+                pause(0.1)
+
+                display.histogramProjRecon(obj.target_obj.target,opt_b,x)
+                display.showProjections(opt_b,'Optimized Projections');
+                display.showDose(x,'Optimized Reconstruction');
+                autoArrangeFigures(2,3)  % automatically arrange figures on screen
+
+            end
+        end
+        
+        
+        function [opt_proj_obj,opt_recon_obj,obj] = runCAL(obj)
+            obj.thresholds = zeros(1,obj.opt_params.max_iter);
+            obj.error = zeros(1,obj.opt_params.max_iter);
             
             if obj.verbose
                 Display.addPathsDisplay();
@@ -213,6 +277,16 @@ classdef CALOptimize
 
             end
             
+        end
+        
+        
+        function [opt_proj_obj,opt_recon_obj,obj] = run(obj)
+            
+            if strcmp(obj.opt_params.optimizer,'FBP')
+                [opt_proj_obj,opt_recon_obj,obj] = obj.runFBP();
+            elseif strcmp(obj.opt_params.optimizer,'CAL')
+                [opt_proj_obj,opt_recon_obj,obj] = obj.runCAL();
+            end
         end
         
     end

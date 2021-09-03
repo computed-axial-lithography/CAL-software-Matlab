@@ -9,7 +9,7 @@
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
     <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
-    <param.version>1.4.0</param.version>
+    <param.version>1.4.1</param.version>
     <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -114,7 +114,6 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\CALtest.m</file>
       <file>F:\Github\CAL-software-Matlab\src\clipToCircle.m</file>
       <file>F:\Github\CAL-software-Matlab\src\colormaps_bin</file>
-      <file>F:\Github\CAL-software-Matlab\src\Copy_of_Projector3DCUDA.asv</file>
       <file>F:\Github\CAL-software-Matlab\src\createTarget.m</file>
       <file>F:\Github\CAL-software-Matlab\src\Display.m</file>
       <file>F:\Github\CAL-software-Matlab\src\DisplayEvolving.m</file>

@@ -34,14 +34,20 @@ classdef CALProjectImageSet < handle
             if obj.frame_rate > 60
                 warning('Warning!!! Frame rate %6.1fHz is higher than 60Hz. Only proceed if your projector is capable of refresh rates >60Hz.',obj.frame_rate)
             end
-
+            
             if nargin == 4
                 obj.blank_when_paused = varargin{2};
             else
                 obj.blank_when_paused = 1;
             end
+            if nargin == 3
+                obj.monitor_id = varargin{1};
+                obj.SLM = PTB(obj.monitor_id);
 
-            obj.SLM = PTB(varargin{1});
+            else
+                obj.SLM = PTB();
+            end
+            
             obj.SLM = obj.SLM.prepareImages(image_set_obj);
         end
 
@@ -170,18 +176,15 @@ classdef CALProjectImageSet < handle
                         currpos = obj.motor.GetPosition_Position(0);
                         i = interp1(angles,idx,currpos,'nearest',obj.num_frames);
                     end
+                    obj.SLM.refresh(i);
                 else
                     if mod(i,obj.num_frames)~=0
                         i = mod(i,obj.num_frames);
                     elseif i/obj.num_frames >=1
                         i = obj.num_frames;
                     end
-                end
-                
-                obj.SLM.refresh(i);
-
-                if isempty(obj.motor_sync)
                     frame_local_time = tic;
+                    obj.SLM.refresh(i);
                     obj.holdOnFrame(frame_local_time,obj.frame_hold_time);
                     i = i+1;                
                 end

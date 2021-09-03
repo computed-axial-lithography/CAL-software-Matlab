@@ -55,7 +55,7 @@ classdef PTB
                 obj.tex = zeros(1,num_images);
                 for i = 1:num_images
                     obj.tex(i) = Screen('MakeTexture',obj.SLM,images.image_set{i});
-                    fprintf('\nCreating OpenGL texture: %5.0f/%5.0f',i,num_images);
+                    fprintf('Creating OpenGL texture: %4.0f/%4.0f\n',i,num_images);
                 end
             elseif isa(images,'numeric')
                 % assumes only one image

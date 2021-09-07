@@ -1,75 +1,91 @@
-function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
+function target_obj = CALPrepTarget(verbose,target_file,varargin)
 
     if ~exist('verbose','var') || isempty(verbose)
         verbose = 0;
     end
-
-        
-    if ~isempty(stl_filename)
-        [vox_target,target_care_area] = voxelizeTarget(stl_filename,resolution,verbose);
-        target_obj = TargetObj(vox_target,target_care_area,resolution,stl_filename);
-    elseif nargin==4
-        [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
-        target_obj = TargetObj(prepped_target,target_care_area);
-    elseif nargin==5
-        grayscale = varargin{2};
-        [prepped_target,target_care_area] = prepTarget(varargin{1},verbose,grayscale);
+    
+    if ischar(target_file) % path to stl file, varargin{1} is resolution
+        resolution = varargin{1};
+        [vox_target,target_care_area] = voxelizeTarget(target_file,resolution,verbose);
+        target_obj = TargetObj(vox_target,target_care_area,resolution,target_file); 
+    elseif ismatrix(target_file) || ndims(target_file) == 3 % 2D or 3D array, varargin{1} is grayscale (optional)
+        if ~exist('varargin','var') || isempty(varargin)
+            [prepped_target,target_care_area] = prepTarget(target_file,verbose);
+        else
+            grayscale = varargin{1};
+            [prepped_target,target_care_area] = prepTarget(target_file,verbose,grayscale);
+        end
         target_obj = TargetObj(prepped_target,target_care_area);
     end
+    
+%     if ~isempty(target_file)
+%         [vox_target,target_care_area] = voxelizeTarget(target_file,resolution,verbose);
+%         target_obj = TargetObj(vox_target,target_care_area,resolution,target_file);
+%     else
+%         if nargin==5
+%             grayscale = varargin{2};
+%             [prepped_target,target_care_area] = prepTarget(varargin{1},verbose,grayscale);
+%             target_obj = TargetObj(prepped_target,target_care_area);
+%         elseif nargin==4
+%             [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
+%             target_obj = TargetObj(prepped_target,target_care_area);
+%         else
+%             
+%         end
+%     end
 end
 
 function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscale)
     
     if ~exist('grayscale','var') || isempty(grayscale)
         grayscale = 0;
+    else
+        if grayscale~=1 && grayscale~=2
+            error('grayscale must be 0(binary target), 1(grayscale target) or 2(grayscale target with normalization).');
+        end
     end
     
-    if length(size(target)) == 2
-        if verbose
+    if verbose
+        if length(size(target)) == 2
             fprintf('Preparing 2D target\n');
             tic;
+        elseif length(size(target)) == 3
+            fprintf('Preparing 3D target\n');
+            tic;
         end
+    end
         
-        if grayscale
-            prepped_target = double(target);
-        else
-            prepped_target = double(target > 0);
-        end
+    if grayscale == 1
+        prepped_target = double(target);
+    elseif grayscale == 2
+        prepped_target = double(target);
+        prepped_target = prepped_target/max(prepped_target(:));
+    else
+        prepped_target = double(target > 0);
+    end
         
+    if length(size(target)) == 2
         % Care area dilation with a disk structuring element
         se = strel('disk',1,4);
         target_care_area = imdilate(target,se);
 
         if verbose
-            Display.displayReconstruction(target);
+            Display.displayReconstruction(prepped_target);
             runtime = toc;
             fprintf('Finished preparation of 2D target in %.2f seconds\n',runtime);
         end
-        
-    elseif length(size(target)) == 3
-        if verbose
-            fprintf('Preparing 3D target\n');
-            tic;
-        end
-        
-        if grayscale
-            prepped_target = double(target);
-        else
-            prepped_target = double(target > 0);
-        end
-        
+      
+    elseif length(size(target)) == 3      
         % Care area dilation with a sphere structuring element
         se = strel('sphere',4);
         target_care_area = imdilate(prepped_target,se);
         
-        if verbose
+        if verbose %TODO: change volshow settings for grayscale
             Display.displayReconstruction(prepped_target,'Voxelized Target');
-
             pause(0.1)
             runtime = toc;
             fprintf('Finished preparation of 3D target in %.2f seconds\n',runtime);
     %         fprintf('Target is [X,Y,Z]: %3.2f x %3.2f x %3.2f mm\n\n',nX*params.voxel_size,nY*params.voxel_size,nZ*params.voxel_size);
-
         end
     end
 end

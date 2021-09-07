@@ -57,7 +57,7 @@ classdef Display
             figure(2)
             plot(1:curr_iter,error(1:curr_iter),'r','LineWidth',2); 
             xlim([1 max_iter]);
-            ylim([0 max(error)+0.1*max(error)])
+%             ylim([0 max(error)+0.1*max(error)]) %TODO
             xlabel('Iteration #')
             ylabel('Error')
             title_string = sprintf('Iteration = %2.0f',curr_iter);

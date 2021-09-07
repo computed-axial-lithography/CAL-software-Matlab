@@ -1,0 +1,184 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration file="C:\Users\Work\Documents\GitHub\CAL-software\package_files\CAL-software-Matlab-Grayscale.prj" location="C:\Users\Work\Documents\GitHub\CAL-software\package_files" name="CAL-software-Matlab-Grayscale" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>CAL-Software-Matlab-Grayscale</param.appname>
+    <param.authnamewatermark />
+    <param.email />
+    <param.company />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>0.2</param.version>
+    <param.output>${PROJECT_ROOT}\CAL-Software-Matlab-Grayscale.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>13d4d8c5-4217-41ae-96e7-89e48502dc1e</param.guid>
+    <param.exclude.filters />
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples />
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs />
+    <param.getting.started.guide />
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.filters />
+      <param.exclude.pcodedmfiles />
+      <param.examples />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.docs />
+      <param.getting.started.guide />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\.gitignore</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\archive</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\autoArrangeFigures_bin</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALCreateImageSet.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALMetrics.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALOptimize.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALPrepTarget.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALProjectImage.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALProjectImageSet.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALProjectorConstructor.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALSetup.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\CALtest.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\clipToCircle.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\colormaps_bin</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\createTarget.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\Display.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\DisplayEvolving.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\Examples</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\ExposureTimer.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\filterProjections.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\findThreshold.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\ImageSetObj.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\imshow_3D_bin</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\LICENSE.txt</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\loadExStlFilename.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\Projector2D.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\Projector3D.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\ProjObj.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\PTB.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\ReconObj.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\setTimer.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\STL_read_bin</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\TargetObj.m</file>
+      <file>C:\Users\Work\Documents\GitHub\CAL-software\src\util</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\autoArrangeFigures_bin\autoArrangeFigures.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALCreateImageSet.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALMetrics.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALOptimize.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALPrepTarget.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALProjectImage.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALProjectImageSet.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\CALProjectorConstructor.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\clipToCircle.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\colormaps_bin\CMRmap.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\createTarget.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\Display.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\DisplayEvolving.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\ExposureTimer.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\filterProjections.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\findThreshold.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\ImageSetObj.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\imshow_3D_bin\imshow3D.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\loadExStlFilename.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\Projector2D.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\Projector3D.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\ProjObj.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\PTB.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\ReconObj.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\setTimer.m</file>
+      <file>C:\Users\Work\AppData\Roaming\MathWorks\MATLAB Add-Ons\Toolboxes\CAL-software-Matlab-Grayscale\TargetObj.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\Work\Documents\GitHub\CAL-software\package_files" name="CAL-Software-Matlab-Grayscale.mltbx" optional="false">C:\Users\Work\Documents\GitHub\CAL-software\package_files\CAL-Software-Matlab-Grayscale.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2018b</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="gpucoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

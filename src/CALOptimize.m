@@ -238,39 +238,35 @@ classdef CALOptimize
         
     end
     
-    methods (Static = true)
-%         function y = sigmoid(x,g)
-%             y = 1./(1+exp(-x*(1/g)));
-%         end
-        
+    methods (Static = true)      
         function y = threshmap(threshfunc, x, varargin)
             if strcmp(threshfunc,'sigmoid')
                 g = varargin{1};
                 y = 1./(1+exp(-x*(1/g)));
             elseif strcmp(threshfunc,'relu')
-                if isempty(varargin)
-                    k = 0.01;
-                else
-                    k = varargin{1};
+                % defaults
+                low = 0;
+                high = 1;                               
+                if ~isempty(varargin)
+                    low = varargin{1}; 
+                    try
+                        high = varargin{2}; % try if numel(varargin)>=2
+                    catch
+                        return  %if not, keep the default
+                    end
                 end
-                if x <= 0
-                    y = 0;
-                else
-                    y = k*x;
-                end
+                % relu with bounds
+                k=1/(high-low);
+                y = k.*(x-low);
+                y(high<x) = 1;
+                y(x<low) = 0;
+                
             elseif isa(threshfunc,'function_handle') % Custom function by user
                 y = threshfunc(x, varargin);
             else % Custom function by user, must be m-file or builtin
                 y = threshfunc(x, varargin);
             end
         end
-%         function y = relu(x, k)
-%             if x <= 0
-%                 y = 0;
-%             else
-%                 y = k*x;
-%             end
-%         end
         
         function out = to8Bit(in)
             out = double(uint8(in/max(in(:))*255))/255;

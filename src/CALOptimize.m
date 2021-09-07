@@ -20,6 +20,8 @@ classdef CALOptimize
             obj.default_opt.parallel = 0;
             obj.default_opt.max_iter = 10;
             obj.default_opt.learning_rate = 0.005;
+            obj.default_opt.threshfunc = 'sigmoid';
+            obj.default_opt.threshfunc_params = {};
             obj.default_opt.sigmoid = 0.01;
             obj.default_opt.threshold = NaN;
             obj.default_opt.Beta = 0;
@@ -39,6 +41,7 @@ classdef CALOptimize
             
             
             obj.verbose = verbose;
+            
             
             
             if obj.proj_params.zero_constraint == true
@@ -69,6 +72,15 @@ classdef CALOptimize
             end
             if ~isfield(opt_params,'learning_rate')
                 obj.opt_params.learning_rate = obj.default_opt.learning_rate;
+            end
+            if ~isfield(opt_params,'threshfunc')
+                obj.opt_params.threshfunc = obj.default_opt.threshfunc;
+            end
+            if ~isfield(opt_params,'threshfunc_params')
+                obj.opt_params.threshfunc_params = obj.default_opt.threshfunc;
+            else 
+                assert(isa(obj.opt_params.threshfunc_params,'cell'),'threshfunc_params must be a 1xn cell array.')
+                assert(size(obj.opt_params.threshfunc_params,1)==1,'threshfunc_params must be a 1xn cell array.')
             end
             if ~isfield(opt_params,'sigmoid')
                 obj.opt_params.sigmoid = obj.default_opt.sigmoid;
@@ -145,30 +157,39 @@ classdef CALOptimize
                 
                 x = x/max(x(:));
                 
-                if ~isnan(obj.opt_params.threshold)
-                    curr_threshold = obj.opt_params.threshold;
+                if strcmp(obj.opt_params.threshfunc, 'sigmoid')
+                    if ~isnan(obj.opt_params.threshold)
+                        curr_threshold = obj.opt_params.threshold;
+                    else
+                        curr_threshold = findThreshold(x,obj.target_obj.target);
+                    end
+
+                    obj.thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
+
+
+                    mu = curr_threshold;
+                    mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
+                    mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
+
+
+%                     x_thresh = obj.sigmoid((x-mu), obj.opt_params.sigmoid);
+%                     x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
+%                     x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
+                    x_thresh = obj.threshmap(obj.opt_params.threshfunc,(x-mu), obj.opt_params.sigmoid);
+                    x_thresh_eroded = obj.threshmap(obj.opt_params.threshfunc,(x-mu_eroded), obj.opt_params.sigmoid);
+                    x_thresh_dilated = obj.threshmap(obj.opt_params.threshfunc,(x-mu_dilated), obj.opt_params.sigmoid);
+
+
+                    delta_x = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error   
+                    delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
+                    delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
+
+                    delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
+               
                 else
-                    curr_threshold = findThreshold(x,obj.target_obj.target);
+                    x_thresh = obj.threshmap(obj.opt_params.threshfunc,x,obj.opt_params.threshfunc_params{:}); % unpack threshfunc_params and pass as arguments
+                    delta_x_feedback = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error 
                 end
-                
-                obj.thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
-                    
-
-                mu = curr_threshold;
-                mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
-                mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
-
-                
-                x_thresh = obj.sigmoid((x-mu), obj.opt_params.sigmoid);
-                x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
-                x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
-                
-                
-                delta_x = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error   
-                delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
-                delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
-                
-                delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
                 
                 obj.error(curr_iter) = CALMetrics.calcVER(obj.target_obj.target,x);
                 
@@ -218,9 +239,38 @@ classdef CALOptimize
     end
     
     methods (Static = true)
-        function y = sigmoid(x,g)
-            y = 1./(1+exp(-x*(1/g)));
+%         function y = sigmoid(x,g)
+%             y = 1./(1+exp(-x*(1/g)));
+%         end
+        
+        function y = threshmap(threshfunc, x, varargin)
+            if strcmp(threshfunc,'sigmoid')
+                g = varargin{1};
+                y = 1./(1+exp(-x*(1/g)));
+            elseif strcmp(threshfunc,'relu')
+                if isempty(varargin)
+                    k = 0.01;
+                else
+                    k = varargin{1};
+                end
+                if x <= 0
+                    y = 0;
+                else
+                    y = k*x;
+                end
+            elseif isa(threshfunc,'function_handle') % Custom function by user
+                y = threshfunc(x, varargin);
+            else % Custom function by user, must be m-file or builtin
+                y = threshfunc(x, varargin);
+            end
         end
+%         function y = relu(x, k)
+%             if x <= 0
+%                 y = 0;
+%             else
+%                 y = k*x;
+%             end
+%         end
         
         function out = to8Bit(in)
             out = double(uint8(in/max(in(:))*255))/255;

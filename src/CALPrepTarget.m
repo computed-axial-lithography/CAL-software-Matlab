@@ -11,18 +11,30 @@ function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
     elseif nargin==4
         [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
         target_obj = TargetObj(prepped_target,target_care_area);
-        
+    elseif nargin==5
+        grayscale = varargin{2};
+        [prepped_target,target_care_area] = prepTarget(varargin{1},verbose,grayscale);
+        target_obj = TargetObj(prepped_target,target_care_area);
     end
 end
 
-function [prepped_target, target_care_area] = prepTarget(target,verbose)
+function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscale)
+    
+    if ~exist('grayscale','var') || isempty(grayscale)
+        grayscale = 0;
+    end
+    
     if length(size(target)) == 2
         if verbose
             fprintf('Preparing 2D target\n');
             tic;
         end
         
-        prepped_target = double(target > 0);
+        if grayscale
+            prepped_target = double(target);
+        else
+            prepped_target = double(target > 0);
+        end
         
         % Care area dilation with a disk structuring element
         se = strel('disk',1,4);
@@ -40,7 +52,11 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose)
             tic;
         end
         
-        prepped_target = double(target > 0);
+        if grayscale
+            prepped_target = double(target);
+        else
+            prepped_target = double(target > 0);
+        end
         
         % Care area dilation with a sphere structuring element
         se = strel('sphere',4);

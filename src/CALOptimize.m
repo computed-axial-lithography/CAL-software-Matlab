@@ -210,7 +210,7 @@ classdef CALOptimize
                     if obj.target_obj.dim == 3
                         display_ev.displayEvolvingReconstruction(x_thresh,curr_iter,curr_threshold);
                     else
-                        display_ev.displayEvolvingReconstruction(x,curr_iter,curr_threshold);
+                        display_ev.displayEvolvingReconstruction(x,curr_iter);
                     end
                     
                     autoArrangeFigures(2,3)  % automatically arrange figures on screen

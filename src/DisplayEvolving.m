@@ -18,7 +18,7 @@ classdef DisplayEvolving < handle
     
     
     
-        function [obj] = displayEvolvingReconstruction(obj,x,curr_iter,curr_threshold)
+        function [obj] = displayEvolvingReconstruction(obj,x,curr_iter,varargin)
             Display.addPathsDisplay();
             title_str = sprintf('Optimized reconstruction iter = %d',curr_iter);
             
@@ -30,6 +30,7 @@ classdef DisplayEvolving < handle
                 title(title_str)
                 colormap(CMRmap())
             elseif  ndims(x) == 3
+                curr_threshold = varargin{1};
                 figure(3)
                 if curr_iter == 1
                     obj.vol = volshow(x,'Parent',obj.panel_3D,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');

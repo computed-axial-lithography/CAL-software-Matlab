@@ -57,7 +57,7 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscal
         
     if grayscale == 1
         prepped_target = double(target);
-    elseif grayscale == 2
+    elseif grayscale == 2 %TODO: opt does not converge and flucturation depends on dynamic range
         prepped_target = double(target);
         prepped_target = prepped_target/max(prepped_target(:));
     else
@@ -69,7 +69,7 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscal
         se = strel('disk',1,4);
         target_care_area = imdilate(target,se);
 
-        if verbose
+        if verbose %TODO: change volshow settings for grayscale
             Display.displayReconstruction(prepped_target);
             runtime = toc;
             fprintf('Finished preparation of 2D target in %.2f seconds\n',runtime);

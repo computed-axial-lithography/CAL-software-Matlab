@@ -30,15 +30,23 @@ classdef DisplayEvolving < handle
                 title(title_str)
                 colormap(CMRmap())
             elseif  ndims(x) == 3
-                curr_threshold = varargin{1};
+                if ~isempty(varargin)
+                    curr_threshold = varargin{1};
+                end
                 figure(3)
                 if curr_iter == 1
-                    obj.vol = volshow(x,'Parent',obj.panel_3D,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
+                    if ~isempty(varargin)
+                        obj.vol = volshow(x,'Parent',obj.panel_3D,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
+                    else
+                        obj.vol = volshow(x,'Parent',obj.panel_3D,'Renderer','VolumeRendering','BackgroundColor','white','Isosurfacecolor','cyan');
+                    end
                     axis vis3d
                     obj.an = annotation(obj.panel_3D,'textbox',[0.01 0 0.05 0.1],'String',title_str,'FitBoxToText','on','Color','k','Edgecolor','none');
                 else
                     setVolume(obj.vol,x)
-                    obj.vol.Isovalue = curr_threshold;
+                    if ~isempty(varargin)
+                        obj.vol.Isovalue = curr_threshold;
+                    end
                     axis vis3d  
                     obj.an.String = title_str; 
 
@@ -70,7 +78,13 @@ classdef DisplayEvolving < handle
             elseif  ndims(x) == 3
                 panel_3D_static = uipanel;
                 figure(1)
-                volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
+                if numel(varargin) == 2
+                    curr_threshold = varargin{2};
+                    volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
+                else
+                    volshow(x,'Parent',panel_3D_static,'Renderer','VolumeRendering','BackgroundColor','white','Isosurfacecolor','cyan');
+                end
+%                 volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
                 axis vis3d
                 annotation(panel_3D_static,'textbox',[0.01 0 0.05 0.1],'String',title_str,'FitBoxToText','on','Color','k','Edgecolor','none');
             end

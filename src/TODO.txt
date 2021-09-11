@@ -1,2 +1,0 @@
-check custom function handling
-write readthedoc

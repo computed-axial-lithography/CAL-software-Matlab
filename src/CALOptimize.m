@@ -22,7 +22,7 @@ classdef CALOptimize
             obj.default_opt.learning_rate = 0.005;
             obj.default_opt.threshfunc = 'sigmoid';
             obj.default_opt.threshfunc_params = {};
-            obj.default_opt.sigmoid = 0.01;
+            obj.default_opt.thresh_width = 0.01;
             obj.default_opt.threshold = NaN;
             obj.default_opt.Beta = 0;
             obj.default_opt.Theta = 0;           
@@ -77,13 +77,13 @@ classdef CALOptimize
                 obj.opt_params.threshfunc = obj.default_opt.threshfunc;
             end
             if ~isfield(opt_params,'threshfunc_params')
-                obj.opt_params.threshfunc_params = obj.default_opt.threshfunc;
+                obj.opt_params.threshfunc_params = obj.default_opt.threshfunc_params;
             else 
                 assert(isa(obj.opt_params.threshfunc_params,'cell'),'threshfunc_params must be a 1xn cell array.')
                 assert(size(obj.opt_params.threshfunc_params,1)==1,'threshfunc_params must be a 1xn cell array.')
             end
-            if ~isfield(opt_params,'sigmoid')
-                obj.opt_params.sigmoid = obj.default_opt.sigmoid;
+            if ~isfield(opt_params,'thresh_width')
+                obj.opt_params.thresh_width = obj.default_opt.thresh_width;
             end
             if ~isfield(opt_params,'threshold')
                 obj.opt_params.threshold = obj.default_opt.threshold;
@@ -117,7 +117,6 @@ classdef CALOptimize
         end
         
         function [opt_proj_obj,opt_recon_obj,obj] = run(obj)
-
             
             if obj.verbose
                 Display.addPathsDisplay();
@@ -126,22 +125,40 @@ classdef CALOptimize
                 display_ev = DisplayEvolving(obj.target_obj.dim);
                 display = Display();
 
-                autoArrangeFigures(2,3)  % automatically arrange figures on screen
+%                 autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
                 tic;
             end
             
             
+            % Option to pick up where the last optimization left off
+            persistent opt_b delta_b_prev
+            if ~isempty(opt_b)
+                end_prompt = 0;
+                while ~end_prompt
+                    prompt = 'Found optimized projection from the last optimization. Do you want to pick up where the last optimization left off?  Y/N [N]: ';
+                    str = input(prompt,'s');
+                    if isempty(str) || strcmpi(str,'N') % case insensitive
+                        opt_b = [];
+                        end_prompt = 1;
+                    elseif strcmpi(str,'Y')
+                        end_prompt = 1;
+                    end
+                end
+            end
+            if isempty(opt_b) % initialize opt_b and delta_b_prev
+                b = obj.A.forward(obj.target_obj.target);
             
-            b = obj.A.forward(obj.target_obj.target);
-            
-            if obj.opt_params.filter
-                b = filterProjections(b,'ram-lak');
-                b = max(b,0);
+                if obj.opt_params.filter
+                    b = filterProjections(b,'ram-lak');
+                    b = max(b,0);
+                end
+
+                opt_b = b;
+                delta_b_prev = zeros(size(b));
             end
             
-            opt_b = b;
-            delta_b_prev = zeros(size(b));
+            
             
 
             for curr_iter=1:obj.opt_params.max_iter
@@ -157,7 +174,7 @@ classdef CALOptimize
                 
                 x = x/max(x(:));
                 
-                if strcmp(obj.opt_params.threshfunc, 'sigmoid')
+                if strcmp(obj.opt_params.threshfunc, 'sigmoid') || strcmp(obj.opt_params.threshfunc, 'tanh')
                     if ~isnan(obj.opt_params.threshold)
                         curr_threshold = obj.opt_params.threshold;
                     else
@@ -166,19 +183,16 @@ classdef CALOptimize
 
                     obj.thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
 
-
                     mu = curr_threshold;
                     mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
                     mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
 
-
-%                     x_thresh = obj.sigmoid((x-mu), obj.opt_params.sigmoid);
-%                     x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
-%                     x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
-                    x_thresh = obj.threshmap(obj.opt_params.threshfunc,(x-mu), obj.opt_params.sigmoid);
-                    x_thresh_eroded = obj.threshmap(obj.opt_params.threshfunc,(x-mu_eroded), obj.opt_params.sigmoid);
-                    x_thresh_dilated = obj.threshmap(obj.opt_params.threshfunc,(x-mu_dilated), obj.opt_params.sigmoid);
-
+                    x_thresh = obj.threshmap(obj.opt_params.threshfunc,(x-mu), obj.opt_params.thresh_width);
+                end
+                
+                if strcmp(obj.opt_params.threshfunc, 'sigmoid')
+                    x_thresh_eroded = obj.threshmap(obj.opt_params.threshfunc,(x-mu_eroded), obj.opt_params.thresh_width);
+                    x_thresh_dilated = obj.threshmap(obj.opt_params.threshfunc,(x-mu_dilated), obj.opt_params.thresh_width);
 
                     delta_x = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error   
                     delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
@@ -186,12 +200,15 @@ classdef CALOptimize
 
                     delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
                
+                elseif strcmp(obj.opt_params.threshfunc, 'tanh')
+                    delta_x_feedback = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error                  
                 else
                     x_thresh = obj.threshmap(obj.opt_params.threshfunc,x,obj.opt_params.threshfunc_params{:}); % unpack threshfunc_params and pass as arguments
                     delta_x_feedback = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error 
                 end
                 
                 obj.error(curr_iter) = CALMetrics.calcVER(obj.target_obj.target,x);
+%                 obj.error(curr_iter) = CALMetrics.calcMSE(obj.target_obj.target,x);
                 
                 delta_b = obj.A.forward(delta_x_feedback);
                 gradient_approx = ((1-obj.opt_params.Beta)*delta_b + obj.opt_params.Beta*delta_b_prev)/(1-obj.opt_params.Beta^curr_iter);
@@ -207,8 +224,13 @@ classdef CALOptimize
                     display.errorPlot(curr_iter,obj.opt_params.max_iter,obj.error)
                     
                     % Plot evolving reconstruction
+                    % VolumeRendering/Isosurface in volshow depending on threshmap
                     if obj.target_obj.dim == 3
-                        display_ev.displayEvolvingReconstruction(x_thresh,curr_iter,curr_threshold);
+                        if strcmp(obj.opt_params.threshfunc,'sigmoid') || strcmp(obj.opt_params.threshfunc,'tanh')
+                            display_ev.displayEvolvingReconstruction(x_thresh,curr_iter,curr_threshold);
+                        else
+                            display_ev.displayEvolvingReconstruction(x_thresh,curr_iter);
+                        end
                     else
                         display_ev.displayEvolvingReconstruction(x,curr_iter);
                     end
@@ -217,6 +239,7 @@ classdef CALOptimize
 
                     pause(0.1);            
                 end
+                
             end
             
             
@@ -241,30 +264,31 @@ classdef CALOptimize
     methods (Static = true)      
         function y = threshmap(threshfunc, x, varargin)
             if strcmp(threshfunc,'sigmoid')
+                narginchk(3,3)
                 g = varargin{1};
                 y = 1./(1+exp(-x*(1/g)));
+            elseif strcmp(threshfunc,'tanh')
+                narginchk(3,3)
+                y = tanh(varargin{1}.*x);
             elseif strcmp(threshfunc,'relu')
-                % defaults
-                low = 0;
-                high = 1;                               
+                narginchk(2,4)
+                % default lower and upper bounds of x
+                bounds = [0 1];
+                % replace defaults if exists
                 if ~isempty(varargin)
-                    low = varargin{1}; 
-                    try
-                        high = varargin{2}; % try if numel(varargin)>=2
-                    catch
-                        return  %if not, keep the default
-                    end
+                    bounds = cell2mat(varargin);
                 end
-                % relu with bounds
-                k=1/(high-low);
-                y = k.*(x-low);
-                y(high<x) = 1;
-                y(x<low) = 0;
+                assert(bounds(2)>bounds(1), 'Upper bound of threshold function must be greater than its lower bound.')
+                % linear function with bounds
+                k=1/(bounds(2)-bounds(1));
+                y = k.*(x-bounds(1));
+                y(bounds(2)<x) = 1;
+                y(x<bounds(1)) = 0;
                 
-            elseif isa(threshfunc,'function_handle') % Custom function by user
+            elseif isa(threshfunc,'function_handle') % Custom function by user, must be function handle
                 y = threshfunc(x, varargin);
-            else % Custom function by user, must be m-file or builtin
-                y = threshfunc(x, varargin);
+            else
+                error('Invalid threshfunc. Must be ''sigmoid'',''tanh'',''relu'' or a function handle.')
             end
         end
         

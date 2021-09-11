@@ -42,7 +42,13 @@ classdef Display
             elseif  ndims(x) == 3
                 panel_3D_static = uipanel;
                 figure(1)
-                volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','white','Isosurfacecolor','cyan');
+                if numel(varargin) == 2
+                    curr_threshold = varargin{2};
+                    volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',curr_threshold,'BackgroundColor','white','Isosurfacecolor','cyan');
+                else
+                    volshow(x,'Parent',panel_3D_static,'Renderer','VolumeRendering','BackgroundColor','white','Isosurfacecolor','cyan');
+                end
+%                 volshow(x,'Parent',panel_3D_static,'Renderer','Isosurface','Isovalue',0.5,'BackgroundColor','white','Isosurfacecolor','cyan');
                 axis vis3d
                 annotation(panel_3D_static,'textbox',[0.01 0 0.05 0.1],'String',title_str,'FitBoxToText','on','Color','k','Edgecolor','none');
             end
@@ -57,7 +63,11 @@ classdef Display
             figure(2)
             plot(1:curr_iter,error(1:curr_iter),'r','LineWidth',2); 
             xlim([1 max_iter]);
-%             ylim([0 max(error)+0.1*max(error)]) %TODO
+            if max(error) == 0 % avoids code termination if error=0
+                ylim([0 1])
+            else
+                ylim([0 max(error)+0.1*max(error)])
+            end
             xlabel('Iteration #')
             ylabel('Error')
             title_string = sprintf('Iteration = %2.0f',curr_iter);

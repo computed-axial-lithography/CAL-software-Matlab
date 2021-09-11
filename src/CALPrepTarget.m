@@ -18,31 +18,14 @@ function target_obj = CALPrepTarget(verbose,target_file,varargin)
         target_obj = TargetObj(prepped_target,target_care_area);
     end
     
-%     if ~isempty(target_file)
-%         [vox_target,target_care_area] = voxelizeTarget(target_file,resolution,verbose);
-%         target_obj = TargetObj(vox_target,target_care_area,resolution,target_file);
-%     else
-%         if nargin==5
-%             grayscale = varargin{2};
-%             [prepped_target,target_care_area] = prepTarget(varargin{1},verbose,grayscale);
-%             target_obj = TargetObj(prepped_target,target_care_area);
-%         elseif nargin==4
-%             [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
-%             target_obj = TargetObj(prepped_target,target_care_area);
-%         else
-%             
-%         end
-%     end
 end
 
 function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscale)
     
     if ~exist('grayscale','var') || isempty(grayscale)
         grayscale = 0;
-    else
-        if grayscale~=1 && grayscale~=2
-            error('grayscale must be 0(binary target), 1(grayscale target) or 2(grayscale target with normalization).');
-        end
+    elseif ~ismember(grayscale,[0 1 2])
+        error('grayscale must be 0(output is binary), 1(output is grayscale) or 2(output is normalized grayscale).');
     end
     
     if verbose
@@ -57,9 +40,9 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscal
         
     if grayscale == 1
         prepped_target = double(target);
-    elseif grayscale == 2 %TODO: opt does not converge and flucturation depends on dynamic range
-        prepped_target = double(target);
-        prepped_target = prepped_target/max(prepped_target(:));
+    elseif grayscale == 2
+        prepped_target = target/max(target(:));
+        prepped_target = double(prepped_target);
     else
         prepped_target = double(target > 0);
     end
@@ -69,7 +52,7 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscal
         se = strel('disk',1,4);
         target_care_area = imdilate(target,se);
 
-        if verbose %TODO: change volshow settings for grayscale
+        if verbose
             Display.displayReconstruction(prepped_target);
             runtime = toc;
             fprintf('Finished preparation of 2D target in %.2f seconds\n',runtime);
@@ -80,8 +63,13 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose,grayscal
         se = strel('sphere',4);
         target_care_area = imdilate(prepped_target,se);
         
-        if verbose %TODO: change volshow settings for grayscale
-            Display.displayReconstruction(prepped_target,'Voxelized Target');
+        if verbose
+            if grayscale == 0
+                threshold = 0.5;
+                Display.displayReconstruction(prepped_target,'Voxelized Target',threshold);
+            elseif grayscale == 1 || grayscale == 2
+                Display.displayReconstruction(prepped_target,'Voxelized Target')
+            end
             pause(0.1)
             runtime = toc;
             fprintf('Finished preparation of 3D target in %.2f seconds\n',runtime);

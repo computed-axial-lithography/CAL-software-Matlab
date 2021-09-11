@@ -39,6 +39,11 @@ classdef CALMetrics
                 end
             end
         end
+        
+        function MSE = calcMSE(target,recon) 
+            pxSE = (target-recon).^2;
+            MSE = mean(pxSE(:));
+        end
 
         function PW = calcPW(target,recon,varargin)
             [gel_inds,void_inds] = CALMetrics.getInds(target);
@@ -90,7 +95,8 @@ classdef CALMetrics
         
         function [gel_inds,void_inds] = getInds(target)
             circle_mask = CALMetrics.getCircleMask(target);
-            gel_inds = circle_mask & target==1;
+%             gel_inds = circle_mask & target==1;
+            gel_inds = circle_mask & target;
             void_inds = circle_mask & ~target;
         end
         

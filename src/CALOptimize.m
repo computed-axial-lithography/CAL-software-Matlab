@@ -270,7 +270,7 @@ classdef CALOptimize
             elseif strcmp(threshfunc,'tanh')
                 narginchk(3,3)
                 y = tanh(varargin{1}.*x);
-            elseif strcmp(threshfunc,'relu')
+            elseif strcmp(threshfunc,'relux')
                 narginchk(2,4)
                 % default lower and upper bounds of x
                 bounds = [0 1];

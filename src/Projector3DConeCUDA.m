@@ -36,9 +36,11 @@ classdef Projector3DConeCUDA
             end
             
             
-            DSO = obj.nT/sin(deg2rad(proj_params.cone_angle)); % distance source-to-origin
-            nT_detector = ceil(2*(DSO+obj.nT)*tan(deg2rad(proj_params.cone_angle)));
-            
+             % distance source-to-origin
+            a = obj.nZ/(2*tan(deg2rad(proj_params.cone_angle/2)));
+            DSO = a + obj.nT/2;
+            nT_detector = ceil((2*DSO-a)*obj.nT/a);
+            nZ_detector = ceil((2*DSO-a)*obj.nZ/a);
             
             if ~isfield(proj_params,'inclination_angle') || proj_params.inclination_angle == 0
                 % det_spacing_x: distance between the centers of two horizontally adjacent detector pixels
@@ -50,17 +52,17 @@ classdef Projector3DConeCUDA
                 % origin_det: distance between the center of rotation and the detector array
                 
                 % astra_create_proj_geom('cone',  det_spacing_x, det_spacing_y, det_row_count, det_col_count, angles, source_origin, origin_det);
-                obj.astra_proj_geom = astra_create_proj_geom('cone', 1, 1, obj.nZ, nT_detector, deg2rad(proj_params.angles), DSO, obj.nT);
+                obj.astra_proj_geom = astra_create_proj_geom('cone', 1, 1, nZ_detector, nT_detector, deg2rad(proj_params.angles), DSO, DSO-a);
 
             else
-                vectors = genVectorsAstra(proj_params.angles,proj_params.inclination_angle,DSO);
+                vectors = genVectorsAstra(proj_params.angles,proj_params.inclination_angle,DSO,a);
                 
                 % det_row_count: number of detector rows in a single projection
                 % det_col_count: number of detector columns in a single projection
                 % vectors: a matrix containing the actual geometry
-                
+
                 % astra_create_proj_geom('cone_vec',  det_row_count, det_col_count, vectors);
-                obj.astra_proj_geom = astra_create_proj_geom('cone_vec',  obj.nZ, nT_detector, vectors);
+                obj.astra_proj_geom = astra_create_proj_geom('cone_vec',  nZ_detector, nT_detector, vectors);
             end
             
 

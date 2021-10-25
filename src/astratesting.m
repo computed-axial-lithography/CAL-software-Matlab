@@ -22,29 +22,25 @@ close all
 %%%%%%%%%%%%%  Projection generation and optimization  %%%%%%%%%%%%%
 % set projection parameters
 proj_params.angles = linspace(0,359,360);
-proj_params.bit8 = 1;
+proj_params.bit8 = 0;
 proj_params.CUDA = 1;
-proj_params.inclination_angle = 0;
-proj_params.cone_angle = 0;
+proj_params.inclination_angle = 15;
+proj_params.cone_angle = 10;
 
-% set optimization parameterssy
-opt_params.max_iter = 60;
-opt_params.threshold = 0.65;
-opt_params.learning_rate = 0.003;
+% set optimization parameters
+opt_params.max_iter = 10;
+opt_params.threshold = 0.7;
+opt_params.learning_rate = 0.01;
 
 verbose = 1;
 
-% prepare the target
-scalefactor = 3;
-height = 6.15/scalefactor;
-
-resolution = ceil(height/(0.0108*1.25));
-stl_filename =  'multilens_10degtilt_scaled1.26.stl';% acceptable inputs 'bear', 'thinker', 'octet', 'octahedron'
+resolution = 120;
+stl_filename =  'Examples\rect_prism.stl';% acceptable inputs 'bear', 'thinker', 'octet', 'octahedron'
 target_obj = CALPrepTarget(stl_filename,resolution,verbose);
 
 % target_obj.target = padarray(target_obj.target,[0,0,40],0);
 
-%%
+
 % A = CALProjectorConstructor(target_obj,proj_params);
 % b = A.forward(target_obj.target);
 % figure;
@@ -53,7 +49,7 @@ target_obj = CALPrepTarget(stl_filename,resolution,verbose);
 %     pause(0.01)
 % end
 
-%%
+
 % instantiate the optimization class
 Opt = CALOptimize(target_obj,opt_params,proj_params,verbose);
 
@@ -63,13 +59,14 @@ Opt = CALOptimize(target_obj,opt_params,proj_params,verbose);
 %%
 
 
-image_params.size_scale_factor = scalefactor;
-image_params.invert_vert = 1;
+image_params.size_scale_factor = 1.0;
+image_params.invert_vert = 0;
 image_params.rotate = 45;
 image_params.image_width = 1920; % this parameter should be changed to match your projector image, default is 1920
 image_params.image_height = 1080; % this parameter should be changed to match your projector image, default is 1080
+image_params.angles = linspace(0,359,360);
 
-C = CALCreateImageSet(proj_obj,image_params);
+C = CALCreateImageSet(opt_proj,image_params);
 
 image_set_obj = C.run();
 projection_set = image_set_obj.image_set;
@@ -77,6 +74,11 @@ figure;
 imagesc(image_set_obj.image_set{1})
 
 %%
+% save('G:\My Drive\Research\Glassomer\Prints\FresnelLens\proj.mat','proj_obj')
+save('G:\My Drive\Research\Glassomer\Prints\FresnelLens\projectionset.mat','projection_set')
+% save('G:\My Drive\Research\Glassomer\Prints\TripleVasculature\v3\imageset.mat','image_set_obj')
+% save('G:\My Drive\Research\Glassomer\Prints\TripleVasculature\v3\recon.mat','recon_obj')
+
 % figure;
 % for i = 1:size(b,2)
 %     imagesc(squeeze(b(:,i,:)))

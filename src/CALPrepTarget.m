@@ -13,6 +13,7 @@ function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
         target_obj = TargetObj(prepped_target);
         
     end
+    
 end
 
 function [prepped_target] = prepTarget(target,verbose)

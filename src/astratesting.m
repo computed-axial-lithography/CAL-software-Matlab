@@ -1,21 +1,3 @@
-% 
-% data = target_obj.target;
-% angles = linspace(0,359,360);
-% 
-% proj_geom = astra_create_proj_geom('parallel3d', 1, 1, 200, 200, deg2rad(angles));
-% 
-% y = size(data,2);
-% x = size(data,1);
-% z = size(data,3);
-% vol_geom = astra_create_vol_geom(y,x,z);
-% [id, projdata] = astra_create_sino3d_cuda(data, proj_geom, vol_geom);
-% 
-% 
-% [id, volume] = astra_create_backprojection3d_cuda(projdata, proj_geom, vol_geom);
-
-%%
-
-
 clear all
 close all
 
@@ -40,16 +22,6 @@ target_obj = CALPrepTarget(stl_filename,resolution,verbose);
 
 % target_obj.target = padarray(target_obj.target,[0,0,40],0);
 
-
-% A = CALProjectorConstructor(target_obj,proj_params);
-% b = A.forward(target_obj.target);
-% figure;
-% for i = 1:size(b,2)
-%     imagesc(squeeze(b(:,i,:)))
-%     pause(0.01)
-% end
-
-
 % instantiate the optimization class
 Opt = CALOptimize(target_obj,opt_params,proj_params,verbose);
 
@@ -57,8 +29,6 @@ Opt = CALOptimize(target_obj,opt_params,proj_params,verbose);
 [proj_obj,recon_obj,Opt] = Opt.run();
 
 %%
-
-
 image_params.size_scale_factor = 1.0;
 image_params.invert_vert = 0;
 image_params.rotate = 45;
@@ -72,22 +42,3 @@ image_set_obj = C.run();
 projection_set = image_set_obj.image_set;
 figure;
 imagesc(image_set_obj.image_set{1})
-
-%%
-% save('G:\My Drive\Research\Glassomer\Prints\FresnelLens\proj.mat','proj_obj')
-save('G:\My Drive\Research\Glassomer\Prints\FresnelLens\projectionset.mat','projection_set')
-% save('G:\My Drive\Research\Glassomer\Prints\TripleVasculature\v3\imageset.mat','image_set_obj')
-% save('G:\My Drive\Research\Glassomer\Prints\TripleVasculature\v3\recon.mat','recon_obj')
-
-% figure;
-% for i = 1:size(b,2)
-%     imagesc(squeeze(b(:,i,:)))
-%     pause(0.01)
-% end
-% 
-% %%
-% figure;
-% for i = 1:size(x,3)
-%     imagesc(x(:,:,i))
-%     pause(0.01)
-% end

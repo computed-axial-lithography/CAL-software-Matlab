@@ -9,7 +9,7 @@
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
     <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
-    <param.version>1.4.0</param.version>
+    <param.version>1.5.0</param.version>
     <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -102,6 +102,8 @@ This code package is provided to support the generation of the light projections
     <fileset.rootfiles>
       <file>F:\Github\CAL-software-Matlab\src\.gitignore</file>
       <file>F:\Github\CAL-software-Matlab\src\archive</file>
+      <file>F:\Github\CAL-software-Matlab\src\astra</file>
+      <file>F:\Github\CAL-software-Matlab\src\astratesting.m</file>
       <file>F:\Github\CAL-software-Matlab\src\autoArrangeFigures_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\CALCreateImageSet.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALMetrics.m</file>
@@ -112,9 +114,7 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\CALProjectorConstructor.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALSetup.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALtest.m</file>
-      <file>F:\Github\CAL-software-Matlab\src\clipToCircle.m</file>
       <file>F:\Github\CAL-software-Matlab\src\colormaps_bin</file>
-      <file>F:\Github\CAL-software-Matlab\src\Copy_of_Projector3DCUDA.asv</file>
       <file>F:\Github\CAL-software-Matlab\src\createTarget.m</file>
       <file>F:\Github\CAL-software-Matlab\src\Display.m</file>
       <file>F:\Github\CAL-software-Matlab\src\DisplayEvolving.m</file>
@@ -126,8 +126,10 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\imshow_3D_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\LICENSE.txt</file>
       <file>F:\Github\CAL-software-Matlab\src\loadExStlFilename.m</file>
-      <file>F:\Github\CAL-software-Matlab\src\Projector2D.m</file>
-      <file>F:\Github\CAL-software-Matlab\src\Projector3D.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector2DParallel.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DConeCUDA.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DParallel.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DParallelCUDA.m</file>
       <file>F:\Github\CAL-software-Matlab\src\ProjObj.m</file>
       <file>F:\Github\CAL-software-Matlab\src\PTB.m</file>
       <file>F:\Github\CAL-software-Matlab\src\ReconObj.m</file>

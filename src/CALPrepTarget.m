@@ -1,3 +1,24 @@
+%{ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2020-2021  Hayden Taylor Lab, University of California, Berkeley
+Website https://github.com/computed-axial-lithography/CAL-software-Matlab
+
+This file is part of the CAL-software-Matlab toolbox.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%} 
 function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
 
     if ~exist('verbose','var') || isempty(verbose)
@@ -6,16 +27,17 @@ function target_obj = CALPrepTarget(stl_filename,resolution,verbose,varargin)
 
         
     if ~isempty(stl_filename)
-        [vox_target,target_care_area] = voxelizeTarget(stl_filename,resolution,verbose);
-        target_obj = TargetObj(vox_target,target_care_area,resolution,stl_filename);
+        [vox_target] = voxelizeTarget(stl_filename,resolution,verbose);
+        target_obj = TargetObj(vox_target,resolution,stl_filename);
     elseif nargin==4
-        [prepped_target,target_care_area] = prepTarget(varargin{1},verbose);
-        target_obj = TargetObj(prepped_target,target_care_area);
+        [prepped_target] = prepTarget(varargin{1},verbose);
+        target_obj = TargetObj(prepped_target);
         
     end
+    
 end
 
-function [prepped_target, target_care_area] = prepTarget(target,verbose)
+function [prepped_target] = prepTarget(target,verbose)
     if length(size(target)) == 2
         if verbose
             fprintf('Preparing 2D target\n');
@@ -25,8 +47,8 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose)
         prepped_target = double(target > 0);
         
         % Care area dilation with a disk structuring element
-        se = strel('disk',1,4);
-        target_care_area = imdilate(target,se);
+%         se = strel('disk',1,4);
+%         target_care_area = imdilate(target,se);
 
         if verbose
             Display.displayReconstruction(target);
@@ -43,8 +65,8 @@ function [prepped_target, target_care_area] = prepTarget(target,verbose)
         prepped_target = double(target > 0);
         
         % Care area dilation with a sphere structuring element
-        se = strel('sphere',4);
-        target_care_area = imdilate(prepped_target,se);
+%         se = strel('sphere',4);
+%         target_care_area = imdilate(prepped_target,se);
         
         if verbose
             Display.displayReconstruction(prepped_target,'Voxelized Target');
@@ -60,7 +82,7 @@ end
 
 
         
-function [voxelized_target,target_care_area] = voxelizeTarget(stl_filename,resolution,verbose)
+function [voxelized_target] = voxelizeTarget(stl_filename,resolution,verbose)
 
     if verbose
         fprintf('Beginning voxelization of target\n');
@@ -115,8 +137,8 @@ function [voxelized_target,target_care_area] = voxelizeTarget(stl_filename,resol
     domain_size = size(voxelized_target);
 
     % Care area dilation with a spherical structuring element
-    se = strel('sphere',4);
-    target_care_area = imdilate(voxelized_target,se);
+%     se = strel('sphere',4);
+%     target_care_area = imdilate(voxelized_target,se);
 
 
     if verbose

@@ -6,6 +6,9 @@
 Projection generation and optimization
 ######################################
 
+Projection
+----------
+
 With the target prepared, the projection generation and optimization can begin. The class :class:`CALOptimize` is used to perform projection generation and optimization. First, define the projection parameters and the optimization parameters (these are just some examples for demonstration, more information about these parameters can be found in the :ref:`optimization` code reference:
 ::
     % define projection parameters
@@ -17,6 +20,21 @@ With the target prepared, the projection generation and optimization can begin. 
     opt_params.threshold = 0.8;
     opt_params.learning_rate = 0.005;
 
+The default projection geometry is parallel beam perpendicular to the axis of rotation. However, there are other possible projections geometries including cone beam and laminographic (parallel or cone beam) geometries. These are selected by specifying non-zero ``proj_params``: ``cone_angle`` and/or ``incline_angle`` in degrees. **Additionally,** ``proj_params.CUDA`` **must be set to true to enable these geometries (which implies that your PC has a NVIDIA CUDA GPU).** These geometries are depicted in the figure below.
+
+Parallel beam laminography where :math:`\varphi` is the incline angle which is set with the parameter ``proj_params.incline_angle`` = :math:`\varphi`.
+
+.. image:: images/Laminography_parallel.jpg
+   :width: 500
+
+Cone beam where :math:`\beta` is the maximum cone angle along the z-axis which is set with the parameter ``proj_params.cone_angle`` = :math:`\beta`.
+
+.. image:: images/Cone_beam.jpg
+   :width: 500
+
+
+Optimization
+------------
 Then initialize the class :class:`CALOptimize` with these parameters and the :class:`TargetObj` created above:
 ::
     % instantiate the optimization class

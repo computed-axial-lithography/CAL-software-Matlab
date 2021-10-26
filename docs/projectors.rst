@@ -36,23 +36,26 @@ Constructor
     :Parameters:    * target_obj - :class:`TargetObj` containing the target (output from :func:`CALPrepTarget`)
                     * proj_params - structure of projection parameters defining the projection configuration
                         * proj_params.angles - vector of angles at which to perform forward and back projection
+                        * proj_params.CUDA - en/disables usage of Astra toolbox GPU accelerated projector
+                        * proj_params.inclination_angle - angle of elevation from normal tomographic plane
+                        * proj_params.cone_angle - angle of maximum ray divergence along rotation axis in cone beam geometry
                     * parallel - whether or not to use parallel processing when performing forward and back projection
 
     :Returns:       * ProjectorObj - :class:`ProjectorObj` that links to the correct projector depending on the target dimensions
 
-3D   
---
+3D (Matlab)  
+-----------
 
-.. class:: Projector3D(proj_params,parallel)
+.. class:: Projector3DParallel(proj_params,parallel)
 
-    Constructs a :class:`Projector3D` object for performing 3D forward and back projection. 
+    Constructs a :class:`Projector3DParallel` object for performing 3D forward and back projection with **parallel ray geometry** using Matlab's ``radon`` and ``iradon`` functions. 
 
 
     :Parameters:   * proj_params - structure of projection parameters defining the projection configuration
                         * proj_params.angles - vector of angles at which to perform forward and back projection
                     * parallel - whether or not to use parallel processing when performing forward and back projection
 
-    :Returns:       * obj - :class:`Projector3D`
+    :Returns:       * obj - :class:`Projector3DParallel`
 
     .. classmethod:: forward(x)
 
@@ -70,19 +73,50 @@ Constructor
 
         :Returns:      * x - 3D matrix of reconstruction. Dimensions will be ``[nT,nT,nZ]`` where ``nT`` is the number of elements in the transverse/radial direction and ``nZ`` is the number of z-slices
 
-2D   
---
+3D (Astra)  
+----------
+.. class:: Projector3DCUDA(proj_params)
+
+    Constructs a :class:`Projector3DCUDA` object for performing 3D forward and back projection with **parallel and cone beam geometry** using Astra Toolbox GPU accelerated projectors. 
 
 
-.. class:: Projector2D(proj_params)
+    :Parameters:   * proj_params - structure of projection parameters defining the projection configuration
+                        * proj_params.angles - vector of angles at which to perform forward and back projection
+                        * proj_params.CUDA - en/disables usage of Astra toolbox GPU accelerated projector
+                        * proj_params.inclination_angle - angle of elevation from normal tomographic plane
+                        * proj_params.cone_angle - angle of maximum ray divergence along rotation axis in cone beam geometry
 
-    Constructs a :class:`Projector2D` object for performing 2D forward and back projection. 
+
+    :Returns:       * obj - :class:`Projector3DCUDA`
+
+    .. classmethod:: forward(x)
+
+        Performs 3D forward projection using Astra's GPU accelerated 3D projectors. 
+
+        :Parameters:   * x - 3D matrix of target
+
+        :Returns:      * b - 3D matrix of sinograms. Dimensions will be ``[nT,nTheta,nZ]`` where ``nT`` is the number of elements in the transverse/radial direction, ``nTheta`` is the number of angles, and ``nZ`` is the number of z-slices
+
+    .. classmethod:: backward(b)
+
+        Performs 3D back projection using Astra's GPU accelerated 3D projectors. 
+
+        :Parameters:   * b - 3D matrix of sinograms
+
+        :Returns:      * x - 3D matrix of reconstruction. Dimensions will be ``[nT,nT,nZ]`` where ``nT`` is the number of elements in the transverse/radial direction and ``nZ`` is the number of z-slices
+
+2D (Matlab)
+-----------
+
+.. class:: Projector2DParallel(proj_params)
+
+    Constructs a :class:`Projector2DParallel` object for performing 2D forward and back projection with **parallel beam geometry** using Matlab's :func:`radon` and :func:`iradon` functions.
 
 
     :Parameters:   * proj_params - structure of projection parameters defining the projection configuration
                         * proj_params.angles - vector of angles at which to perform forward and back projection
 
-    :Returns:       * obj - :class:`Projector2D`
+    :Returns:       * obj - :class:`Projector2DParallel`
 
     .. classmethod:: forward(x)
 

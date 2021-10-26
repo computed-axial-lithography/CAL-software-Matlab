@@ -12,3 +12,6 @@ docs/_templates/
 # Various IDE folders
 .idea
 .vscode
+
+# Astra source files
+src/astra

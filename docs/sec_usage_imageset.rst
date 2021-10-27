@@ -19,24 +19,40 @@ Then use the class function :func:`run` to start creating the image set:
 ::
     image_set_obj = C.run();
 
-Here :func:`run` creates an :class:`ImageSetObj` and it is saved to ``image_set_obj`` in this example case. 
+Here :func:`run` creates an :class:`ImageSetObj` and it is output to ``image_set_obj`` in this example case. 
 
 
 
 Saving images from an image set
 -------------------------------
 
-If you would like to save the image set as individual images, the class function :func:`saveImages` can be used. You can use the instance of the :class:`CALCreateImageSet` class created above as:
+If you would like to save the image set as individual images, the class function :func:`saveImages` can be used. You can call the static method of the :class:`CALCreateImageSet` class:
 ::
-    % saveImages(ImageSetObj,save filepath,image filetype)
-    C.saveImages(image_set_obj,pwd,'.png');
+    save_path = 'C:\Documents\ExampleImages':
+    image_filetype = 'png';
+    
+    CALCreateImageSet.saveImages(image_set_obj,save_path,image_filetype);
 
-Or you can run the class function :func:`saveImages` standalone if you only have the :class:`ImageSetObj` as:
+A folder called ``images`` will be created at the specified filepath (here ``C:\Documents\ExampleImages`` is used) and the images will be saved individually into the folder with filenames ``0001.png``, ``0002.png``, and so on. Accepted Matlab `image file types`_.
+
+.. _`image file types`: https://www.mathworks.com/help/matlab/ref/imwrite.html
+
+
+Saving a video from an image set
+--------------------------------
+
+If you would like to save the image set as compiled video, the class function :func:`saveVideo` can be used. You can call the static method of the :class:`CALCreateImageSet` class:
 ::
-    CALCreateImageSet.saveImages(image_set_obj,pwd,'.png');
+    rot_vel = 24; %(deg/s) rotation velocity to be used during printing
+    duration = 60; %(s) total video duration
+    save_path = 'C:\Documents\ExampleVideo\examplevideo';
+    video_filetype = 'MPEG-4';
 
-A folder called ``images`` will be created at the specified filepath (here the current working directory is used) and the images will be saved individually into the folder with filenames ``0001.png``, ``0002.png``, and so on.
+    CALCreateImageSet.saveVideo(image_set_obj,rot_vel,duration,save_path,video_filetype);
 
+This will save a video called ``examplevideo.mp4`` to the specified filepath (here ``C:\Documents\ExampleVideo`` is used). Accepted Matlab `video file types`_.
+
+.. _`video file types`: https://www.mathworks.com/help/matlab/ref/videowriter.html
 
 Backward compatibility
 ----------------------

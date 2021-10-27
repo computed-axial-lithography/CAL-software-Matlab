@@ -301,17 +301,18 @@ classdef CALCreateImageSet
         function [] = saveImages(image_set_obj,save_path,image_type)
                         
             if ~exist('image_type','var')
-                image_type = '.jpg';
+                image_type = 'jpg';
             end
             
             if ~exist(fullfile(save_path,'images'), 'dir')
                 mkdir(fullfile(save_path,'images'));
             end
-            
+            N_images = size(image_set_obj.image_set,2);
             for i=1:size(image_set_obj.image_set,2)
-                filename = strcat(sprintf('%04d',i),image_type);
-                imwrite(image_set_obj.image_set{i},fullfile(save_path,'images',filename));
-                fprintf('Writing image %4d/%d\n',i,size(image_set_obj.image_set,2))
+                filename = strcat(sprintf('%04d',i),'.',image_type);
+                save_filename = fullfile(save_path,'images',filename);
+                imwrite(image_set_obj.image_set{i},save_filename,image_type);
+                fprintf('Writing image %4d/%d\n',i,N_images);
             end
         end
         
@@ -331,14 +332,9 @@ classdef CALCreateImageSet
             if ~exist('save_path','var')
                 error('Specify save path');
             end
-            
-%             if ~exist(fullfile(save_path,'videos'), 'dir')
-%                 mkdir(fullfile(save_path,'videos'));
-%             end
-
-                
+                           
             N_images_per_rot = size(image_set_obj.image_set,2);
-            N_total_images = round(N_images_per_rot*duration/360/rot_vel);
+            N_total_images = round(N_images_per_rot/360*rot_vel*duration);
             video = VideoWriter(save_path, video_type);
             video.FrameRate = N_images_per_rot/(360/rot_vel);
             video.Quality = 100;
@@ -347,12 +343,13 @@ classdef CALCreateImageSet
             j = 1;
             while j <= N_total_images
                 
-                writeVideo(video,image_set_obj.image_set{i})
-                fprintf('Writing image %4d/%d\n',j,N_total_images)
+                writeVideo(video,image_set_obj.image_set{i});
+                fprintf('Writing video frame %4d/%d\n',j,N_total_images);
                 j = j+1;
-                i = mod(i+1,N_images);
+                i = i+1;
+                i = mod(i-1,N_images_per_rot)+1;
             end
-            
+            close(video);
         end
 
     end

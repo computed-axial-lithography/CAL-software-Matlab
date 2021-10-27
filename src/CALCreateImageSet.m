@@ -314,6 +314,46 @@ classdef CALCreateImageSet
                 fprintf('Writing image %4d/%d\n',i,size(image_set_obj.image_set,2))
             end
         end
+        
+        function [] = saveVideo(image_set_obj,rot_vel,duration,save_path,video_type)
+            
+            if ~exist('rot_vel','var')
+                rot_vel = 24; % (deg/s)
+            end
+            if ~exist('duration','var')
+                duration = 360/rot_vel; % (s)
+            end
+            
+            if ~exist('video_type','var')
+                video_type = 'MPEG-4';
+            end
+            
+            if ~exist('save_path','var')
+                error('Specify save path');
+            end
+            
+%             if ~exist(fullfile(save_path,'videos'), 'dir')
+%                 mkdir(fullfile(save_path,'videos'));
+%             end
+
+                
+            N_images_per_rot = size(image_set_obj.image_set,2);
+            N_total_images = round(N_images_per_rot*duration/360/rot_vel);
+            video = VideoWriter(save_path, video_type);
+            video.FrameRate = N_images_per_rot/(360/rot_vel);
+            video.Quality = 100;
+            open(video);
+            i = 1;
+            j = 1;
+            while j <= N_total_images
+                
+                writeVideo(video,image_set_obj.image_set{i})
+                fprintf('Writing image %4d/%d\n',j,N_total_images)
+                j = j+1;
+                i = mod(i+1,N_images);
+            end
+            
+        end
 
     end
     

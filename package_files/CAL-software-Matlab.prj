@@ -9,7 +9,7 @@
 
 This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
     <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
-    <param.version>1.5.0</param.version>
+    <param.version>1.6.0</param.version>
     <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -103,7 +103,6 @@ This code package is provided to support the generation of the light projections
       <file>F:\Github\CAL-software-Matlab\src\.gitignore</file>
       <file>F:\Github\CAL-software-Matlab\src\archive</file>
       <file>F:\Github\CAL-software-Matlab\src\astra</file>
-      <file>F:\Github\CAL-software-Matlab\src\astratesting.m</file>
       <file>F:\Github\CAL-software-Matlab\src\autoArrangeFigures_bin</file>
       <file>F:\Github\CAL-software-Matlab\src\CALCreateImageSet.m</file>
       <file>F:\Github\CAL-software-Matlab\src\CALMetrics.m</file>

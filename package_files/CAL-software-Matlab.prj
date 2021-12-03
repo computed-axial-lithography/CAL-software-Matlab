@@ -1,0 +1,235 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="999437900" file="F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.prj" location="F:\Github\CAL-software-Matlab\package_files" name="CAL-software-Matlab" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>CAL-software-Matlab</param.appname>
+    <param.authnamewatermark>Joseph Toombs, Sui Man Luk</param.authnamewatermark>
+    <param.email />
+    <param.company>University of California, Berkeley</param.company>
+    <param.summary />
+    <param.description>CAL is an volumetric additive manufacturing process that uses spatial light modulation and principles of tomographic reconstruction to build 3D objects. CAL or physical tomographic reconstruction works by illuminating a cylindrical container of resin with modulated patterns of light that are refreshed in sync with the rotation of the container. The superposition of the light dose from each azimuthal projection creates a 3D dose distribution that photopolymerizes the resin into the desired object.
+
+This code package is provided to support the generation of the light projections and the control of a DLP projector through Matlab.</param.description>
+    <param.screenshot>F:\Github\CAL-software-Matlab\docs\images\title.png</param.screenshot>
+    <param.version>1.6.0</param.version>
+    <param.output>${PROJECT_ROOT}\CAL-software-Matlab.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>029afe1f-3472-41ad-aaed-e6f4b2cffc30</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples />
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs />
+    <param.getting.started.guide />
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons />
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start />
+    <param.release.end />
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.email />
+      <param.summary />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.examples />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.docs />
+      <param.getting.started.guide />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.required.addons />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.start />
+      <param.release.end />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.installation.map />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>F:\Github\CAL-software-Matlab\src</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>F:\Github\CAL-software-Matlab\src\.gitignore</file>
+      <file>F:\Github\CAL-software-Matlab\src\archive</file>
+      <file>F:\Github\CAL-software-Matlab\src\astra</file>
+      <file>F:\Github\CAL-software-Matlab\src\autoArrangeFigures_bin</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALCreateImageSet.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALMetrics.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALOptimize.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALPrepTarget.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALProjectImage.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALProjectImageSet.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALProjectorConstructor.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALSetup.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\CALtest.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\colormaps_bin</file>
+      <file>F:\Github\CAL-software-Matlab\src\createTarget.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Display.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\DisplayEvolving.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Examples</file>
+      <file>F:\Github\CAL-software-Matlab\src\ExposureTimer.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\filterProjections.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\findThreshold.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\ImageSetObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\imshow_3D_bin</file>
+      <file>F:\Github\CAL-software-Matlab\src\LICENSE.txt</file>
+      <file>F:\Github\CAL-software-Matlab\src\loadExStlFilename.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector2DParallel.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DConeCUDA.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DParallel.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\Projector3DParallelCUDA.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\ProjObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\PTB.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\ReconObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\setTimer.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\STL_read_bin</file>
+      <file>F:\Github\CAL-software-Matlab\src\TargetObj.m</file>
+      <file>F:\Github\CAL-software-Matlab\src\util</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>C:\temp\Psychtoolbox\PsychBasic\DrawFormattedText.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\KbCheck.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\KbName.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\LoadPsychHID.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\MatlabWindowsFilesR2007a\PsychHID.mexw64</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\MatlabWindowsFilesR2007a\Screen.mexw64</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\MatlabWindowsFilesR2007a\WaitSecs.mexw64</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\psychlasterror.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\psychrethrow.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\PsychtoolboxVersion.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\SetMouse.m</file>
+      <file>C:\temp\Psychtoolbox\PsychBasic\ShowCursor.m</file>
+      <file>C:\temp\Psychtoolbox\PsychContributed\ple.m</file>
+      <file>C:\temp\Psychtoolbox\PsychDocumentation\PsychPaidSupportAndServices.m</file>
+      <file>C:\temp\Psychtoolbox\PsychFiles\PsychtoolboxConfigDir.m</file>
+      <file>C:\temp\Psychtoolbox\PsychHardware\GetKeyboardIndices.m</file>
+      <file>C:\temp\Psychtoolbox\PsychHardware\GetKeypadIndices.m</file>
+      <file>C:\temp\Psychtoolbox\PsychJava\PsychJavaSwingCleanup.m</file>
+      <file>C:\temp\Psychtoolbox\PsychJava\psychusejava.m</file>
+      <file>C:\temp\Psychtoolbox\PsychObsolete\IsOS9.m</file>
+      <file>C:\temp\Psychtoolbox\PsychObsolete\IsWindows.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\AssertOpenGL.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\GetGITInfo.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\GetGitPath.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\GetSubversionPath.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\IsLinux.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\IsOctave.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\IsOSX.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\IsWayland.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\IsWin.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\PsychNumel.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\PsychtoolboxRoot.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\RestoreCluts.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\sca.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\streq.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\WhiteIndex.m</file>
+      <file>C:\temp\Psychtoolbox\PsychOneliners\WrapString.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\CenterRect.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\OffsetRect.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectBottom.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectCenter.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectCenterd.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectHeight.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectLeft.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectRight.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectTop.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\RectWidth.m</file>
+      <file>C:\temp\Psychtoolbox\PsychRects\SetRect.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="CAL-software-Matlab.mltbx" optional="false">F:\Github\CAL-software-Matlab\package_files\CAL-software-Matlab.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>D:\Matlab\R2019a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="gpucoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

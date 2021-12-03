@@ -27,21 +27,32 @@ The `CAL-software-Matlab`_ package can be installed by completing the following 
    ::
     CALtest()
 
-   You should see the following if the installation succeeded:
+   This function will test the basic functionality of the toolbox and check if a GPU is available for the use of the `Astra toolbox`_ which is included in this toolbox.
+   
+   You should see the following if installation was successful:
    ::
     CAL-software-Matlab Toolbox installed successfully!
+    Getting GPU info...
+    Testing basic CPU 2D functionality...
+    Testing basic CUDA 2D functionality...
+    Testing basic CUDA 3D functionality...
+
+   If your computer has a NVIDIA GPU the CUDA 2D and 3D functionality should say "Ok".
 
 Now the toolbox can be used like any other Matlab toolbox. You do not need to be in a particular working directory to access the functions of the toolbox.
 
+
+Astra Toolbox
+-------------
+`Astra toolbox`_ is a toolbox for GPU-accelerated tomography which has very flexible projector geometries that can be used for non-standard CAL systems. If Astra installation fails, go to the Astra Github repository and download the `Mex and Tools`_ folders and place them in a folder inside the source folder in which CAL-software-Matlab is installed.
+
 .. _`CAL-software-Matlab`: https://github.com/computed-axial-lithography/CAL-software-Matlab
 .. _`release`: https://github.com/computed-axial-lithography/CAL-software-Matlab/releases
+.. _`Astra toolbox`: https://github.com/astra-toolbox/astra-toolbox
+.. _`Mex and Tools`: https://github.com/astra-toolbox/astra-toolbox/tree/master/matlab
 
 Uninstallation
 --------------
 
 The toolbox can be uninstalled in the Add-on manager. Go to the Matlab Home tab, then Add-Ons in the Environments panel. Click the dropdown arrow and select Manage Add-Ons. Then click the Options and Uninstall for the CAL-software-Matlab toolbox. 
-
-Uninstallation can also be performed through the command line with the following code:
-::
- matlab.addons.toolbox.uninstallToolbox('CAL-software-Matlab')
 

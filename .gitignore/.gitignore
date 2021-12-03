@@ -8,3 +8,10 @@
 docs/_build/
 docs/_static/
 docs/_templates/
+
+# Various IDE folders
+.idea
+.vscode
+
+# Astra source files
+src/astra

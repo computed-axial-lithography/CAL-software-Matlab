@@ -9,6 +9,7 @@ Image set creation
     Constructor for the :class:`CALCreateImageSet` class that creates an image set given a :class:`ProjObj` and structure of image transformation parameters.
 
 
+
     :Parameters:    * projection_obj - :class:`ProjObj` containing the projections OR a "plain" 3D projection matrix (FOR BACKWARD COMPATIBILITY)
                     
                     * image_params - structure of image transformation parameters (refer to image at the end of this section for visual depiction of some of the parameters)
@@ -103,10 +104,16 @@ Image set creation
     
     :Parameters:    * image_set_obj - :class:`ImageSetObj` containing the image set
                     * save_path - full path of the save location of a folder called ``images`` containing individual images named ``0001.jpg``, ``0002.jpg``, and so on, for example. 
-                    * image_type - file extension of image such as ``'.jpg'``, ``'.png'``, ``'.bmp'``, etc. The available image types can be found in Matlab's documentation for `imwrite() <https://www.mathworks.com/help/matlab/ref/imwrite.html#btv3cny-1-fmt>`_
-    :Returns:       * out - input scaled by the input intensity scale factor
+                    * image_type - file extension of image such as ``'jpg'``, ``'png'``, ``'bmp'``, etc. The available image types can be found in Matlab's documentation for `imwrite() <https://www.mathworks.com/help/matlab/ref/imwrite.html#btv3cny-1-fmt>`_
 
 
+    .. staticmethod:: saveVideo(image_set_obj,rot_vel,duration,save_path,video_type)
+    
+    :Parameters:    * image_set_obj - :class:`ImageSetObj` containing the image set
+                    * rot_vel - intended rotation velocity of the vial during a CAL print in deg/s
+                    * duration - total length of the video in seconds
+                    * save_path - full path of the intended save location
+                    * image_type - file extension of image such as ``'MPEG-4'``, ``'Grayscale AVI'``, etc. The available image types can be found in Matlab's documentation for `VideoWriter() <https://www.mathworks.com/help/matlab/ref/videowriter.html>`_ input argument "profile - file type"
 
 
 .. image:: images/image_set_params.png

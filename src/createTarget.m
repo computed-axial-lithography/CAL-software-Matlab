@@ -1,3 +1,24 @@
+%{ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2020-2021  Hayden Taylor Lab, University of California, Berkeley
+Website https://github.com/computed-axial-lithography/CAL-software-Matlab
+
+This file is part of the CAL-software-Matlab toolbox.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%} 
 function target = createTarget(n_pixels,type,dim)
 
 
@@ -15,6 +36,27 @@ elseif strcmp(type,'L')
     target(n_pixels/4:0.5827*n_pixels,n_pixels/4:0.5827*n_pixels) = 1;
     target(n_pixels/4:n_pixels/2,n_pixels/4:n_pixels/2) = 0;
     target(n_pixels/4:0.416*n_pixels,n_pixels/4:0.416*n_pixels) = 1;
+    
+elseif strcmp(type,'tube')
+    target = zeros(n_pixels,n_pixels);
+    [X,Y] = meshgrid(linspace(-1,1,n_pixels),linspace(-1,1,n_pixels));
+    
+    R = sqrt(Y.^2 + X.^2);
+
+    target(R<=2/3) = 1;
+    target(R<=1/3) = 0;
+
+elseif strcmp(type,'channels')
+    target = zeros(n_pixels,n_pixels);
+    [X,Y] = meshgrid(linspace(-1,1,n_pixels),linspace(-1,1,n_pixels));
+    
+    R = sqrt(Y.^2 + X.^2);
+    R1 = sqrt(Y.^2 + (X+1/3).^2);
+    R2 = sqrt(Y.^2 + (X-1/3).^2);
+    target(R<=2/3) = 1;
+    target(R1<=1/6) = 0;
+    target(R2<=1/6) = 0;
+
 elseif strcmp(type,'dots')
     target = zeros(n_pixels,n_pixels);
     

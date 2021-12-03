@@ -32,7 +32,7 @@ copyright = '2021, University of California, Berkeley'
 author = 'Joseph Toombs@*Sui Man (Nicole) LUK'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2.1'
+release = '1.6.0'
 
 
 # -- General configuration ---------------------------------------------------

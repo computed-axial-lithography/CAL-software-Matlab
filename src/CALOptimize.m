@@ -1,3 +1,24 @@
+%{ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Copyright (C) 2020-2021  Hayden Taylor Lab, University of California, Berkeley
+Website https://github.com/computed-axial-lithography/CAL-software-Matlab
+
+This file is part of the CAL-software-Matlab toolbox.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%} 
 classdef CALOptimize
     
     properties
@@ -11,13 +32,12 @@ classdef CALOptimize
         
         thresholds
         error
-        gel_inds
-        void_inds
     end
     
     methods
         function obj = CALOptimize(target_obj,opt_params,proj_params,verbose)
             % set default values
+            obj.default_opt.filter = true;
             obj.default_opt.parallel = 0;
             obj.default_opt.max_iter = 10;
             obj.default_opt.learning_rate = 0.005;
@@ -30,7 +50,9 @@ classdef CALOptimize
             obj.default_proj.angles = linspace(0,179,180);  
             obj.default_proj.bit8 = 0;  
             obj.default_proj.equalize8bit = 0;  
-            
+            obj.default_proj.zero_constraint = false;
+            obj.default_proj.proj_mask = false;
+
             obj = obj.parseParams(opt_params,proj_params);
             
             obj.target_obj = target_obj;
@@ -39,11 +61,18 @@ classdef CALOptimize
             
             obj.verbose = verbose;
             
+            
+            if obj.proj_params.zero_constraint == true
+                % run image segmentation flood fill routine
+                [obj.proj_params.zero_constraint,~] = getFills(target_obj.target);
+            end
             obj.A = CALProjectorConstructor(target_obj,obj.proj_params,obj.opt_params.parallel);
             
+
+
             obj.thresholds = zeros(1,opt_params.max_iter);
             obj.error = zeros(1,opt_params.max_iter);
-            [obj.gel_inds,obj.void_inds] = obj.getInds();
+
         end
         
         function [obj] = parseParams(obj,opt_params,proj_params)
@@ -51,6 +80,9 @@ classdef CALOptimize
             obj.opt_params = opt_params;
             obj.proj_params = proj_params;
             
+            if ~isfield(opt_params,'filter')
+                obj.opt_params.filter = obj.default_opt.filter;
+            end
             if ~isfield(opt_params,'parallel')
                 obj.opt_params.parallel = obj.default_opt.parallel;
             end
@@ -86,6 +118,12 @@ classdef CALOptimize
             if ~isfield(proj_params,'equalize8bit')
                 obj.proj_params.equalize8bit = obj.default_proj.equalize8bit;
             end
+            if ~isfield(proj_params,'zero_constraint')
+                obj.proj_params.zero_constraint = obj.default_proj.zero_constraint;
+            end
+            if ~isfield(proj_params,'proj_mask')
+                obj.proj_params.proj_mask = obj.default_proj.proj_mask;
+            end
         end
         
         function [opt_proj_obj,opt_recon_obj,obj] = run(obj)
@@ -107,8 +145,10 @@ classdef CALOptimize
             
             b = obj.A.forward(obj.target_obj.target);
             
-            b = filterProjections(b,'ram-lak');
-            b = max(b,0);
+            if obj.opt_params.filter
+                b = filterProjections(b,'ram-lak');
+                b = max(b,0);
+            end
             
             opt_b = b;
             delta_b_prev = zeros(size(b));
@@ -130,30 +170,30 @@ classdef CALOptimize
                 if ~isnan(obj.opt_params.threshold)
                     curr_threshold = obj.opt_params.threshold;
                 else
-                    curr_threshold = findThreshold(x,obj.target_obj.target,obj.gel_inds,obj.void_inds);
+                    curr_threshold = findThreshold(x,obj.target_obj.target);
                 end
                 
                 obj.thresholds(curr_iter) = curr_threshold; % store thresholds as a function of the iteration number
                     
 
                 mu = curr_threshold;
-                mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
-                mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
+%                 mu_dilated = (1-obj.opt_params.Rho)*curr_threshold; 
+%                 mu_eroded = (1+obj.opt_params.Rho)*curr_threshold;
 
                 
                 x_thresh = obj.sigmoid((x-mu), obj.opt_params.sigmoid);
-                x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
-                x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
+%                 x_thresh_eroded = obj.sigmoid((x-mu_eroded), obj.opt_params.sigmoid);
+%                 x_thresh_dilated = obj.sigmoid((x-mu_dilated), obj.opt_params.sigmoid);
                 
                 
-                delta_x = (x_thresh - obj.target_obj.target).*obj.target_obj.target_care_area; % Target space error   
-                delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
-                delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
+                delta_x = (x_thresh - obj.target_obj.target);%.*obj.target_obj.target_care_area; % Target space error   
+%                 delta_x_eroded = (x_thresh_eroded - obj.target_obj.target).*obj.target_obj.target_care_area; % Eroded version
+%                 delta_x_dilated = (x_thresh_dilated - obj.target_obj.target).*obj.target_obj.target_care_area; % Dilated version
                 
-                delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
-                
-                
-                obj.error(curr_iter) = obj.evalError(x);
+%                 delta_x_feedback = (delta_x + delta_x_eroded + delta_x_dilated)/3;
+                delta_x_feedback = delta_x;
+
+                obj.error(curr_iter) = CALMetrics.calcVER(obj.target_obj.target,x);
                 
                 delta_b = obj.A.forward(delta_x_feedback);
                 gradient_approx = ((1-obj.opt_params.Beta)*delta_b + obj.opt_params.Beta*delta_b_prev)/(1-obj.opt_params.Beta^curr_iter);
@@ -189,42 +229,13 @@ classdef CALOptimize
                 runtime = toc;
                 fprintf('Finished optimization of projections in %.2f seconds\n',runtime);
                 
-                display.histogramProjRecon(opt_b,x,obj.gel_inds,obj.void_inds)
+                display.histogramProjRecon(obj.target_obj.target,opt_b,x)
                 display.showProjections(opt_b,'Optimized Projections');
                 display.showDose(x,'Optimized Reconstruction');
                 autoArrangeFigures(2,3)  % automatically arrange figures on screen
 
             end
             
-        end
-        
-        
-        function [gel_inds,void_inds] = getInds(obj)
-            
-            if obj.target_obj.dim == 2
-                [X,Y] = meshgrid(linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,1)));
-                R = sqrt(X.^2 + Y.^2);
-
-                circleMask = logical(R.*(R<=1));
-                gel_inds = find(circleMask & obj.target_obj.target==1);
-                void_inds = find(circleMask & ~obj.target_obj.target);
-            elseif obj.target_obj.dim == 3
-                [X,Y,~] = meshgrid(linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,1)),linspace(-1,1,size(obj.target_obj.target,3)));
-                R = sqrt(X.^2 + Y.^2);
-
-                circleMask = logical(R.*(R<=1));
-                gel_inds = find(circleMask & obj.target_obj.target==1);
-                void_inds = find(circleMask & ~obj.target_obj.target);
-            end
-        end
-        
-        function VER = evalError(obj,x)
-            min_gel_dose = min(x(obj.gel_inds),[],'all');
-            max_void_dose = max(x(obj.void_inds),[],'all');
-            void_doses = x(obj.void_inds);
-            n_pix_overlap = sum(void_doses>=min_gel_dose);
-            VER = n_pix_overlap/(length(obj.gel_inds)+length(obj.void_inds));
-
         end
         
     end
